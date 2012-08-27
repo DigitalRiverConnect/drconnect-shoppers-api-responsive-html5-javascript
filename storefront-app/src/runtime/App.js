@@ -1,0 +1,90 @@
+var ns = namespace("dr.acme.runtime");
+
+/**
+ * Main function of the ACME app
+ * 
+ * Is the main function (class) for this application. It has a Dispatcher
+ * that will listen to all the event and notifications and call the 
+ * corresponding Controller for each one. 
+ * The Controllers will interact with the Services and render the views.
+ * 
+ */
+ns.App = function(){
+	
+	this.dispatcher = new dr.acme.runtime.AcmeDispatcher();
+	
+	//Variable that will decide whether to load the DummyConnection or the real one
+	//The same with the environment: if it's 'dev' will point to the one set at Config.js and log through the console
+	var isDummy = this.dispatcher.getQueryStringParameter("dummy");
+	var env = this.dispatcher.getQueryStringParameter("env").toLowerCase(); 
+	
+	this.setEnvironment(env);
+	
+	// Instantiate the Service Manager. This Service Manager is for aqued Site. Any modification to make the 
+	// application point to another site should be done here.
+    dr.acme.service.manager = new dr.acme.service.ServiceManager(isDummy, env);
+
+	
+	window.onbeforeunload = this.checkCart;
+	
+	dr.acme.application = this;
+}
+
+/**
+ * Dispatcher getter
+ */
+ns.App.prototype.getDispatcher = function(){
+        return this.dispatcher;
+}
+
+/**
+ * Initialization of the App
+ */
+ns.App.prototype.start = function(){
+    console.info("Starting up application. Connecting to DR Service");
+    var that = this;
+	dr.acme.service.manager.initialize()
+	   .done(function() {
+	       console.info("Connected successfully to DR Service! Rendering the application");
+	       that.dispatcher.initialize();
+	   });	    
+}
+
+/**
+ * Default error function
+ */
+ns.App.prototype.Error = function(data){
+	alert("error" + data);
+}
+
+/**
+ * Check Cart function warning before losing products
+ */
+ns.App.prototype.checkCart = function (e){
+	if(app.dispatcher.shoppingCartController.view.getCart().lineItems.lineItem.length>0){
+	    e.returnValue = "You are about to lose the products in your cart, are you sure?";
+	    return "You are about to lose the products in your cart, are you sure?";
+	}
+}
+
+/**
+ * Enable/Disable console log depending on env parameter
+ */
+ns.App.prototype.setEnvironment = function(env){
+	
+	if(env == "dev"){
+		if (!window.console) window.console = {};
+		if (!window.console.log) window.console.log = function () { };
+		if (!window.console.error) window.console.error = window.console.log;
+		if (!window.console.info) window.console.info = window.console.log;
+		if (!window.console.debug) window.console.debug = window.console.log;
+		if (!window.console.warn) window.console.warn = window.console.log;
+	}else{
+		window.console.log = function () { };
+		window.console.error = function () { };
+		window.console.info = function () { };
+		window.console.debug = function () { };
+		window.console.warn = function () { };
+	}
+}
+

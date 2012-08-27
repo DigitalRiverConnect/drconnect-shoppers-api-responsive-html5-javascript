@@ -1,0 +1,36 @@
+var ns = namespace('dr.acme.view');
+
+/**
+ * Home category widget
+ * 
+ * Renders a category and its first 3 products
+ * 
+ */
+ns.HomeCategoryProductsWidget =  ns.Widget.extend({
+    layoutTemplate: "#featured-category-products-template",
+    /**
+     * Sets products for Widget
+     */
+    setProducts: function(products) {
+        this.model = {products: products};
+    },
+    /**
+     * Gets products
+     */
+    getProducts: function() {
+       return this.model.products;  
+    },
+    /**
+     * Sets the parent Widget
+     */
+    setParent: function(parent) {
+        this.parent = parent;
+    },
+    /**
+     * Renders the widget
+     */
+    render: function(append) {
+        this.elementSelector = this.parent;
+        this._super(append);
+    }
+});

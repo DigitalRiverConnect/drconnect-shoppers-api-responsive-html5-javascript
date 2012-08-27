@@ -1,0 +1,167 @@
+.toast-container {
+	width: 280px;
+	z-index: 9999;
+}
+
+
+* html .toast-container {
+	position: absolute;
+}
+
+.toast-item {
+	height: auto;
+	background: #666;
+    /*opacity: 0.9;*/
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	color: #eee;
+	padding-top: 34px;
+	padding-bottom: 20px;
+	padding-left: 6px;
+	padding-right: 6px;
+	font-family: inherit;
+	font-size: 14px;
+	/*border: 2px solid #999;*/
+	display: block;
+	position: relative;
+	margin: 0 0 12px 0;
+}
+
+.toast-item p {
+    text-align: center;
+    margin-left: auto;
+	margin-right: auto;
+	line-height:24px;
+	font-size:22px;
+	font-family:"BebasNeueRegular";
+}
+
+.toast-item-close {
+    background:url(../../images/toastmessage/close.gif);
+    width:22px;
+    height:22px;
+    position: absolute;
+    top:7px;
+    right:7px;
+    display: none;
+}
+
+.toast-item-image {
+    width:51px;
+    height: 51px;
+    margin:15px auto;
+}
+
+.toast-item-image-notice {
+    background:url(../../images/toastmessage/notice.png);
+}
+
+.toast-item-image-success {
+    background:url(../../images/toastmessage/successful.png);
+}
+
+.toast-item-image-warning {
+    background:url(../../images/toastmessage/warning.png);
+}
+
+.toast-item-image-error {
+    background:url(../../images/toastmessage/error.png);
+}
+
+
+/**
+ * toast types
+ *
+ * pattern: toast-type-[value]
+ * where 'value' is the real value of the plugin option 'type'
+ *
+ */
+.toast-type-notice {
+    color: white;
+}
+
+.toast-type-success {
+    color: white;
+}
+
+.toast-type-warning {
+    color: white;
+    border-color: #FCBD57;
+}
+
+.toast-type-error {
+    color: white;
+    border-color: #B32B2B;
+}
+
+/**
+ * positions
+ *
+ * pattern: toast-position-[value]
+ * where 'value' is the real value of the plugin option 'position'
+ *
+ */
+.toast-position-top-left {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+}
+
+.toast-position-top-center {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    margin-left: -140px;
+}
+
+.toast-position-top-right {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+.toast-position-middle-left {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    margin-top: -40px;
+}
+
+.toast-position-middle-center {
+    position: fixed;
+    left: 50%;
+    margin-left: -140px;
+    margin-top: -40px;
+    top: 50%;
+}
+
+.toast-position-middle-right {
+    position: fixed;
+    right: 20px;
+    margin-left: -140px;
+    margin-top: -40px;
+    top: 50%;
+}
+
+
+.messageContainer{
+	display: none;
+}
+ul.messageContainer li{
+	list-style: none;
+}
+
+ul.messageContainer li input{
+	margin-left: 20px;
+    width: 75px;
+}
+
+.opacity{
+	-moz-opacity: 0.50;
+	-khtml-opacity: 0.50;
+	opacity: 0.50;
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha"(Opacity=50);
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+	filter:alpha(opacity=50);
+	cursor: wait;		
+}

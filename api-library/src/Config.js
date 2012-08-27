@@ -1,0 +1,72 @@
+var ns = namespace('dr.api');
+
+/**
+ * Auth modes
+ */
+ns.authMode = {
+    // Shows a POPUP with the login form
+    POPUP: "POPUP",
+    // Shows an IFRAME with the login form
+    IFRAME: "IFRAME",
+    // Shows the login form in a new window/tab
+    WINDOW: "WINDOW"
+}
+
+/**
+ * Configuration params and constants
+ */
+ns.config = {
+    AUTH_FRAME_ID: "drApiAuthFrame", 
+    DEFAULT_REDIRECT_URI: getCurrentPath() + "/drapi-auth.html",
+    EDIT_ACCOUNT_FRAME_ID: "drEditAccountFrame",
+    EDIT_ACCOUNT_REDIRECT_URI: getCurrentPath() + "/drapi-editaccount.html"
+}
+
+/**
+ * Connection Request constants required
+ */
+var nsConn = namespace("dr.api.connection");
+
+nsConn.URI = {
+    BASE_URL: null,
+    DEV_BASE_URL: 'http://23.21.197.49/',
+    PRD_BASE_URL: 'http://23.21.197.49/',
+    // DEV_BASE_URL: 'https://api.digitalriver.com/',
+    // PRD_BASE_URL: 'https://api.digitalriver.com/',
+    VERSION: 'v1',
+    ANONYMOUS_LOGIN: 'oauth20/token',
+    LOGIN: 'oauth20/authorize'
+};
+
+nsConn.TYPE = {
+    XML: '1',
+    JSON: '2',
+    TEXT: '3',
+    UNSIGNED_BYTES: '4'
+};
+
+/**
+ * URI Constants required by the Services
+ */
+var nsService = namespace("dr.api.service");
+
+nsService.URI = {
+    CATEGORIES: 'shoppers/me/categories',
+    PRODUCTS: 'shoppers/me/products',
+    PRODUCTS_BY_CATEGORY: 'shoppers/me/categories/{categoryId}/products',
+    PRODUCT_OFFERS: 'shoppers/me/point-of-promotions/{popName}/offers/{offerId}/product-offers',
+    PRODUCTS_SEARCH: '/shoppers/me/product-search',
+    CART: 'shoppers/me/carts/active',
+    CART_LINE_ITEMS: 'shoppers/me/carts/active/line-items',
+    CART_OFFERS: 'shoppers/me/carts/active/point-of-promotions/{popName}/offers',
+    CART_APPLY_SHOPPER: 'shoppers/me/carts/active/apply-shopper',
+    CART_SHIPPING_OPTIONS: 'shoppers/me/carts/active/shipping-options',
+    CART_APPLY_SHIPPING_OPTION: 'shoppers/me/carts/active/apply-shipping-option',
+    SHOPPER:'shoppers/me',
+    SHOPPER_PAYMENT_OPTION:'shoppers/me/payment-options',
+    SHOPPER_ACCOUNT: 'shoppers/me/account',
+    ORDERS:'shoppers/me/orders',
+    ORDER_SHIPPING_ADDRESS:'shoppers/me/orders/{orderId}/shipping-address',
+    ORDER_BILLING_ADDRESS:'shoppers/me/orders/{orderId}/billing-address',
+    ADDRESS:'shoppers/me/addresses'
+}

@@ -1,0 +1,52 @@
+
+/* Crappy Android portrait 240 x 320 */
+@media (max-width: 240px) {
+	body {
+		background-color:red;
+	}
+}
+
+@media (min-width: 241px) and (max-width: 320px) {
+	body {
+		background-color:blue;
+	}
+}
+/* Nicer Android portrait 295 by 515 */
+@media (min-width: 295px ) and (max-width: 320px) {
+	body {
+		background-color: pink;
+	}
+}
+/*  iPhone portrait 320 x 480
+*	Crappy Android landscape 320 x 240 
+*/	
+@media (min-width: 320px) and (max-width: 480px) {
+	body {
+		background-color: white;
+	}
+}
+/* Nicer Android landscape 515 by 295
+ * Nicer Android landscape 515 by 295
+ */
+@media (min-width: 480px) and (max-width: 515px) {
+	body {
+		background-color:yellow;
+	}
+}
+/*	iPad portrait 768 x 1024
+ *	Kindle portrait 600 x 1024
+ */ 
+@media (min-width: 516px) and (max-width: 979px) { 
+	body {
+		background-color: black ;
+	}
+}
+/* iPad landscape 1024 x 768
+ * Kindle landscape 1024 x 600 
+ */
+@media (min-width: 979px) {
+	body {
+		background-color: gray;
+	}
+	
+}

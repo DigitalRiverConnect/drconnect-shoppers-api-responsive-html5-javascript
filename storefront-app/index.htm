@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>ACME Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content=" ">
+    <meta name="author" content="">
+
+    <!-- styles -->
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/toastmessage/jquery.toastmessage.css">
+	<link rel="stylesheet" type="text/css" href="css/dr-theme.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
+	<link rel="stylesheet" type="text/css" href="css/flexslider.css">
+	<!--link rel="stylesheet" type="text/css" href="css/media-querys-by-device.css" -->
+
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300,600' rel='stylesheet' type='text/css'>
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- touch icons -->
+    <link rel="shortcut icon" href="http://twitter.github.com/bootstrap/examples/images/favicon.ico">
+    <link rel="apple-touch-icon" href="http://twitter.github.com/bootstrap/examples/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="http://twitter.github.com/bootstrap/examples/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="http://twitter.github.com/bootstrap/examples/images/apple-touch-icon-114x114.png">
+</head>
+  <body>
+    
+   <!--  Plugin sources -->
+  <script src="libs/jquery-1.7.1.js" type="text/javascript"></script>	
+  <script src="libs/jquery.ba-dotimeout.min.js" type="text/javascript"></script>
+  <script src="libs/jquery.address-1.4.min.js" type="text/javascript"></script>
+  <script src="libs/jquery.blockUI.js" type="text/javascript"></script>
+  <script src="libs/jquery.toastmessage.js" type="text/javascript"></script>
+  <script src="libs/drapi.js" type="text/javascript"></script>
+  <script src="libs/jquery.flexslider-min.js" type="text/javascript"></script>
+  <script src="libs/jquery_template.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-transition.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-carousel.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-alert.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-button.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-collapse.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-dropdown.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-modal.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-scrollspy.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-tab.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-tooltip.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-popover.js" type="text/javascript"></script>
+  <script src="libs/bootstrap/bootstrap-typeahead.js" type="text/javascript"></script>
+  
+  <script src="src/runtime/NotificationConstants.js" type="text/javascript"></script>
+  <script src="src/runtime/BreadCrumbMap.js" type="text/javascript"></script>  
+  <script src="src/util/StoreAcmeUtil.js" type="text/javascript"></script>  
+  <script src="src/util/StoreAcmeUtilClass.js" type="text/javascript"></script>
+  <!-- script src="src/dummy/DummyJSON.js" type="text/javascript"></script -->
+  <script src="src/controller/BaseController.js" type="text/javascript"></script>
+  <script src="src/controller/BreadCrumbController.js" type="text/javascript"></script>  
+  <script src="src/service/ShopperService.js" type="text/javascript"></script>
+  <script src="src/service/OrderService.js" type="text/javascript"></script>  
+  <script src="src/service/CategoryService.js" type="text/javascript"></script>
+  <script src="src/service/ProductService.js" type="text/javascript"></script>
+  <script src="src/service/ShoppingCartService.js" type="text/javascript"></script>
+  <script src="src/service/ServiceManager.js" type="text/javascript"></script>
+
+  <script src="src/util/BootstrapDialogManager.js" type="text/javascript"></script>
+  <script src="src/view/BaseView.js" type="text/javascript"></script>
+  <script src="src/view/Widget.js" type="text/javascript"></script>
+  <script src="src/view/AddressWidget.js" type="text/javascript"></script>
+  <script src="src/view/CandyRackWidget.js" type="text/javascript"></script>
+  <script src="src/view/PaymentMethodWidget.js" type="text/javascript"></script>
+  <script src="src/view/ProductListWidget.js" type="text/javascript"></script>
+  <script src="src/view/ProductLineItemWidget.js" type="text/javascript"></script>
+  <script src="src/view/HomeCategoryProductsWidget.js" type="text/javascript"></script>
+  <script src="src/view/HomeCategoryWidget.js" type="text/javascript"></script>
+  <script src="src/view/HeaderView.js" type="text/javascript"></script>
+  <script src="src/view/MainLayoutView.js" type="text/javascript"></script>
+  <script src="src/view/ShoppingCartHeaderButton.js" type="text/javascript"></script>
+  <script src="src/view/HomeView.js" type="text/javascript"></script>
+  <script src="src/view/SearchProductView.js" type="text/javascript"></script>
+  <script src="src/view/OrderHistoryDetailView.js" type="text/javascript"></script>
+  <script src="src/view/MyAccountView.js" type="text/javascript"></script>
+  <script src="src/view/MyAccountEditView.js" type="text/javascript"></script>
+  <script src="src/view/OrderHistoryView.js" type="text/javascript"></script>
+  <script src="src/view/CategoryView.js" type="text/javascript"></script>
+  <script src="src/view/ProductDetailView.js" type="text/javascript"></script>
+  <script src="src/view/ShoppingCartView.js" type="text/javascript"></script>
+  <script src="src/view/CheckoutSummaryView.js" type="text/javascript"></script>
+  <script src="src/view/CheckoutEditView.js" type="text/javascript"></script>
+  <script src="src/view/ThanksView.js" type="text/javascript"></script>
+  <script src="src/view/LoginView.js" type="text/javascript"></script>
+  <script src="src/view/BreadCrumbView.js" type="text/javascript"></script>
+  
+  <script src="src/controller/MainApplicationController.js" type="text/javascript"></script>
+  <script src="src/controller/HomeController.js" type="text/javascript"></script>  
+  <script src="src/controller/OrderHistoryController.js" type="text/javascript"></script>
+  <script src="src/controller/OrderHistoryDetailController.js" type="text/javascript"></script>
+  <script src="src/controller/SearchProductController.js" type="text/javascript"></script>
+  <script src="src/controller/MyAccountController.js" type="text/javascript"></script>  
+  <script src="src/controller/ProductDetailController.js" type="text/javascript"></script>
+  <script src="src/controller/ShoppingCartController.js" type="text/javascript"></script>
+  <script src="src/controller/CategoryController.js" type="text/javascript"></script>
+  <script src="src/controller/UserController.js" type="text/javascript"></script>
+  <script src="src/controller/CheckoutController.js" type="text/javascript"></script>
+  <script src="src/runtime/UrlNavigationManager.js" type="text/javascript"></script>
+  <script src="src/runtime/BaseDispatcher.js" type="text/javascript"></script>
+  <script src="src/runtime/AcmeDispatcher.js" type="text/javascript"></script>
+  <script src="src/runtime/App.js" type="text/javascript"></script>
+  
+  <!-- ########## MAIN APP LAYOUT ###############  -->
+	<script type="text/x-jquery-tmpl" id="appTemplate">
+		<div class="navbar navbar-fixed-top">
+	    	<div id="headerContainer" class="navbar-inner">
+	
+	    	</div><!-- /navbar-inner -->
+		</div>
+		<div id="notifications" class="container"></div>
+		<div class="container" id="breadcrumb">
+	    	<div class="row">  
+				<div class="span12">  
+					<ul class="breadcrumb">  
+						
+					</ul>  
+				</div>
+	   		 </div> 
+		</div>
+		<div class="container" id="contentArea">
+	    </div> 
+	    <ul class="messageContainer" >
+	      		<li>
+	      			<input type='button'  class="accept" value='Yes'>
+	      			<input type='button'  class="refuse" value='No' id="cancelRemoveFromCart" >
+	      		</li>
+	    </ul>
+	    <div id="blur" class=""></div>  
+  </script>
+  <script type="text/x-jquery-tmpl" id="breadcrumbTpl">
+		{{each(i, bread) breads}}			
+				<li class="{{if breadCrumbLength == i}} active {{/if}}">  
+    				{{if bread.text != 'Home'}}  <span class="divider"> > </span> {{/if}} 
+					<a class="bread"  breadText="${bread.text}" href="#${bread.uriNavigate}">${bread.text}</a>   
+  	    		</li>			
+		{{/each}}	
+  </script>
+   <!-- ########## NOTIFICATION ###############  -->
+  <script type="text/x-jquery-tmpl" id="notificationTemplate">
+  	<div class="alert alert-${type}" style="">
+  		<span class="alert-icon-container">
+			<i class="icon"></i>
+		</span>
+		<h4 class="alert-heading">${title}</h4>
+		<p>${message}</p> 
+	</div>
+		</script>
+		
+		<script type="text/x-jquery-tmpl" id="productSearchTemplate">
+			<div class="row">
+	    	<div class="box products span12">
+		    	<h2>PRODUCT Search : ${getParamValue('keyword')}</h2>
+				 <div id="searchProduct">
+				 </div>				
+	    	</div>
+	    </div>
+	    	{{tmpl "#footerTpl"}}
+		</script>
+		
+  <!-- ########## HEADER ###############  -->
+  <script type="text/x-jquery-tmpl" id="headerTemplate">
+      <div class="container">      	
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        	<span class="menu">MENU</span>
+        </a>
+        <a class="brand" href="#">ACME</a>
+        <div class="nav-collapse">
+          <ul class="nav">
+          	<!-- application menu here -->
+          </ul>
+          <form class="navbar-search pull-right">
+            <input type="text" class="search-query span2" id="speech" placeholder="Search" x-webkit-speech="true" onspeechchange="processspeech();" onwebkitspeechchange="processspeech();">
+          </form>
+        </div>
+      </div>
+  </script>
+  
+	<script type="text/x-jquery-tmpl" id="headerButtonTemplate">
+		<li class="${id} header-button" style="display: ${visible};"><a href="#${url}" ><i class="icon-${icon} icon-white"></i>${label}</a></li>
+	</script>
+	<script  type="text/x-jquery-tmpl" id="headerDividerTemplate">
+		<!-- <li class="divider-vertical ${id}" style="display: ${visible};"></li>-->
+	</script>
+	<script type="text/x-jquery-tmpl" id="headerShoppingCartButtonTemplate">
+		<li class="${id} header-button "><a href="#/cart/" id="shoppingCart"><i class="icon-shopping-cart icon-white"></i>Shopping Cart <span id="quantity">(0)</span></a></li>
+	</script>	
+  
+  	<!-- ########## CATEGORY TEMPLATE ###############  -->
+	<script type="text/x-jquery-tmpl" id="categoryLeftMenu">
+		<div class="list_menu">
+			{{each categories}}
+				<div class="menu-item">
+					<a class="menu-toggle" href="#/categories?id=${id}">${displayName}</a>
+				</div>
+			{{/each}}
+		</div>
+
+		<select id="categoryDropDown" class="drop_down_menu span3">
+			<option>Browse by Categories</option>
+			{{each categories}}
+					<option value="?id=${id}">
+						${displayName}
+					</option>
+				</div>
+			{{/each}}
+		</select>
+	</script>
+	<!-- ########## HOME PAGE TEMPLATE ###############  -->
+	<script type="text/x-jquery-tmpl" id="homeTpl">
+	<div class="row">
+		<div id="columnLeft" class="span4">
+			<!-- Add an additional spam to add a handler in the view --> 
+		   	<span class="homeCategories"> 
+				<nav id="categories-product">
+					//content here
+				</nav>
+			</span>
+		</div>
+		<div id="columnRight" class="span8">
+				<div id="feature-product" class="row">
+					//content here
+				</div>
+				<div id="home-categories" class="row">
+
+			  </div>
+		</div>
+ 	</div>     
+	{{tmpl "#footerTpl"}}
+  	</script>
+	<!-- ########## FOOTER PAGE TEMPLATE ###############  -->
+	<script type="text/x-jquery-tmpl" id="footerTpl">
+	<hr>
+    <footer>
+	  <div class="row">
+	  	<div class="span12">
+                    <div class="copyright span2">
+                        ACME © 2012
+                    </div>
+                    <div class="socialmedia ">
+                        <a class="facebook" href="#"></a>
+						<a class="twitter" href="#"></a>
+						<a class="rss" href="#"></a>
+						<a class="skype" href="#"></a>
+                    </div>
+		</div>
+       </div>	
+      </footer>
+	</script>
+	<!-- ########## CATEGORY TEMPLATE ###############  -->
+	<script type="text/x-jquery-tmpl" id="categoryTemplate" >
+    	<div id="celebs">
+		<ul id="accordion">	
+			{{each categories}}
+				<li class="active">${name}
+					<ul style="display:none;">							
+					{{each categories.subCategories}}
+						<li>
+							<a href="#">${$value.name}</a> &nbsp;
+						</li>
+					{{/each}}
+					</ul>
+				</li>
+					{{/each}} 						
+		  </ul>
+		</div>
+	{{tmpl "#footerTpl"}}	
+	</script>
+	<!-- ########## PROMOTIONAL TEMPLATE ###############  -->
+	<script type="text/x-jquery-tmpl" id="promotionalTemplate" >
+		<div id="myCarousel" class="flexslider span8">
+			<div class="carouselDiv">
+			  <ul class="slides">
+			    {{each featuresProducts}}
+		          		<li class="item">
+		          			<a href="#/products/?id=${$value.id}">
+				      			<img src="${$value.image}" alt="">
+							</a>
+			      		</li>
+		       	{{/each}}
+			  </ul>
+			</div>
+			<div class="flexslider-controls"></div>
+		</div>
+	</script>
+	<!-- ########## CATEGORY-PRODUCTS BOTTOM PANEL ###############  -->
+	<script type="text/x-jquery-tmpl" id="featured-category-template">
+		<!-- Categories Product List Home-->
+		<div class="span4">
+			<div class="category_panel box">
+				<h2>${displayName}</h2>
+			</div>
+		</div>
+	</script>
+	
+	<script type="text/x-jquery-tmpl" id="featured-category-products-template">
+		<ul class="product_list ">
+			{{each(i, product) products}}
+				<li class="productItem">
+					<div class="product_image"><a href="#/products/?id=${product.id}"><img alt="" src="${product.thumbnailImage}"></a></div>
+					<div class="product_name">
+							<a href="#/products/?id=${product.id}">${product.displayName}</a>
+							<div class="product_price">${product.pricing.formattedSalePriceWithQuantity}</div>
+					</div>
+					<div class="product_actions">
+				 		<input type="button" class="btn btn-primary  btn-add-to-cart" data-product-id="${product.id}" value="Add To Cart">
+				 	</div>	
+				</li>
+			{{/each}}
+		</ul>		
+	</script>
+	
+	<!-- ########## LOADER ###############  -->
+	<script type="text/x-jquery-tmpl" id="loader">
+		<div class="loading">
+			<img src="img/loading.gif"></img>
+		   	<div>${message}</div>
+	   	</div>
+	</script>
+	
+	<!-- ########## PRODUCT DETAILS ###############  -->
+	<script type="text/x-jquery-tmpl" id="productDetailTemplate">
+	    <div class="row">
+	    	<div class="box span12">
+		    	<h2>PRODUCT SPECIFICATIONS</h2>
+				 <div class="row content productDetail">
+				 </div>	
+	    	</div>
+	    </div>
+	    	{{tmpl "#footerTpl"}}
+	</script>
+	
+	<script type="text/x-jquery-tmpl" id="productDetailTemplateLoaded">
+	<div class="offset0 span3 productImage  ">
+			<img src="${product.productImage}" />
+	</div>		
+	<div class="span7">
+		
+	  	<h3>${product.name}</h3>
+		<p class="short_description">${product.shortDescription}</p>
+		<h3>Description</h3>
+		<p class="long_description">${product.longDescription}</p>
+	
+		<div class="row pricesRow">	
+			<span class="span3 prices">
+				{{if product.pricing.formattedSalePriceWithQuantity != product.pricing.formattedListPrice}}
+					<p class="price">Now: ${product.pricing.formattedSalePriceWithQuantity}</p>
+					<p class="old_price">Old Price: <span class="labeled">${product.pricing.formattedListPrice}</span></p>
+				{{else}}
+					<p class="price">Price: ${product.pricing.formattedSalePriceWithQuantity}</p>
+				{{/if}}
+			</span>					
+			<span class="span2">
+				<p class="span1">Quantity</p>
+				<select class="span1 quantity_select">
+					<option value="1"> 1</option>
+					<option value="2"> 2</option>
+					<option value="3"> 3</option>
+					<option value="4"> 4</option>
+				</select>
+			</span>
+			<span class="span2 btn-container">	
+				<input value="Add To Cart" type="button"  action="/addProductToCart/" id="addToCart" class="btn btn-large btn-primary btn-addToCart"/>							
+			</span>
+		</div>
+	</div>				
+	</script>
+	<!-- ########## CART EDIT OPTIONS SKELETON ###############  -->
+	<script type="text/x-jquery-tmpl" id="cartEditSkeleton">
+	   <div class="row">
+	    	<div class="span12 box">
+	    		<h2>Checkout Options</h2>
+	    		<div class="row content editCart">
+					
+				</div>	
+	    	</div>
+	    </div>	    	
+	    	{{tmpl "#footerTpl"}}
+	</script>
+	<!-- ########## CART EDIT OPTIONS CONTENT ###############  -->
+	<script type="text/x-jquery-tmpl" id="cartEditContent">
+	   <div class="box2 span11 offset0">
+		<div class="span10  box3 ">            
+			<h3 class="span3 landscapeh3">Shipping Address</h3>
+		    <div class="span3 span0" id="shippingAddress" >
+			</div>    
+			<div class="span3 span0" id="shippingAddressDesc">				
+			</div>    
+		</div>    
+		<div class="span10 box3" >              
+			<h3 class="span3 landscapeh3">Billing Address</h3>            
+			<div class="span3 span0" id="billingAddress">
+			</div>    
+			<div class="span3 span0" id="billingAddressDesc">				
+			</div>   
+		</div>   
+		<div class="span10 box3">              
+			<h3 class="span3 landscapeh3">Payment Method</h3>    
+			<div class="span3 span0" id="paymentMethod">
+			</div>    
+			<div class="span3 span0" id="paymentMethodDesc">
+			
+			</div>   
+		  </div>
+		</div>
+		<div class="btn-container">	    
+			<a  href="javascript:return false;" id="save" 
+				class="btn-save btn btn-success btn-large">Save Changes</a>
+	    </div>
+	</script>
+	
+	<!-- ########## DROP DOWNLIST SELECTION TEMPLATE ######## -->
+	<script type="text/x-jquery-tmpl" id="cartEditAddressDropDownList">
+		<div class="span3">
+			<select id="addressDropDown">
+				{{each address.address}}
+					{{if id == defaultAddressId}}
+						<option value="${id}" selected="selected">${nickName}</option>
+					{{else}}
+						<option value="${id}">${nickName}</option>
+					{{/if}}
+				{{/each}}
+			</select>
+		</div> 
+	</script>
+	
+	<script type="text/x-jquery-tmpl" id="cartEditPaymentDropDownList">
+		<div class="span3">
+			<select id="paymentDropDown">
+				{{each paymentOption.paymentOption}}
+					{{if id == defaultPaymentId}}
+						<option value="${id}" selected="selected">${nickName}</option>
+					{{else}}
+						<option value="${id}">${nickName}</option>
+					{{/if}}
+				{{/each}}
+			</select>
+		</div> 
+	</script>
+	
+	<!-- ########## SHOPPING CART ###############  -->
+	<script type="text/x-jquery-tmpl" id="shoppingCartTemplate" >
+		 <div class="row">
+	    	<div class="span12 box shoopingCart">
+	    		<h2>Shopping Cart</h2>
+	    		<div class="row content">
+				//
+				</div>
+				<div id="candyRack">
+				</div>	
+	    	</div>
+	    </div>
+	    	{{tmpl "#footerTpl"}}		
+	</script>
+	<script type="text/x-jquery-tmpl" id="shoppingCartTemplateLoaded">
+	 <div class="span11 offset0  box2">	 	    			
+		<table  class=" cartTable table">
+       		<thead>
+           		<tr>
+             		<th id="product">Product</th>
+          			<th id="quantity">Quantity</th>
+          			<th id="price">Price</th>
+          			<th id="subtotal">Total</th>
+          			<th id="action" width="50"></th>
+           		</tr>
+        	</thead>
+	        <tbody>
+          		{{each(i, lineItem) cart.lineItems.lineItem}}
+          		<tr>
+            		<td>
+            			<span class="productImage"><a href="#/products/?id=${lineItem.product.id}"><img alt="" style="width=40px;height=40px;" src="${lineItem.product.thumbnailImage}" width="70px"></a> </span>
+						<span class="displayName"><a href="#/products/?id=${lineItem.product.id}"> ${lineItem.product.displayName}  </a></span>
+						<span class="cart_qty">Quantity ${lineItem.quantity} </span>
+					</td>
+         			<td>${lineItem.quantity}</td>
+         			<td>$${(lineItem.pricing.salePriceWithQuantity.value / lineItem.quantity).toFixed(2)}</td>
+         			<td>${lineItem.pricing.formattedSalePriceWithQuantity}</td>
+         			<td>						
+           				<a class="remove_btn js_remove" href="#" data-productName="${lineItem.product.displayName}" data-lineItemId="${lineItem.id}" alt="View" >Remove</a>
+         			</td>
+          	    </tr>
+          	   {{/each}}
+	        </tbody>
+			<tfoot>
+				<tr>
+            		<td>Total</td>
+         			<td></td>
+         			<td></td>
+         			<td class="total">${cart.pricing.formattedSubtotal}</td>
+         			<td></td>
+				</tr>
+			</tfoot>
+        </table>
+     </div>
+	<div id="checkout" class="span12 btn-container">	
+			<a class="btn btn-success btn-large" href="#/checkout" style="margin-right:62px;">
+				<i class="icon-shopping-cart icon-white"></i> Checkout
+		 	</a>
+	</div>
+	
+	</script>
+	
+	<!-- ########## Shopping Cart Candy Rack Widget ###############  -->
+	<script type="text/x-jquery-tmpl" id="shoppingCartCandyRack_widget">
+		<div class="row" style="margin-top: 12px">
+		<div class="span11 products offset0 box2 candyRackBox" style="padding-top: 0px">
+			<h3>You May Also Be Interested In </h3>
+             <ul class="product_list ">
+             	{{each(i, offer) productOffer}}
+	             	<li class="productItem">
+				 		<div class="product_name">
+								<a href="#/products/?id=${offer.product.id}">${offer.product.displayName}</a>
+						</div>
+						<div class="product_image"><a href="#/products/?id=${offer.product.id}"><img alt="" src="${offer.product.thumbnailImage}"></a></div>
+						<div class="product_price">
+							{{if pricing.formattedSalePriceWithQuantity != pricing.formattedListPrice}}
+								Now: ${pricing.formattedSalePriceWithQuantity}<br>
+								Old Price: <span class="labeled">${pricing.formattedListPrice}</span>
+							{{else}}
+								Price: ${pricing.formattedSalePriceWithQuantity} <br>
+							{{/if}}
+							<input type="button" id="addOfferToCart" class="btn btn-primary" data-product-id="${offer.product.id}" addToCartUri="${offer.addProductToCart.uri}" value="Add To Cart">
+						</div>
+					 	<div class="product_description">
+						 		<p>${offer.product.shortDescription}</p>
+					 	</div> 
+					</li>
+				{{/each}}
+             </ul>
+     	</div>		
+     	</div>
+	</script>
+	
+	<script type="text/x-jquery-tmpl" id="shoppingCartEmpty">
+     <div class="span12 cartEmpty btn-container">
+			<p>Your shopping cart is currently empty.</p>
+			<a class="btn btn-primary" href="#" >Continue Shopping </a>
+	 </div>
+	 </script>
+	 <script type="text/x-jquery-tmpl" id="orderHistoryEmpty">
+     <div class="span12">
+			<p>You do not have currently orders.</p>
+			<a class="btn btn-primary" href="#/myAccount" >Continue to Your Account </a>
+	 </div>
+	 </script>
+	 <!-- ########## PRODUCT BY CATEGORY ###############  -->
+	<script type="text/x-jquery-tmpl" id="productByCategory" >
+	<div class="row">
+		<div id="category_panel"	 class="span4">
+			<nav id="categories-product" class="subCategories">
+				//content here
+			</nav>
+     	</div>
+		<div id="product_list_panel" class="span8 ">
+			//content here
+		</div>
+	</div>
+	{{tmpl "#footerTpl"}}			
+	</script>
+	
+	<script type="text/x-jquery-tmpl" id="categoryProducts_panel">
+         <div class="products box ">
+             <!-- Categories Product List Home-->
+			 <h2>${headerTitle}</h2> 
+			 <div class="sort">
+			     <select id="productsSortDropDown">
+			     	{{each sortOptions}}
+						{{if selectedSort && id == selectedSort.id}}
+							<option value="${id}" selected="selected">${desc}</option>
+						{{else}}
+							<option value="${id}">${desc}</option>
+						{{/if}}
+					{{/each}}
+			     </select>
+		     </div>
+			 <div id="products_list" />
+		 </div>
+				 
+	</script>
+	
+	<!-- ########## EMPTY PRODUCT LIST ###############  -->
+	<script type="text/x-jquery-tmpl" id="productListEmpty_widget">
+     	<div>
+     		 <ul class="product_list ">
+        		<br /> <p>No Products for this category.</p>
+        	 </ul>
+     	</div>
+	 </script>
+	 
+	 <!-- ########## PRODUCT LIST ###############  -->
+	 <script type="text/x-jquery-tmpl" id="productList_widget">
+     
+         <div class="box">
+             <ul class="product_list ">
+             	<div id="product_lineItems">
+             </ul>
+     	</div>
+	 </script>
+	 
+	<!-- ########## PRODUCT ITEM WIDGET ###############  -->
+	<script type="text/x-jquery-tmpl" id="productLineItem_widget">
+	 	<li class="productItem">
+	 		<div class="product_name">
+					<a href="#/products/?id=${id}">${displayName}</a>
+			</div>
+			<div class="product_image"><a href="#/products/?id=${id}"><img alt="" src="${thumbnailImage}"></a></div>
+			<div class="product_price">
+				{{if pricing.formattedSalePriceWithQuantity != pricing.formattedListPrice}}
+					Now: ${pricing.formattedSalePriceWithQuantity}<br>
+					Old Price: <span class="labeled">${pricing.formattedListPrice}</span>
+				{{else}}
+					Price: ${pricing.formattedSalePriceWithQuantity} <br>
+				{{/if}}
+				<input type="button" class="btn btn-primary btn-add-to-cart" data-product-id="${id}" value="Add To Cart">
+			</div>
+			<div class="product_description">
+			 		<p>${shortDescription}</p>
+		 	</div>
+		</li>
+	</script>
+	<!-- ########### ORDER HISTORY -->
+	<script type="text/x-jquery-tmpl" id="orderHistoryTemplate" >
+		 <div class="row">
+	    	<div class="span12 box ">
+	    		<h2>Order History</h2>
+	    		<div class="row content">
+				
+				</div>	
+	    	</div>
+	    </div>
+	    	{{tmpl "#footerTpl"}}		
+	</script>
+	<script type="text/x-jquery-tmpl" id="orderHistory_widget">
+	 <div class="span11 offset0  box2">	 	    			
+		<table  class="orderHistory table">
+       		<thead>
+           		<tr>
+           			<th id="custom-col"></th>
+					<th id="submissionDate">Submission Date</th>
+             		<th id="id">Order Number</th>
+          			<th id="orderState">State</th>          		
+             		<th id="subTotal">Sub Total</th>
+					<th id="taxCurrency">Tax</th>
+					<th id="totalCurrency">Total</th>
+					<th id="action" width="50"></th>
+           		</tr>
+        	</thead>
+	        <tbody> 
+         		{{each(i, order) orders.order}}
+          			<tr>
+          				<td><strong class="sub-cell">Date  </strong>${getDate(order.submissionDate)} <br>
+						 	<strong class="sub-cell">Number </strong>${order.id} <br>
+						 	<strong class="sub-cell">Status </strong>${order.orderState} 
+						</td>
+						<td>${getDate(order.submissionDate)}</td>
+            			<td>${order.id}</td>
+         				<td>${order.orderState}</td>         			
+            			<td>${order.pricing.subtotal.currency} ${(order.pricing.subtotal.value).toFixed(2)} </td>
+						<td>${order.pricing.tax.currency} ${order.pricing.tax.value}</td>
+						<td>${order.pricing.total.currency} ${(order.pricing.total.value).toFixed(2)} </td>
+						<td><a class="explore_btn" href="#/orderHistoryDetail/?orderId=${order.id}">See Detail</a></td>
+          	    	</tr> 
+				{{/each}}    				     
+	        </tbody>
+        </table>	 	
+	</div>
+	<div class="span12">
+		
+	</div>
+	</script>
+		
+	<script type="text/x-jquery-tmpl" id="paginationTemplate">
+	<div class="pagination">
+	  <ul class="pull-right">
+	    <li class="{{if pageActive == 1}} disabled {{/if}} page ">
+			<a href="#" class="prev ${pageClass}">Prev</a>
+		</li>
+		{{each(i,page)  getSize(totalResultPages)}}
+	    	<li class="page {{if pageActive == i+1}} active {{/if}}">
+				<a href="#" class=" ${pageClass}">${page}</a>
+			</li>
+		{{/each}}	
+		<li class="{{if totalResultPages == pageActive}} disabled {{/if}} page">
+			<a href="#" class="next ${pageClass}">Next</a>
+		</li>	
+	  </ul>		
+	</div>
+	</script>
+	<!-- ########## CHECKOUT CONFIRM ###############  -->
+	<script type="text/x-jquery-tmpl" id="checkoutSummaryLayoutTemplate" >
+		 <div class="row ">
+	    	<div class="span12 box checkoutConfirm">
+	    		<h2>Checkout Confirmation</h2>
+				<div class="row content">
+				</div>	
+	    	</div>
+	    </div>
+	    	{{tmpl "#footerTpl"}}		
+	</script>
+	
+	<script type="text/x-jquery-tmpl" id="checkoutSummaryInfoTemplate">
+		<div class="span8 offset0 box2">          
+			  <table  class=" cartTable table">
+		         <thead>
+	           		<tr>
+	             		<th id="product">Product</th>
+	          			<th id="quantity">Quantity</th>
+	          			<th id="price">Price</th>
+	          			<th id="subtotal">Total</th>
+	           		</tr>
+		        </thead>
+		        <tbody>          
+					{{each(i, lineItem) lineItems.lineItem}}
+	          		<tr>
+	            		<td>
+	            			<span class="productImage"><img alt="" style="width=60px;height=60px;" src="${lineItem.product.thumbnailImage}" width="70px"> </span>
+							<span class="displayName"> ${lineItem.product.displayName}  </span>
+							<span class="cart_qty">Quantity ${lineItem.quantity} </span>
+						</td>
+	         			<td>${lineItem.quantity}</td>
+	         			<td>$${(lineItem.pricing.salePriceWithQuantity.value / lineItem.quantity).toFixed(2)}</td>
+						<td>${lineItem.pricing.formattedSalePriceWithQuantity}</td>
+	          	    </tr>
+	          	   {{/each}}
+	         	</tbody>
+				<tfoot id="totals">
+			    	<!-- content total -->
+					{{tmpl "#summaryCartTotals"}}
+		        </tfoot>
+			</table>   
+		</div>
+		<div class="span3 box2">
+				<h3>Shipping Address  <a href="javascript:return false" class="edit">EDIT</a> </h3>
+					<div id="shippingAddress"></div>
+				 <h3>Shipping Method  </h3>
+				 {{if shippingMethod.description}}
+				 	<div id="shippingMethodContainer"></div>
+				 {{else}} 	
+					<p>Digital Product. Shipping not Required for this Order</p>
+				 {{/if}}
+				 <h3 >Billing  Address  <a href="javascript:return false" class="edit">EDIT</a></h3>
+						<div id="billingAddress"></div>
+				 <h3 >Payment Method   <a href="javascript:return false" class="edit">EDIT</a> </h3>
+				 	<p>
+						 <strong>Name</strong> ${payment.name}<br>
+				         <strong>Number</strong> ${payment.displayableNumber}<br>
+						 <strong>Expiration Month</strong> ${payment.expirationMonth}<br>
+						 <strong>Expiration Year</strong> ${payment.expirationYear}<br>
+					</p>
+		</div>	
+		<div class="span12 btn-container" >
+			<a class="btn btn-success btn-large" id="submit" href="javascript:return false;" style="margin-right:62px;margin-top:10px;">
+					<i class="icon-shopping-cart icon-white"></i>
+					Confirm Order
+			 	</a>
+		</div>	
+	</script >
+	<script id="loaderTotals" type="text/x-jquery-tmpl">
+	<div style="float: right;">    
+				<img src="img/loading.gif" style="float: right; margin-right: -24px;">       
+				<div style="margin-top: 56px; margin-right: -62px;">Loading Totals ...</div>      
+	</div>		
+	</script>
+	<script id="summaryCartTotals" type="text/x-jquery-tmpl">
+    	<tr>
+    		<td>Sub Total</td><td></td><td></td><td>${pricing.formattedSubtotal}</td>
+  		</tr>
+	{{if pricing.discount.value != '0.00'}}
+  		<tr>
+   			<td>Discount</td><td></td><td></td><td>${pricing.formattedDiscount}</td>
+  		</tr>
+	{{/if}}
+  		<tr>
+    		<td>Shipping And Handling</td><td></td><td></td><td>${pricing.formattedShippingAndHandling}</td>
+  		</tr>
+		<tr>
+    		<td>Tax</td><td></td><td></td><td>${pricing.formattedTax}</td>
+  		</tr>
+		<tr>
+    		<td>Order Total:</td><td></td><td></td><td class="value total">${pricing.formattedOrderTotal}</td>
+  		</tr>
+	</script>
+	<script type="text/x-jquery-tmpl"  id="shippingMethodOptions">
+		<select class="shippingMethod medium" id="shippingMethodDropDown">
+			<!-- shipping methods -->
+			{{each shippingOptions.shippingOption}}
+				{{if id == shippingMethod.code}}
+					<option value="${id}" selected="selected">${description}</option>
+				{{else}}
+					<option value="${id}">${description}</option>
+				{{/if}}
+			{{/each}}
+		</select>
+	</script>
+
+	<!-- ########## My Account ###############  -->
+	<script type="text/x-jquery-tmpl" id="myAccountTemplate" >
+		 <div class="row ">
+	    	<div class="span12 box">
+ 				<h2>My Account</h2>
+				<div class="row content" >
+					<div class="span11 offset0 box2" id="personalInf"></div>
+					<div class="span11 offset0  box2" id="address"></div>
+					<div class="span12 btn-container" id="address">
+						<a value="View Orders" class="btn btn-primary viewOrders btn-large btn-right-side" href="#/orderHistory/">View Orders</a>
+						<a value="Edit" class="btn btn-primary viewOrders btn-large btn-left-side" href="#/myAccount/edit">Edit</a>
+					</div>				           			   			
+				</div> 
+			</div>
+		</div>
+		{{tmpl "#footerTpl"}}		
+	</script>
+	
+	<script type="text/x-jquery-tmpl" id="myAccountEditTemplate" >
+		 <div class="row ">
+	    	<div class="span12 box">
+ 				<h2>Edit your Account</h2>
+ 				<div id="editAccountLoader"></div>
+				<div id="editAccount" class="row content"></div>
+			</div>
+		</div>
+	</script>			
+					
+	<script type="text/x-jquery-tmpl" id="myAccount_widget">			     
+				<h3>Personal Information</h3>         
+					<label><strong> First Name :</strong> ${shopper.firstName} </label>
+					<label><strong> Last Name : </strong>  ${shopper.lastName} </label>
+					<label><strong> Email Address :  </strong> ${shopper.emailAddress}</label>	
+									
+	</script>
+		
+	<script type="text/x-jquery-tmpl" id="address_summary_widget"> 	
+	<div class="{{if applyClasses}} ${renderClasses(quantity)} {{/if}}">
+		{{if showTitle}}
+			<label><strong>Address - ${nickName}</strong></label>
+		{{/if}}
+		<label>${firstName} ${lastName}</label>
+		<label>${line1} ${line2}</label>
+		<label>${phoneNumber}</label>
+		<label>${city}, ${countrySubdivision} ${postalCode}, ${country}</label>
+	</div>
+	</script>		
+	
+	<script type="text/x-jquery-tmpl" id="paymentMethod_widget">
+	 	<p>
+			 <strong>Name</strong> ${creditCard.name}<br>
+	         <strong>Number</strong> ${displayableNumber}<br>
+			 <strong>Expiration Month</strong> ${creditCard.expirationMonth}<br>
+			 <strong>Expiration Year</strong> ${creditCard.expirationYear}<br>
+		 </p>
+	</script>
+	
+	<!-- ########### ORDER HISTORY Detail -->
+	<script type="text/x-jquery-tmpl" id="orderHistoryDetailTemplate">
+		 <div class="row">
+	    	<div class="span12 box ">
+	    		<h2>Order Details</h2>
+	    		<div class="row content">
+						<div class="span5 offset0 box2" id="orderInfo">
+							//order info
+						</div>
+						<div class="span6 box2" id="paymentInfo">
+							//payment info
+						</div>
+						<div class="span5 offset0 box2" id="billingAddress">
+						</div>
+						<div class="span6 box2" id="shippingAddress">
+						</div>	
+						<div class="span11 offset0  box2" id="orderProducts">          
+					       //content table
+ 						</div>
+						<div class="span12 btn-container" id="address">
+							<a class="btn btn-primary viewOrders btn-large" value="View Orders" href="#/orderHistory/" style="margin-right:62px;margin-top:10px;">
+								Back to Orders
+							</a>
+						</div>
+				</div>	
+	    	</div>
+	    </div>
+	    	{{tmpl "#footerTpl"}}		
+	</script>
+	
+	
+	<script type="text/x-jquery-tmpl" id="orderInfo_widget">
+		<h3>Order Info</h3>
+		<p>
+        	<strong>Number : </strong> ${id} <br>							
+        	<strong>Status : </strong> ${orderState} <br>
+			<strong>Submission Date : </strong>${getDate(submissionDate)}
+		</p>
+	</script> 
+	<script type="text/x-jquery-tmpl" id="paymentInfo_widget">
+		<h3>Payment Info</h3>
+    	<p>
+	        <strong>Name : </strong> ${payment.customerLastName}, ${payment.customerFirstName}  <br>
+    	    <strong>Method Name : </strong> ${payment.paymentMethodName} <br>             
+			<strong>Amount : </strong>${payment.paymentAmount.currency} ${payment.paymentAmount.value}<br>
+    	</p>
+	</script>
+	
+	<script type="text/x-jquery-tmpl" id="orderHistoryProducts_widget">
+		<table  class="orderDetail table">
+    	<thead>
+      			<tr>
+        			<th id="product">Product</th>
+     				<th id="quantity">Quantity</th>
+     				<th id="price">Price</th>
+     				<th id="subtotal">Subtotal</th>
+      			</tr>
+   		</thead>
+       	<tbody> 
+		{{each(i, lineItem) lineItems.lineItem}}         
+       		<tr>
+				<td>${lineItem.product.displayName}</td>
+				<td>${lineItem.quantity}</td>
+         		<td>${lineItem.pricing.listPriceWithQuantity.currency} ${(lineItem.pricing.listPriceWithQuantity.value).toFixed(2)}</td>
+				<td>${lineItem.pricing.listPriceWithQuantity.currency} ${(lineItem.pricing.listPriceWithQuantity.value * lineItem.quantity).toFixed(2)}</td>
+			</tr>
+		{{/each}}     			  
+    </tbody>
+	<tfoot>
+			<tr>
+			 <td>Sub Total</td><td></td><td></td><td>${pricing.subtotal.currency} ${pricing.subtotal.value} </td>
+			</tr>
+			<tr>
+		    <td>Tax</td><td></td><td></td><td>${pricing.tax.currency} ${pricing.tax.value}</td>
+		    </tr>
+			<tr>
+			      <td>Order Total</td><td></td><td></td><td class="value total">${pricing.total.currency} ${pricing.total.value}</td>
+		    </tr>
+	</tfoot>
+</table>
+  
+	</script>
+
+	<!-- ########## Thanks Template ###############  -->
+	<script type="text/x-jquery-tmpl" id="thanksTemplate" >
+		 <div class="row ">
+	    	<div class="span12 box">
+ 				<h2>Thanks for buying</h2>
+				<div class="row content">	
+					<div class="span12 btn-container">					           
+						<p>Your Order Number is : ${orderId} </p>
+						<a class="btn btn-primary" value="Back to Home" href="#/" >Back to Home</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		{{tmpl "#footerTpl"}}		
+	</script>
+	
+	<script type="text/x-jquery-tmpl" id="searchEmpty">
+	 	<div>
+ 		 <ul class="product_list ">
+    		<br /> <p>No results for your search.</p>
+    	 </ul>
+ 		</div>
+	 </script>
+	<!-- ########## END TEMPLATES ###############  -->
+	
+	<!-- ########## LOGIN ###############  -->
+	<script type="text/x-jquery-tmpl" id="loginTemplate" >
+		<div id="loginDiv" class="row ">
+	    	<div class="span12 box">
+	    		<h2>Login</h2>
+				<div id="loginLoader"></div>
+				<div id="loginFormDiv" class="login_wrapper"></div>
+			</div>	
+		</div>
+	</script>
+	
+	<script type="text/javascript">
+		var app = new dr.acme.runtime.App();
+		$(document).ready(function($) {
+			app.start();
+		});
+	</script>
+</body>
+</html>
