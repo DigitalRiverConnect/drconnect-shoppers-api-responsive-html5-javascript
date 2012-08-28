@@ -106,7 +106,7 @@ ns.ShoppingCartService = Class.extend({
             console.debug("Using cached version of the CandyRack");
             return this.candyRackProducts;
         }
-        var popName = dr.acme.runtime.CONSTANTS.CANDYRACK_POPNAME;
+        var popName = dr.acme.application.config.candyRack.pop;
         
         var self = this;
 	    console.debug("Calling DR getOffersForCart");

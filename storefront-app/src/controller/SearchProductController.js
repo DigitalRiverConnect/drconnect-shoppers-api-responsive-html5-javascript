@@ -5,8 +5,6 @@ var ns = namespace('dr.acme.controller');
  *   
  */
 ns.SearchProductController = ns.BaseController.extend({
-	PAGE_SIZE:dr.acme.runtime.CONSTANTS.DEFAULT_PAGE_SIZE,
-	
 	/**
      * init method override from the BaseController
      */		
@@ -64,7 +62,7 @@ ns.SearchProductController = ns.BaseController.extend({
 	},
 	 
 	getProducts :function(params){
-		return  this.productService.searchProduct(params.keyword, params.numberPage,this.PAGE_SIZE);
+		return  this.productService.searchProduct(params.keyword, params.numberPage,this.app.config.pageSize);
 	}
 	
 });

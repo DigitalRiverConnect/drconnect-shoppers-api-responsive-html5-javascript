@@ -8,8 +8,6 @@ var ns = namespace('dr.acme.controller');
  * and exectute (doIt) the main purpose of this manager.   
  */
 ns.CategoryController = ns.BaseController.extend({
-	PAGE_SIZE:dr.acme.runtime.CONSTANTS.DEFAULT_PAGE_SIZE,
-	
 	/**
      * init method override from the BaseController
      */
@@ -18,7 +16,7 @@ ns.CategoryController = ns.BaseController.extend({
 		this.categoryService = dr.acme.service.manager.getCategoryService();
 		this.productService = dr.acme.service.manager.getProductService();
 		this._super(new dr.acme.view.CategoryView());
-		this.resetModel();	
+		this.resetModel();
 	},
 	
 	/**
@@ -151,6 +149,6 @@ ns.CategoryController = ns.BaseController.extend({
 	},
 	 
 	getProducts :function(params){
-		return  this.productService.listProductsByCategory(params.id, params.numberPage,this.PAGE_SIZE, params.sort);		
+		return  this.productService.listProductsByCategory(params.id, params.numberPage,this.app.config.pageSize, params.sort);		
 	}
 });

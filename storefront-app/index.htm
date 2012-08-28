@@ -978,8 +978,11 @@
 	</script>
 	
 	<script type="text/javascript">
-		var app = new dr.acme.runtime.App();
-		$(document).ready(function($) {
+		// Get the configuration file and pass it to the app when it's being created.
+		// If the JSON is already loaded, there's no need for the AJAX call.
+		$.getJSON('appConfig.js', function(config) {
+			// Create the app using the loaded config
+			var app = new dr.acme.runtime.App(config);
 			app.start();
 		});
 	</script>

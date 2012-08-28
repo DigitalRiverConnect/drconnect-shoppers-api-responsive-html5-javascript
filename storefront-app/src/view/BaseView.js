@@ -13,6 +13,7 @@ ns.BaseView = Class.extend({
 		this.initViewEventHandlers();
 		this.handlersMap = {};
 		this.renderedElement = null;
+		this.app = dr.acme.application;
 	},
 	/**
 	 * Private. Sets the jquery root element for this view

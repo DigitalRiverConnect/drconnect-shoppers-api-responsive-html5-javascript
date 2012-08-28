@@ -9,9 +9,10 @@ var ns = namespace("dr.acme.runtime");
  * The Controllers will interact with the Services and render the views.
  * 
  */
-ns.App = function(){
-	
-	this.dispatcher = new dr.acme.runtime.AcmeDispatcher();
+ns.App = function(config){
+    this.config = this.getConfig(config);
+    
+    this.dispatcher = new dr.acme.runtime.AcmeDispatcher();
 	
 	//Variable that will decide whether to load the DummyConnection or the real one
 	//The same with the environment: if it's 'dev' will point to the one set at Config.js and log through the console
@@ -22,12 +23,33 @@ ns.App = function(){
 	
 	// Instantiate the Service Manager. This Service Manager is for aqued Site. Any modification to make the 
 	// application point to another site should be done here.
-    dr.acme.service.manager = new dr.acme.service.ServiceManager(isDummy, env);
+    dr.acme.service.manager = new dr.acme.service.ServiceManager(isDummy, env, this.config.key);
 
 	
 	window.onbeforeunload = this.checkCart;
-	
-	dr.acme.application = this;
+
+    dr.acme.application = this;
+}
+
+ns.App.prototype.getConfig = function(config) {
+    var defaultConfig = {
+            key: "",
+            pageSize: 5,
+            featuredCategories: {
+                ids: [],
+                numberOfProducts: 3
+            },
+            featuredProducts: {
+                visible: false,
+                pop: "",
+                offer: ""
+            },
+            candyRack: {
+                visible: false,
+                pop: ""
+            }
+    };
+    return $.extend(true, defaultConfig, config);
 }
 
 /**
@@ -45,8 +67,11 @@ ns.App.prototype.start = function(){
     var that = this;
 	dr.acme.service.manager.initialize()
 	   .done(function() {
-	       console.info("Connected successfully to DR Service! Rendering the application");
-	       that.dispatcher.initialize();
+	       console.info("Connected successfully to DR Service! Waiting for the DOM to finish loading...");
+	       $(document).ready(function($) {
+	           console.info("DOM Loaded! Rendering the application");
+    	       that.dispatcher.initialize();
+	       });
 	   });	    
 }
 

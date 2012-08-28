@@ -55,7 +55,7 @@ ns.ShoppingCartController = ns.BaseController.extend({
         console.info("Displaying Shopping cart page");
         this.view.renderLayout();       
         this.view.render();
-        this.view.renderCandyRack();
+        
         var that = this;
         
         $.when(that.shoppingCartService.get()).done(function(cart) {
@@ -64,12 +64,15 @@ ns.ShoppingCartController = ns.BaseController.extend({
               that.updateViews(true);   
         });	 
         
-        // Get the candyRack Offers for the cart
-        $.when(that.shoppingCartService.getCandyRackProducts({})).done(function(productOffer) {
-			that.candyRack = productOffer;
-
-			that.view.renderCandyRack(productOffer);   
-        });	    
+        if(this.app.config.candyRack.visible) {
+            this.view.renderCandyRack();
+            // Get the candyRack Offers for the cart
+            $.when(that.shoppingCartService.getCandyRackProducts({})).done(function(productOffer) {
+    			that.candyRack = productOffer;
+    
+    			that.view.renderCandyRack(productOffer);   
+            });	    
+        }
 	},
 	
 	/**

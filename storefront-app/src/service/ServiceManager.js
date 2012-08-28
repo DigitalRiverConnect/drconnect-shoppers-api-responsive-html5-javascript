@@ -6,9 +6,9 @@ var ns = namespace('dr.acme.service');
  * will provide the instance of each resource service required
  */
 ns.ServiceManager = Class.extend({
-    init: function(isDummy, env) {
+    init: function(isDummy, env, key) {
         var ns = namespace('dr.acme.service');
-        this.client = new dr.api.Client("604df5ac990fbc67dab8fc098af271e6", this.getApiConfig(isDummy, env));
+        this.client = new dr.api.Client(key, this.getApiConfig(isDummy, env));
         this.productService = new ns.ProductService(this.client);
         this.offerService = new ns.ProductService(this.client);
         this.categoryService = new ns.CategoryService(this.client);

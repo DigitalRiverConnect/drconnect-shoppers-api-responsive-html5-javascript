@@ -8,9 +8,6 @@ var ns = namespace("dr.acme.controller")
  * and exectute (doIt) the main purpose of this manager.   
  */
 ns.HomeController = ns.BaseController.extend({
-    FEATURED_CATEGORIES_ID: dr.acme.runtime.CONSTANTS.HOME_FEATURED_CATEGORIES_ID,
-    PRODUCTS_PER_CATEGORY: dr.acme.runtime.CONSTANTS.HOME_PRODUCTS_PER_CATEGORY,
-    
     /**
      * Events this view dispatches
      */
@@ -41,29 +38,32 @@ ns.HomeController = ns.BaseController.extend({
      * doIt method override from the BaseController
      */
 	doIt:function(param){
-		var offersPromise = this.offerService.getPromotionalProducts();
-		var categoriesPromise = this.categoryService.getCategories();
-
 		var that = this;
         this.view.render();
 		this.view.bindEvent();        
+		
+		var categoriesPromise = this.categoryService.getCategories();
         this.view.renderCategoriesLoader();
-        this.view.renderOffersLoader();
-        
-		$.when(categoriesPromise).done(function(categories) {
+        $.when(categoriesPromise).done(function(categories) {
             that.model.categories = categories;
             that.view.renderCategories(that.model);
 			
+			var ids = that.app.config.featuredCategories.ids;
+			
 			// Render the featured categories widgets            
-            for(var i = 0; i < that.FEATURED_CATEGORIES_ID.length; i++) {
-                that.renderFeaturedCategoryWidget(that.categoryService.getCategoryById(that.FEATURED_CATEGORIES_ID[i]));    
+            for(var i = 0; i < ids.length; i++) {
+                that.renderFeaturedCategoryWidget(that.categoryService.getCategoryById(ids[i]));    
             }
         });
-		
-		$.when(offersPromise).done(function(offerProduct) {
-		    that.model.featuresProducts = offerProduct;
-		    that.view.renderOffers(that.model);
-		});
+        
+        if(this.app.config.featuredProducts.visible) {
+    		var offersPromise = this.offerService.getPromotionalProducts();
+    		this.view.renderOffersLoader();
+    		$.when(offersPromise).done(function(offerProduct) {
+    		    that.model.featuresProducts = offerProduct;
+    		    that.view.renderOffers(that.model);
+    		});
+        }
 	},
 	    
     /**
@@ -87,14 +87,6 @@ ns.HomeController = ns.BaseController.extend({
     onCategorySelected: function(e, params){
     	this.navigateTo(dr.acme.runtime.URI.CATEGORY + params.value);
     },
-    
-    createFeaturedCategoryWidgets: function(categoryIds) {
-        this.featuredCategoryWidgets = [];
-        for(var i = 0; i < this.FEATURED_CATEGORIES_ID.length; i++) {
-            this.featuredCategoryWidgets.push(new dr.acme.view.HomeCategoryWidget("#home-categories"));
-        }
-    },
-    
 	/** 
 	 * Creates and render featured categories widgets
 	 */
@@ -102,7 +94,7 @@ ns.HomeController = ns.BaseController.extend({
 	    var hcw = new dr.acme.view.HomeCategoryWidget("#home-categories");
         hcw.setCategory(category);
         hcw.render(true);
-        $.when(this.productService.listProductsByCategory(category.id, 1, this.PRODUCTS_PER_CATEGORY))
+        $.when(this.productService.listProductsByCategory(category.id, 1, this.app.config.featuredCategories.numberOfProducts))
             .done(function(page) {
                 if(page.product) {
                     hcw.setProducts(page.product);    

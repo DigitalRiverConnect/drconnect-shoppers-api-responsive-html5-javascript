@@ -26,8 +26,8 @@ ns.ProductService = Class.extend({
         
         var that = this;
         console.debug("Calling DR getProductOffers (featured products) service");
-        var popName = dr.acme.runtime.CONSTANTS.BANNER_POPNAME;
-        var offerId = dr.acme.runtime.CONSTANTS.BANNER_OFFER_ID;
+        var popName = dr.acme.application.config.featuredProducts.pop;
+        var offerId = dr.acme.application.config.featuredProducts.offer;
         this.client.productOffers.list(popName, offerId, {"expand": "productOffer"}, function(data) {
              that.productOffers = data.productOffer;
              defer.resolve(data.productOffer);

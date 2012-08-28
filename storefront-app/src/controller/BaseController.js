@@ -16,6 +16,7 @@ ns.BaseController = Class.extend({
       init: function(view){
       	this.model = {};
     	this.view = view;
+    	this.app = dr.acme.application;
     	this.initEventHandlers();
       },
       
