@@ -2,3 +2,5 @@ target
 .metadata
 .project
 .externalToolBuilders
+storefront-app/libs/drapi.js
+storefront-app/libs/drapi.min.js

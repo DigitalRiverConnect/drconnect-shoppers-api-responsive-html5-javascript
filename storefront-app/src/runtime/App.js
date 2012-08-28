@@ -14,16 +14,14 @@ ns.App = function(config){
     
     this.dispatcher = new dr.acme.runtime.AcmeDispatcher();
 	
-	//Variable that will decide whether to load the DummyConnection or the real one
-	//The same with the environment: if it's 'dev' will point to the one set at Config.js and log through the console
-	var isDummy = this.dispatcher.getQueryStringParameter("dummy");
+	//The environment: if it's 'dev' will point to the one set at Config.js and log through the console
 	var env = this.dispatcher.getQueryStringParameter("env").toLowerCase(); 
 	
 	this.setEnvironment(env);
 	
 	// Instantiate the Service Manager. This Service Manager is for aqued Site. Any modification to make the 
 	// application point to another site should be done here.
-    dr.acme.service.manager = new dr.acme.service.ServiceManager(isDummy, env, this.config.key);
+    dr.acme.service.manager = new dr.acme.service.ServiceManager(env, this.config.key);
 
 	
 	window.onbeforeunload = this.checkCart;

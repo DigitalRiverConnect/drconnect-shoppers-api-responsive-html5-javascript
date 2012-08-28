@@ -4,17 +4,11 @@ var ns = namespace('dr.api.connection');
  * This object is for getting a Session for connecting
  * @returns {Session}
  */
-ns.Session = function(apikey, isDummy, authOptions){
+ns.Session = function(apikey, authOptions){
     this.apikey = apikey;
         
-    // Check if we want to load the DummyConnection or the real one
-    if(isDummy == "1") {
-    	this.connection = new dr.api.connection.DummyConnection();
-    	this.authManager = new dr.api.auth.DummyAuthManager();
-    } else {
-    	this.connection = new dr.api.connection.Connection();
-    	this.authManager = new dr.api.auth.AuthManager(dr.api.connection.URI.BASE_URL + dr.api.connection.URI.LOGIN, authOptions);	
-    }
+	this.connection = new dr.api.connection.Connection();
+	this.authManager = new dr.api.auth.AuthManager(dr.api.connection.URI.BASE_URL + dr.api.connection.URI.LOGIN, authOptions);	
     
     this.token = null;
     this.refresh_token = null;

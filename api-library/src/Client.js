@@ -15,7 +15,6 @@ ns.Client = ns.AsyncRequester.extend({
     init: function (key, options){  
         // Default options (may be overriden by the user)
         this.options = {
-            isDummy: "0",
             env: "prod",
             // Auth configuration
             authElementId: "",
@@ -23,8 +22,8 @@ ns.Client = ns.AsyncRequester.extend({
             authMode: dr.api.authMode.IFRAME
         };
         this.options = merge(this.options, options);
-        this.setEnvironment(this.options.isDummy, this.options.env);
-        this.session = new dr.api.connection.Session(key, this.options.isDummy, this.createAuthConfig(key, this.options));
+        this.setEnvironment(this.options.env);
+        this.session = new dr.api.connection.Session(key, this.createAuthConfig(key, this.options));
     
         this.cart  = new dr.api.service.CartService(this);
         this.categories = new dr.api.service.CategoryService(this);
@@ -38,11 +37,7 @@ ns.Client = ns.AsyncRequester.extend({
     /**
      * Set Production or Development Environment (Change BASE_URL)
      */
-    setEnvironment: function(isDummy, env){
-    	if(isDummy == "1" ){
-    		dr.api.connection.URI.BASE_URL = "http://mockapi.com/";
-    		return;
-    	}
+    setEnvironment: function(env){
     	if(env == 'dev'){
     		dr.api.connection.URI.BASE_URL = dr.api.connection.URI.DEV_BASE_URL;
     	}else{
