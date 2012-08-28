@@ -16,12 +16,7 @@ ns.Session = function(apikey, isDummy, authOptions){
     	this.authManager = new dr.api.auth.AuthManager(dr.api.connection.URI.BASE_URL + dr.api.connection.URI.LOGIN, authOptions);	
     }
     
-    this.token = null;
-    this.refresh_token = null;
-    this.connected = false;
-    this.authenticated = false;
-    this.tokenStartTime = null;
-    this.tokenExpirationTime = null;
+   this.reset();
 }
 
 /**
@@ -29,8 +24,9 @@ ns.Session = function(apikey, isDummy, authOptions){
  */
 ns.Session.prototype.createErrorPromise = function(message) {
     console.log("Operation not allowed: " + message);
+    var errorResponse = this.createServerErrorResponse();
     var d = Q.defer();
-    d.reject(message);
+    d.reject(errorResponse);
     return d.promise;
 }
 
@@ -40,6 +36,22 @@ ns.Session.prototype.createErrorPromise = function(message) {
 ns.Session.prototype.createDisconnectedError = function() {
     return this.createErrorPromise("You must be connected to the server in order to use the API")
 }
+
+/**
+ * Creates a server_error response
+ */
+ns.Session.prototype.createServerErrorResponse = function(){
+	var errorResponse = {};
+	var error = {};
+	error.code = "server_error";
+	error.description = "Service Temporaly Unavailable. Please try again later or contact the System Administrator.";
+	errorResponse.status = 500;
+	errorResponse.error = {};
+  	errorResponse.error.errors = {};
+	errorResponse.error.errors.error = error;
+	return errorResponse;
+}
+
 
 /**
  * Connection.create
@@ -147,8 +159,8 @@ ns.Session.prototype.anonymousLogin = function() {
     
     var d = new Date();
     
-    if(this.refresh_token){
-    	return this.refreshToken();	
+    if(this.refreshToken){
+    	return this.getRefreshToken();	
     }
     
     var fields = {"client_id": this.apikey, "ts": d.getTime(), "grant_type": "password", "username": "anonymous", "password": "anonymous"};
@@ -157,36 +169,71 @@ ns.Session.prototype.anonymousLogin = function() {
         .then(function(data){
             that.connected = true;
             that.token = data.access_token;
-            that.refresh_token = data.refresh_token;
+            that.refreshToken = data.refresh_token;
             console.debug("[DR Api Library] Anonymous token obtained: " + that.token);
             that.tokenStartTime = new Date().getTime()/1000;
             that.tokenExpirationTime = new Date().getTime()/1000 + parseInt(data.expires_in);
             return data;
+        }).fail(function(data){
+        	// If fails cleans the refresh_token to obtain a new one on the next anonymousLogin call
+        	console.debug("[DR Api Library] Token failure. Application could not obtain an anonymous token.");
+        	that.reset();
+        	var errorResponse = that.createServerErrorResponse();
+        	
+        	throw errorResponse;
         });
 };
 
 /**
  * Refresh an anonymous token authentication to the DR Server.
 */
-ns.Session.prototype.refreshToken = function() {
+ns.Session.prototype.getRefreshToken = function() {
     
     var uri = dr.api.connection.URI.BASE_URL + dr.api.connection.URI.ANONYMOUS_LOGIN;
     var that = this;
     
     var d = new Date();
     
-    var fields = {"client_id": this.apikey, "ts": d.getTime(), "grant_type": "refresh_token", "refresh_token": this.refresh_token};
+    var fields = {"client_id": this.apikey, "ts": d.getTime(), "grant_type": "refresh_token", "refresh_token": this.refreshToken};
     
     return this.connection.submitForm(uri, fields, {})
         .then(function(data){
             that.connected = true;
             that.token = data.access_token;
-            that.refresh_token = data.refresh_token;
+            that.refreshToken = data.refresh_token;
             console.debug("[DR Api Library] Anonymous token obtained using Refresh Token: " + that.token);
             that.tokenStartTime = new Date().getTime()/1000;
             that.tokenExpirationTime = new Date().getTime()/1000 + parseInt(data.expires_in);
             return data;
+        }).fail(function(data){
+        	// If fails cleans the refresh_token to obtain a new one on the next anonymousLogin call
+        	console.debug("[DR Api Library] Token failure. Application could not obtain an anonymous token using a refresh token.");
+        	that.refreshToken = null;
+        	var errorResponse = {};
+        	var error = {};
+        	error.code = "refresh_token_invalid";
+        	error.description = "The Refresh Token is invalid";
+        	errorResponse.status = 401;
+        	errorResponse.error = {};
+          	errorResponse.error.errors = {};
+        	errorResponse.error.errors.error = error;
+        	
+        	throw errorResponse;
         });
+};
+
+
+/**
+ * Resets the token session variables
+ */
+ns.Session.prototype.reset = function() {
+	this.token = null;
+    this.refreshToken = null;
+    this.connected = false;
+    this.authenticated = false;
+    this.tokenStartTime = null;
+    this.tokenExpirationTime = null;
+	
 };
 
 
@@ -207,7 +254,7 @@ ns.Session.prototype.authenticate = function(onViewLoadedCallback) {
             if(data.token != "") {
                 self.token = data.token;
                 self.authenticated = true;
-                self.refresh_token = null;
+                self.refreshToken = null;
                 self.tokenStartTime = new Date().getTime()/1000;
             	self.tokenExpirationTime = new Date().getTime()/1000 + parseInt(data.expires_in);
                 console.debug("[DR Api Library] Authenticated token obtained: " + self.token);
@@ -240,8 +287,9 @@ ns.Session.prototype.logout = function() {
     }
     if(this.authenticated) {
         // User is authenticated, forget the token and create an anonymous session
-        this.token = null;
-        this.authenticated = false;
+        // this.token = null;
+        // this.authenticated = false;
+        this.reset();
         
         return this.anonymousLogin();
     } else {

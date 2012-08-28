@@ -67,7 +67,7 @@ ns.ServiceManager = Class.extend({
         
         // If status = 401, special handling is required
         if(status == 401) {
-            manager.sessionExpiredErrorHandler();
+            manager.sessionExpiredErrorHandler(response);
         } else {
             manager.genericErrorHandler(status, code, description);
         }
@@ -75,13 +75,14 @@ ns.ServiceManager = Class.extend({
     /**
      * Handles session expired errors
      */
-    sessionExpiredErrorHandler: function() {
+    sessionExpiredErrorHandler: function(response) {
         console.info("Session Expired, reconnecting...");
         this.initialize().done(function() {
             console.info("Reconnected to DR!");
             var dispatcher = dr.acme.application.getDispatcher();
             dispatcher.handle(dr.acme.runtime.NOTIFICATION.UNBLOCK_APP);
-            dispatcher.handle(dr.acme.runtime.NOTIFICATION.SESSION_RESET);
+            dispatcher.handle(dr.acme.runtime.NOTIFICATION.SESSION_RESET, response);
+            dispatcher.refreshPage();
         });
     },
     /**
@@ -94,7 +95,13 @@ ns.ServiceManager = Class.extend({
         
         var dispatcher = dr.acme.application.getDispatcher();
         dispatcher.handle(dr.acme.runtime.NOTIFICATION.UNBLOCK_APP);
-        dr.acme.util.DialogManager.showError(error, "A problem ocurred");        
+        // If the status code is 500 it redirects to an error page
+        if(status == 500){
+        	var serverError = {"status": status, "code": code, "description": description}
+        	dispatcher.handle(dr.acme.runtime.NOTIFICATION.SERVER_ERROR, serverError);
+        }else{
+        	dr.acme.util.DialogManager.showError(error, "A problem ocurred");
+        }        
     }
 });
 
