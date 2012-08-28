@@ -71,5 +71,26 @@ ns.MainApplicationController = ns.BaseController.extend({
         console.debug("Unblocking UI");
         $.unblockUI();
         this.blocked = false;
+    },
+    
+    /**
+     * Sets the server error and redirect to the Server Error Page to show the message 
+     */
+    setServerError: function (error) {
+      this.serverError = error;
+      this.navigateTo(dr.acme.runtime.URI.SERVER_ERROR);
+    },
+    
+    /**
+     * Shows the Server Error Page
+     */
+    showServerError: function(){
+		var errorView = new dr.acme.view.ServerErrorView();
+		if(!this.serverError){
+			this.serverError = {"status": 500, "code": "A problem ocurred", "description": "There was a problem with the connection, please try again later"};
+		}
+		errorView.render(this.serverError);
     }
+    
+    
 });

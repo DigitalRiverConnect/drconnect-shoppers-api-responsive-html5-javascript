@@ -148,6 +148,29 @@ ns.BaseDispatcher = Class.extend({
     },
     
     /**
+     * Refreshes the current page
+     */
+    refreshPage: function(){
+    	params = this.extractParamsFromCurrentURL();
+    	this.handle(this.urlChangeNotification, {path: $.address.path(), params: params});
+    },
+    
+    /**
+     * Extracts the current URL params
+     */
+    extractParamsFromCurrentURL: function(){
+    	var params = {};
+        var paramNames = $.address.parameterNames();
+        for(var i = 0; i < paramNames.length; i++) {
+            var name = paramNames[i];
+            if(name) {
+                params[name] = $.address.parameter(name); 
+            }
+        }
+        return params;
+    },
+    
+    /**
      * Handler for all the notifications
      */
     handle: function(notificationName, data) {

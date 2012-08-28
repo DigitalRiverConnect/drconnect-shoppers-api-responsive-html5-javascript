@@ -90,20 +90,21 @@ ns.UserController = ns.BaseController.extend({
      */
     sessionReset: function(params) {
       
-       	dr.acme.util.DialogManager.showError("Your token has been refreshed. Please retry your last action.", "Token Refreshed");
-        // if(this.shopperService.isAuthenticated()) {
-            // // If the user was authenticated, reset his data, 
-            // // send a LOG OUT notification to clear any other data (orders, cart, etc) and
-            // // show the login page with an error explaining the situation
-            // this.shopperService.resetUserData();
-            // this.notify(dr.acme.runtime.NOTIFICATION.USER_LOGGED_OUT);
-            // this.notify(dr.acme.runtime.NOTIFICATION.SHOW_LOGIN, dr.acme.runtime.URI.ROOT);
-            // dr.acme.util.DialogManager.showError("Please login again to continue", "Session Expired");
-        // } else {
-            // // If the user was anonymous, clear the data and go to the Home, showing a message to explain the situation
-            // this.notify(dr.acme.runtime.NOTIFICATION.USER_LOGGED_OUT);
-            // this.navigateTo(dr.acme.runtime.URI.ROOT);
-            // dr.acme.util.DialogManager.showError("A new session was started", "Session Expired");
-        // }
+        if(this.shopperService.isAuthenticated()) {
+            // If the user was authenticated, reset his data, 
+            // send a LOG OUT notification to clear any other data (orders, cart, etc) and
+            // show the login page with an error explaining the situation
+            this.shopperService.resetUserData();
+            this.notify(dr.acme.runtime.NOTIFICATION.USER_LOGGED_OUT);
+            this.notify(dr.acme.runtime.NOTIFICATION.SHOW_LOGIN, dr.acme.runtime.URI.ROOT);
+            dr.acme.util.DialogManager.showError("Please login again to continue", "Session Expired");
+        } else {
+        	if(params.details.error.code != 'refresh_token_invalid'){
+        		dr.acme.util.DialogManager.showError("Your token has been refreshed.", "Token Refreshed");	
+        	}else{
+        		this.notify(dr.acme.runtime.NOTIFICATION.USER_LOGGED_OUT);
+        		dr.acme.util.DialogManager.showError("Your token has expired. A new session was started.", "Session Expired");
+        	}
+        }
     }
 });

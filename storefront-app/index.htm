@@ -90,6 +90,7 @@
   <script src="src/view/CheckoutSummaryView.js" type="text/javascript"></script>
   <script src="src/view/CheckoutEditView.js" type="text/javascript"></script>
   <script src="src/view/ThanksView.js" type="text/javascript"></script>
+  <script src="src/view/ServerErrorView.js" type="text/javascript"></script>
   <script src="src/view/LoginView.js" type="text/javascript"></script>
   <script src="src/view/BreadCrumbView.js" type="text/javascript"></script>
   
@@ -908,36 +909,36 @@
 	
 	<script type="text/x-jquery-tmpl" id="orderHistoryProducts_widget">
 		<table  class="orderDetail table">
-    	<thead>
-      			<tr>
-        			<th id="product">Product</th>
-     				<th id="quantity">Quantity</th>
-     				<th id="price">Price</th>
-     				<th id="subtotal">Subtotal</th>
-      			</tr>
-   		</thead>
-       	<tbody> 
-		{{each(i, lineItem) lineItems.lineItem}}         
-       		<tr>
-				<td>${lineItem.product.displayName}</td>
-				<td>${lineItem.quantity}</td>
-         		<td>${lineItem.pricing.listPriceWithQuantity.currency} ${(lineItem.pricing.listPriceWithQuantity.value).toFixed(2)}</td>
-				<td>${lineItem.pricing.listPriceWithQuantity.currency} ${(lineItem.pricing.listPriceWithQuantity.value * lineItem.quantity).toFixed(2)}</td>
-			</tr>
-		{{/each}}     			  
-    </tbody>
-	<tfoot>
-			<tr>
-			 <td>Sub Total</td><td></td><td></td><td>${pricing.subtotal.currency} ${pricing.subtotal.value} </td>
-			</tr>
-			<tr>
-		    <td>Tax</td><td></td><td></td><td>${pricing.tax.currency} ${pricing.tax.value}</td>
-		    </tr>
-			<tr>
-			      <td>Order Total</td><td></td><td></td><td class="value total">${pricing.total.currency} ${pricing.total.value}</td>
-		    </tr>
-	</tfoot>
-</table>
+	    	<thead>
+	      			<tr>
+	        			<th id="product">Product</th>
+	     				<th id="quantity">Quantity</th>
+	     				<th id="price">Price</th>
+	     				<th id="subtotal">Subtotal</th>
+	      			</tr>
+	   		</thead>
+	       	<tbody> 
+				{{each(i, lineItem) lineItems.lineItem}}         
+		       		<tr>
+						<td>${lineItem.product.displayName}</td>
+						<td>${lineItem.quantity}</td>
+		         		<td>${lineItem.pricing.listPriceWithQuantity.currency} ${(lineItem.pricing.listPriceWithQuantity.value).toFixed(2)}</td>
+						<td>${lineItem.pricing.listPriceWithQuantity.currency} ${(lineItem.pricing.listPriceWithQuantity.value * lineItem.quantity).toFixed(2)}</td>
+					</tr>
+				{{/each}}     			  
+	   		</tbody>
+			<tfoot>
+				<tr>
+					<td>Sub Total</td><td></td><td></td><td>${pricing.subtotal.currency} ${pricing.subtotal.value} </td>
+				</tr>
+				<tr>
+					<td>Tax</td><td></td><td></td><td>${pricing.tax.currency} ${pricing.tax.value}</td>
+			    </tr>
+				<tr>
+					<td>Order Total</td><td></td><td></td><td class="value total">${pricing.total.currency} ${pricing.total.value}</td>
+			    </tr>
+			</tfoot>
+		</table>
   
 	</script>
 
@@ -957,13 +958,28 @@
 		{{tmpl "#footerTpl"}}		
 	</script>
 	
+	<!-- ########## Server Error View Template ###############  -->
+	<script type="text/x-jquery-tmpl" id="serverErrorTemplate" >
+		 <div class="row">
+	    	<div class="span12 box">
+ 				<h2>${code}</h2>
+				<div class="row content">	
+					<div class="span12 btn-container">	
+						<p><strong>${status}</strong>: ${description}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		{{tmpl "#footerTpl"}}		
+	</script>
+	
 	<script type="text/x-jquery-tmpl" id="searchEmpty">
 	 	<div>
  		 <ul class="product_list ">
     		<br /> <p>No results for your search.</p>
     	 </ul>
  		</div>
-	 </script>
+	</script>
 	<!-- ########## END TEMPLATES ###############  -->
 	
 	<!-- ########## LOGIN ###############  -->

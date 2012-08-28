@@ -39,6 +39,8 @@ ns.AcmeDispatcher = ns.BaseDispatcher.extend({
         
         this.addMapping(nsn.SHOW_ACCOUNT_EDIT, this.controllers.myAccountController, "edit");
         
+        this.addMapping(nsn.SERVER_ERROR, this.controllers.appController, "setServerError")
+        
     },
     
     /**
@@ -60,6 +62,8 @@ ns.AcmeDispatcher = ns.BaseDispatcher.extend({
         this.addUrlMapping(nsu.LOGOUT, this.controllers.userController, true, "logout");
         this.addUrlMapping(nsu.RENDER_BREADCRUMB, this.controllers.breadCrumbController);
         this.addUrlMapping(nsu.SEARCH_PRODUCT, this.controllers.searchProductController);
+        this.addUrlMapping(nsu.SERVER_ERROR, this.controllers.appController, false, "showServerError");
+        
         
     },
     
