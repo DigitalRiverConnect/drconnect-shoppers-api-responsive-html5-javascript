@@ -28,6 +28,7 @@ ns.Client = ns.AsyncRequester.extend({
         this.cart  = new dr.api.service.CartService(this);
         this.categories = new dr.api.service.CategoryService(this);
         this.products = new dr.api.service.ProductService(this);
+        this.offers = new dr.api.service.OfferService(this);
         this.productOffers = new dr.api.service.ProductOfferService(this);
         this.shopper = new dr.api.service.ShopperService(this);
         this.orders = new dr.api.service.OrderService(this);

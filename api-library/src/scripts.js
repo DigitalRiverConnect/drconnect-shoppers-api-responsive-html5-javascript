@@ -15,6 +15,7 @@
     "service/BaseService.js",
     "service/CartService.js",
     "service/CategoryService.js",
+    "service/OfferService.js",
     "service/ProductOfferService.js",
     "service/ProductService.js",
     "service/ShopperService.js",
