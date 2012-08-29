@@ -20,7 +20,8 @@ ns.NOTIFICATION = {
     NAVIGATE_PAGE:"NavigatePage", 
     PAGE_CLICKED:"PageClicked",
     CHECKOUT_OPTIONS_APPLIED: "CheckoutOptionsApplied",
-    MY_ACCOUNT_EDIT: "MyAccountEdit"
+    MY_ACCOUNT_EDIT: "MyAccountEdit",
+    SERVER_ERROR: "ServerError"
 };
 
 ns.URI = {
@@ -35,7 +36,8 @@ ns.URI = {
     CHECKOUT:'/checkout',
     LOGIN:'/login',
     LOGOUT:'/logout', 
-    SEARCH_PRODUCT:'/searchProduct'
+    SEARCH_PRODUCT:'/searchProduct',
+    SERVER_ERROR:'/error'
 };
 
 ns.MessageType = {
