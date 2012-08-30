@@ -54,6 +54,7 @@ nsService.URI = {
     CATEGORIES: 'shoppers/me/categories',
     PRODUCTS: 'shoppers/me/products',
     PRODUCTS_BY_CATEGORY: 'shoppers/me/categories/{categoryId}/products',
+    OFFERS: 'shoppers/me/point-of-promotions/{popName}/offers',
     PRODUCT_OFFERS: 'shoppers/me/point-of-promotions/{popName}/offers/{offerId}/product-offers',
     PRODUCTS_SEARCH: '/shoppers/me/product-search',
     CART: 'shoppers/me/carts/active',
