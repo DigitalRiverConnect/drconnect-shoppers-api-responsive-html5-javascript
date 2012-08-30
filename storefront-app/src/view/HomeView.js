@@ -74,6 +74,14 @@ ns.HomeView = ns.BaseView.extend({
 	},
 	
 	/**
+	 * Renders an error on the featured products if the service call fails
+	 */
+	renderOfferError: function(error) {
+		this.applyTemplate("#feature-product", "#promotionalTemplateError",error);	    
+        this.renderSlider();
+	},
+	
+	/**
 	 * Categories left side menu Loader rendering while waiting for the Apigee response
 	 */
 	renderCategoriesLoader: function() {

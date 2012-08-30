@@ -81,11 +81,13 @@ ns.CategoryService = Class.extend({
         if(fullVersion){
         	params = {"expand": "categories.category"};
         }
-        this.client.categories.get(id, params, function(category) {
+        this.client.categories.get(id, params, {success: function(category) {
             // Cache the category
             that.cacheCategory(category, fullVersion);
             defer.resolve(category);
-        });
+        }, error: function(data){
+        	defer.reject(data);
+        }, callDefaultErrorHandler: true});
         return defer.promise();
     }
 

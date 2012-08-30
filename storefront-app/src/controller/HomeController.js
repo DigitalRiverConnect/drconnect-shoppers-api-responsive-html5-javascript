@@ -52,16 +52,25 @@ ns.HomeController = ns.BaseController.extend({
 			
 			// Render the featured categories widgets            
             for(var i = 0; i < ids.length; i++) {
-                that.renderFeaturedCategoryWidget(that.categoryService.getCategoryById(ids[i]));    
+            	var categoryByIdPromise = that.categoryService.getCategoryById(ids[i]);
+            	$.when(categoryByIdPromise).done(function(categories) {
+                	that.renderFeaturedCategoryWidget(that.categoryService.getCategoryById(ids[i]));
+		        });
+                $.when(categoryByIdPromise).fail(function(error) {
+                	that.renderFeaturedCategoryError(error);
+                });      
             }
         });
         
-        if(this.app.config.featuredProducts.visible) {
+        if(this.app.config.featuredProducts.visible==true && this.app.config.featuredProducts.pop) {
     		var offersPromise = this.offerService.getPromotionalProducts();
     		this.view.renderOffersLoader();
     		$.when(offersPromise).done(function(offerProduct) {
     		    that.model.featuresProducts = offerProduct;
     		    that.view.renderOffers(that.model);
+    		});
+    		$.when(offersPromise).fail(function(error) {
+    		    that.view.renderOfferError(error);
     		});
         }
 	},
@@ -102,5 +111,16 @@ ns.HomeController = ns.BaseController.extend({
                 hcw.renderProducts();        
                         
             });
+	},
+	/** 
+	 * Renders a featured category widget with an error message
+	 */
+	renderFeaturedCategoryError: function(error) {
+	    var hcw = new dr.acme.view.HomeCategoryWidget("#home-categories");
+	    var category = {};
+	    category.displayName = 'Error';
+	    hcw.setCategory(category);
+        hcw.render(true);
+      	hcw.renderError(error);
 	}
 });

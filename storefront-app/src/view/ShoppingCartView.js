@@ -71,11 +71,18 @@ ns.ShoppingCartView =  ns.BaseView.extend({
 	},
 	
 	/**
-	 * Candy Rack Rendering
+	 * Candy Rack Rendering. 
+	 * candyRack parameter can be a candy rack to show, or and error message. The renderer decides
+	 * if it should show the candy rack or an error
 	 */
 	renderCandyRack:function(candyRack){
+		// if candyRack.status is not null, the candyRack parameter is an error then showing an error message 
 		var candyRackWidget = new dr.acme.view.CandyRackWidget("#candyRack", candyRack);
-		candyRackWidget.render(false);
+		if(candyRack && candyRack.status){
+			candyRackWidget.renderError(candyRack);
+		}else{
+			candyRackWidget.render(false);
+		}
 	}, 
 	
 	/**

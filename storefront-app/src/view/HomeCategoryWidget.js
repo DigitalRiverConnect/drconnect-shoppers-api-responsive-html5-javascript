@@ -61,6 +61,13 @@ ns.HomeCategoryWidget =  ns.Widget.extend({
             this.productsView.setParent(this.find(".category_panel"));
             this.productsView.render(true);
         }
-        
+    },
+    
+    /**
+	 * Renders an error inside the widget
+	 */
+    renderError: function(error) {
+		this.productsView.setParent(this.find(".category_panel"));
+		this.productsView.renderError(error);
     }
 });

@@ -36,6 +36,13 @@ ns.CandyRackWidget =  ns.Widget.extend({
     	 	this.getParentElement().show();
     		this._super(append);
     	}
+    },
+    
+    /**
+     * Renders an error message on the candy rack if there is a failure
+     */
+    renderError: function(error){
+    	this.applyTemplate("#candyRack", "#shoppingCartCandyRackError_widget", error);	
     }
     
     

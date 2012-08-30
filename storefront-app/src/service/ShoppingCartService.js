@@ -112,7 +112,7 @@ ns.ShoppingCartService = Class.extend({
 	    console.debug("Calling DR getOffersForCart");
 		var defer = new $.Deferred();
 	
-    	this.client.cart.getOffers(popName,{"expand": "all"}, function(data) {
+    	this.client.cart.getOffers(popName,{"expand": "all"}, {success: function(data) {
     		if(typeof data.offer != 'undefined'){
     			var offerId = data.offer[0].id;
     	        self.client.productOffers.list(popName, offerId, {"expand": "all"}, function(data) {
@@ -122,7 +122,9 @@ ns.ShoppingCartService = Class.extend({
     		}else{
     			defer.resolve(data);
     		}
-        });     
+        }, error: function(data){
+        	defer.reject(data);
+        }, callDefaultErrorHandler: true});     
         return defer.promise();
 	},
 	

@@ -29,6 +29,9 @@ ns.App = function(config){
     dr.acme.application = this;
 }
 
+/**
+ * Gets the app configuration
+ */
 ns.App.prototype.getConfig = function(config) {
     var defaultConfig = {
             key: "",
@@ -47,8 +50,23 @@ ns.App.prototype.getConfig = function(config) {
                 pop: ""
             }
     };
+    this.validateConfig(defaultConfig, config);
     return $.extend(true, defaultConfig, config);
 }
+
+/**
+ * Validates the appConfig.js to determine the correct data types on numbers. If the data types are wrong
+ * it replaces the values with the default ones.
+ */
+ns.App.prototype.validateConfig = function(defaultConfig, config){
+	if(config.pageSize && typeof config.pageSize !== 'number'){
+		config.pageSize = defaultConfig.pageSize;		
+	}
+	if(config.featuredCategories && config.featuredCategories.numberOfProducts 
+		&& !typeof config.featuredCategories.numberOfProducts !== 'number'){
+		config.featuredCategories.numberOfProducts = defaultConfig.featuredCategories.numberOfProducts;		
+	}
+} 
 
 /**
  * Dispatcher getter

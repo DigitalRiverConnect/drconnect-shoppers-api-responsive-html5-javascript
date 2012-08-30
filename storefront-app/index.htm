@@ -292,6 +292,23 @@
 			<div class="flexslider-controls"></div>
 		</div>
 	</script>
+	
+	<!-- ########## PROMOTIONAL TEMPLATE ERROR###############  -->
+	<script type="text/x-jquery-tmpl" id="promotionalTemplateError" >
+		<div id="myCarousel" class="flexslider span8">
+			<div class="carouselDiv">
+			  <ul class="slides">
+	          		<li class="item">
+	          			<a>
+			      			<img src="img/sliderError.png" alt="">
+						</a>
+		      		</li>
+			  </ul>
+			</div>
+			<div class="flexslider-controls"></div>
+		</div>
+	</script>
+	
 	<!-- ########## CATEGORY-PRODUCTS BOTTOM PANEL ###############  -->
 	<script type="text/x-jquery-tmpl" id="featured-category-template">
 		<!-- Categories Product List Home-->
@@ -302,6 +319,7 @@
 		</div>
 	</script>
 	
+	<!-- ###########  Featured Category Products Template  ###########-->
 	<script type="text/x-jquery-tmpl" id="featured-category-products-template">
 		<ul class="product_list ">
 			{{each(i, product) products}}
@@ -317,6 +335,17 @@
 				</li>
 			{{/each}}
 		</ul>		
+	</script>
+	
+	<!-- ###########  Featured Category Products Template Error ###########-->
+	<script type="text/x-jquery-tmpl" id="featured-category-products-error">
+         <ul class="product_list ">
+         	<img src="images/toastmessage/error.png" style="float: left; margin-right: 20px;">
+         	<div style="padding-top: 10px;">
+             	<strong>${details.error.code}</strong><br>
+             	${details.error.description}
+            </div>
+         </ul>
 	</script>
 	
 	<!-- ########## LOADER ###############  -->
@@ -535,6 +564,22 @@
 					 	</div> 
 					</li>
 				{{/each}}
+             </ul>
+     	</div>		
+     	</div>
+	</script>
+	
+		<!-- ########## Shopping Cart Candy Rack Error Widget ###############  -->
+	<script type="text/x-jquery-tmpl" id="shoppingCartCandyRackError_widget">
+		<div class="row" style="margin-top: 12px">
+		<div class="span11 products offset0 box2 candyRackBox" style="padding-top: 0px">
+			<h3>You May Also Be Interested In </h3>
+             <ul class="product_list ">
+             	<img src="images/toastmessage/error.png" style="float: left; margin-right: 20px;  margin-top: 10px;">
+             	<div style="padding-top: 10px;">
+	             	<strong>${details.error.code}</strong><br>
+	             	${details.error.description}
+	            </div>
              </ul>
      	</div>		
      	</div>

@@ -32,5 +32,18 @@ ns.HomeCategoryProductsWidget =  ns.Widget.extend({
     render: function(append) {
         this.elementSelector = this.parent;
         this._super(append);
+    }, 
+    
+    /**
+     * Renders the widget with an error message in it
+     */
+    renderError: function(error){
+    	if(this.getElement()) {
+            this.getElement().remove();
+        }
+    	this.appendTemplate(this.parent, "#featured-category-products-error", error);
     }
+    
+    
+    
 });

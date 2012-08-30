@@ -64,14 +64,18 @@ ns.ShoppingCartController = ns.BaseController.extend({
               that.updateViews(true);   
         });	 
         
-        if(this.app.config.candyRack.visible) {
+        if(this.app.config.candyRack.visible==true && this.app.config.candyRack.pop) {
             this.view.renderCandyRack();
             // Get the candyRack Offers for the cart
-            $.when(that.shoppingCartService.getCandyRackProducts({})).done(function(productOffer) {
+            var getCandyRackPromise = that.shoppingCartService.getCandyRackProducts({});
+            $.when(getCandyRackPromise).done(function(productOffer) {
     			that.candyRack = productOffer;
     
     			that.view.renderCandyRack(productOffer);   
             });	    
+            $.when(getCandyRackPromise).fail(function(error) {
+            	that.view.renderCandyRack(error);
+            });
         }
 	},
 	

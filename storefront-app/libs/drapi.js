@@ -1654,8 +1654,14 @@ ns.AsyncRequester = Class.extend({
             // If both success and error function are set
             if(callbacks.error && typeof callbacks.error === 'function'){
                 callbacks.error({status: response.status, details: response});
+              	// If callDefaultError is set, call de default error handler
+                if(callbacks.callDefaultErrorHandler){
+                	if(that.options.error && typeof that.options.error === 'function') {
+                		that.options.error({status: response.status, details: response});
+                	}
+                }
             
-            //
+            // If no specific error handler was set, call the default error handler
             } else if(that.options.error && typeof that.options.error === 'function') {
                 that.options.error({status: response.status, details: response});
             }       
