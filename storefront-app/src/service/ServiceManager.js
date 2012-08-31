@@ -80,8 +80,8 @@ ns.ServiceManager = Class.extend({
             console.info("Reconnected to DR!");
             var dispatcher = dr.acme.application.getDispatcher();
             dispatcher.handle(dr.acme.runtime.NOTIFICATION.UNBLOCK_APP);
-            dispatcher.handle(dr.acme.runtime.NOTIFICATION.SESSION_RESET, response);
-            dispatcher.refreshPage();
+            dispatcher.handle(dr.acme.runtime.NOTIFICATION.SESSION_RESET, {"error": response, "requestedUrl": dispatcher.getCurrentUrl()});
+            dispatcher.refreshPage();
         });
     },
     /**

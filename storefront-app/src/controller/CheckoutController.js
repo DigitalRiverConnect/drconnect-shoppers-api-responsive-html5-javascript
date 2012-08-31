@@ -42,17 +42,29 @@ ns.CheckoutController = ns.BaseController.extend({
 		this.summaryView.render();		
 	    var that = this;
 	    
-	    var applyShopperPromise = that.shoppingCartService.applyShopper();
+	    var getCartPromise = that.shoppingCartService.get();
 	    
-		$.when(applyShopperPromise).done(function(cart) {
-			that.summaryView.setCart(cart);
-			that.summaryView.render();
-		});
-		
-		$.when(applyShopperPromise).fail(function(error) {
-			dr.acme.util.DialogManager.showError(error.details.error.description + " Please edit your account options.\n Redirecting to My Account", "Checkout Error");
-			that.notify(dr.acme.runtime.NOTIFICATION.SHOW_ACCOUNT_EDIT, dr.acme.runtime.URI.CHECKOUT);  
-		});
+	    
+	    // Check if shoppingCart has products before applying the shopper
+	    $.when(getCartPromise).done(function(cart) {
+ 	
+	    	//if cart has no products 
+	    	if(!cart.lineItems || !cart.lineItems.lineItem){
+	    		that.navigateTo(dr.acme.runtime.URI.SHOPPING_CART);
+	    		return;
+	    	}
+	    	// Else applies the shopper to the cart
+	    	var applyShopperPromise = that.shoppingCartService.applyShopper();
+			$.when(applyShopperPromise).done(function(cart) {
+				that.summaryView.setCart(cart);
+				that.summaryView.render();
+			});
+			
+			$.when(applyShopperPromise).fail(function(error) {
+				dr.acme.util.DialogManager.showError(error.details.error.description + " Please edit your account options.\n Redirecting to My Account", "Checkout Error");
+				that.notify(dr.acme.runtime.NOTIFICATION.SHOW_ACCOUNT_EDIT, dr.acme.runtime.URI.CHECKOUT);  
+			});
+	    });
 	},
 	
 	/**

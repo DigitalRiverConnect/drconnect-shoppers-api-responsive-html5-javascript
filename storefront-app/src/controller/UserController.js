@@ -96,10 +96,17 @@ ns.UserController = ns.BaseController.extend({
             // show the login page with an error explaining the situation
             this.shopperService.resetUserData();
             this.notify(dr.acme.runtime.NOTIFICATION.USER_LOGGED_OUT);
-            this.notify(dr.acme.runtime.NOTIFICATION.SHOW_LOGIN, dr.acme.runtime.URI.ROOT);
+            var redirectTo;
+            // Tries to go to the requestedURL after login
+            if(params.url){
+            	requestedUrl = params.url;
+            }else{
+            	requestedUrl = dr.acme.runtime.URI.ROOT;
+            }
+            this.notify(dr.acme.runtime.NOTIFICATION.SHOW_LOGIN, requestedUrl);
             dr.acme.util.DialogManager.showError("Please login again to continue", "Session Expired");
         } else {
-        	if(params.details.error.code != 'refresh_token_invalid'){
+        	if(params.error.details.error.code != 'refresh_token_invalid'){
         		dr.acme.util.DialogManager.showError("Your token has been refreshed.", "Token Refreshed");	
         	}else{
         		this.notify(dr.acme.runtime.NOTIFICATION.USER_LOGGED_OUT);
