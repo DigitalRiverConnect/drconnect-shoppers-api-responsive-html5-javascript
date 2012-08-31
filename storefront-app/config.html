@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="config/css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="config/css/bootstrap-responsive.css">
+		<link rel="stylesheet" type="text/css" href="config/css/jqtree.css">
+		<link rel="stylesheet" type="text/css" href="config/css/config.css">
+		
+		<script src="config/js/jquery-1.8.0.min.js" type="text/javascript"></script>
+		<script src="config/js/jcookie-min.js" type="text/javascript"></script>
+		<script src="config/js/jstorage.min.js" type="text/javascript"></script>
+		<script src="config/js/bootstrap-collapse.js" type="text/javascript"></script>
+		<script src="config/js/bootstrap-modal.js" type="text/javascript"></script>
+		<script src="config/js/tree.jquery.js" type="text/javascript"></script>
+		<script src="libs/drapi.min.js" type="text/javascript"></script>
+		<script type="text/javascript">
+            var client;
+
+            function connect() {
+                var cid = $("#txtClientId").val();
+                var options = {
+                    error : onError,
+                };
+                $("#loader").show();
+                $("#form").hide();
+                client = new dr.api.Client(cid, options);
+                client.connect().then(function() {
+                    Q.all([this.loadOffers(), this.loadCategories()]).then(function(results) {
+                        $("#form").show();
+                    }).fail(function(error) {
+                        showErrors(["Error connecting to the server, please try again later"]);
+                    }).fin(function() {
+                        $("#loader").hide();
+                    });
+                });
+            }
+
+            function getSubcategory(node, handler) {
+                client.categories.get(node.id).then(function(data) {
+                    handler(convertCategoriesToTree(data.categories));
+                });
+            }
+
+            function convertCategoriesToTree(data) {
+                var result = [];
+                if(!data)
+                    return result;
+                for(var i = 0; i < data.category.length; i++) {
+                    var cat = data.category[i];
+                    var id = cat.id;
+                    if(!id) {
+                        id = parseInt(cat.uri.substring(cat.uri.lastIndexOf("/") + 1));
+                    }
+                    result.push({
+                        label : cat.displayName,
+                        id : id,
+                        load_on_demand : true
+                    });
+                }
+                return result;
+            }
+
+            function nodeSelected(node, li, checked) {
+                $("#selectedCategories").html("");
+
+                var nodes = $("#treeCategories").tree('getCheckedNodes');
+                for(var i = 0; i < nodes.length; i++) {
+                    $("#selectedCategories").append("<li>" + nodes[i].name + "</li>")
+                }
+
+            }
+
+            function loadCategories() {
+                return client.categories.list({
+                    'expand' : 'category'
+                }).then(function(data) {
+                    $("#treeCategories").tree({
+                        selectable : false,
+                        onNodeRequired : getSubcategory,
+                        onNodeCheck : nodeSelected,
+                        data : convertCategoriesToTree(data)
+                    })
+                });
+            }
+
+            function loadOffers() {
+                return client.offers.list('Banner_ShoppingCartLocal', {
+                    'expand' : 'offer'
+                }).then(function(data) {
+                    var combo = $("#selectOffers");
+                    for(var i = 0; i < data.offer.length; i++) {
+                        var offer = data.offer[i];
+                        combo.append("<option value='" + offer.id + "'>" + offer.name + "</option>");
+                    }
+                });
+            }
+
+            function onError(e) {
+                if(e.status == 401) {
+                    alert("Invalid client id");
+                }
+            }
+
+            function showErrors(errors) {
+                var $list = $("#errorPanel ul");
+
+                for(var i = 0; i < errors.length; i++) {
+                    $list.append("<ul>" + errors[i] + "</ul>");
+                }
+                $(window).scrollTop(0);
+            }
+
+            function enableSection($checkbox, sectionSelector, inputSelector) {
+                if($checkbox.attr("checked")) {
+                    $(sectionSelector).collapse('show');
+                } else {
+                    $(inputSelector).val("");
+                    $(sectionSelector).collapse("hide");
+                }
+            }
+
+            function getFields() {
+                var nodes = $("#treeCategories").tree('getCheckedNodes');
+                var catIds = [];
+                for(var i = 0; i < nodes.length; i++) {
+                    catIds.push(nodes[i].id);
+                }
+                //catIds = catIds.substring(0, catIds.length - 1);
+
+                return {
+                    clientId : $("#txtClientId").val(),
+                    fpVisible : ($("#featureProductVisible").attr("checked") == "checked"),
+                    fpOfferId : $("#selectOffers").val(),
+                    fcIds : catIds,
+                    fcNumProducts : $("#numProducts").val(),
+                    crVisible : ($("#candyRackVisible").attr("checked") == "checked"),
+                    crPopName : $("#inputCandyRackPopName").val(),
+                    pageSize : $("#pageSize").val()
+                };
+            }
+
+            function validateFields(fields) {
+                var errors = [];
+
+                if(!fields.clientId || fields.clientId == "") {
+                    errors.push("Client ID is required");
+                }
+                if(fields.fpVisible && !fields.fpOfferId) {
+                    errors.push("Select an Offer ID for the Featured Products");
+                }
+                if(!$.isNumeric(fields.fcNumProducts) || fields.fcNumProducts.indexOf(".") > 0) {
+                    errors.push("The number of products must be an integer");
+                }
+                if(fields.crVisible && !fields.crPopName) {
+                    errors.push("Enter a POP name for the Candy Rack");
+                }
+                if(!$.isNumeric(fields.pageSize) || fields.pageSize.indexOf(".") > 0) {
+                    errors.push("The page size must be an integer");
+                }
+                return errors;
+            }
+
+            function createJSON(fields) {
+            	return {
+                    key : fields.clientId,
+                    pageSize : fields.pageSize,
+                    featuredCategories : {
+                        ids : fields.fcIds,
+                        numberOfProducts : fields.fcNumProducts
+                    },
+                    featuredProducts : {
+                        visible : fields.fpVisible,
+                        pop : "Banner_ShoppingCartLocal",
+                        offer : fields.fpOfferId
+                    },
+                    candyRack : {
+                        visible : fields.crVisible,
+                        pop : fields.crPopName
+                    }
+                };
+            }
+
+            function onFormSubmit(e) {
+            	e.preventDefault();
+                var json = getConfigJSON();
+                if(json) {
+                    $.storage.setItem('sampleAppConfig', json, 'localStorage');
+                    window.location = "index.htm";
+                }
+                return false;
+            }
+            
+            function onGenerateJSON(e) {
+            	e.preventDefault();
+            	var json = getConfigJSON();
+                if(json) {
+                	$("#jsonContent").html(json);
+                	$('#jsonModal').modal({show: true});
+                }
+                return false;
+            }
+            
+            function getConfigJSON() {
+            	var $list = $("#errorPanel ul");
+                $list.html("");
+
+                var fields = getFields();
+                var errors = validateFields(fields);
+                if(errors.length > 0) {
+                    showErrors(errors);
+                    return "";
+                } else {
+                    return JSON.stringify(createJSON(fields));
+                }
+            }
+
+
+            $(document).ready(function() {
+                $("#btnConnect").click(function(e) {
+                    e.preventDefault();
+                    connect();
+                });
+
+                $("#candyRackVisible").change(function(e) {
+                    enableSection($(e.target), "#sectionCandyRack", "#inputCandyRackPopName")
+                });
+                $("#featureProductVisible").change(function(e) {
+                    enableSection($(e.target), "#sectionFeaturedProducts", "#selectOffers")
+                });
+
+                $("#btnLaunch").click(onFormSubmit);
+                $("#btnGenerateJSON").click(onGenerateJSON);
+            });
+
+		</script>
+	</head>
+	<body>
+		<div id="errorPanel">
+			<ul></ul>
+		</div>
+		<form class="form-inline" >
+			<legend>
+				Client ID
+			</legend>
+			<div class="control-group">
+				<input type="text" id="txtClientId" class="input-small" placeholder="Client ID" value="604df5ac990fbc67dab8fc098af271e6">
+				<button id="btnConnect" class="btn btn-primary">
+					Connect
+				</button>
+			</div>
+		</form>
+		<div id="loader" class="loader" >
+		</div>
+		<form class="form-horizontal" id="form" style="display: none;" action="generate" method="GET" onsubmit="return false;">
+			<legend>
+				<label class="checkbox inline">
+					<input type="checkbox" name="featureProductsVisible" id="featureProductVisible" value="1" checked="checked">
+				</label>
+				Featured Products
+			</legend>
+			<div class="control-group collapse in" id="sectionFeaturedProducts">
+				<label class="control-label" for="featuredProductsOfferId">Offer</label>
+				<div class="controls">
+					<select id="selectOffers" name="featuredProductsOfferId"></select>
+				</div>
+			</div>
+			<legend>
+				Featured categories
+			</legend>
+			<div class="control-group">
+				<label class="control-label" for="selectCategories">Category</label>
+				<div class="controls">
+					<div id="treeCategories"></div>
+					<ul id="selectedCategories"></ul>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="numProducts">Num of products</label>
+				<div class="controls">
+					<input type="number" id="numProducts" name="numProductsPerCat" value="3"  />
+				</div>
+			</div>
+			<legend>
+				<label class="checkbox inline">
+					<input type="checkbox" id="candyRackVisible" name="candyRackVisible" value="1">
+				</label>
+				Candy rack
+			</legend>
+			<div class="control-group collapse" id="sectionCandyRack">
+				<label class="control-label" for="inputCandyRackPopName">POP Name</label>
+				<div class="controls">
+					<input type="text" id="inputCandyRackPopName" name="candyRackPopName" />
+				</div>
+			</div>
+			<legend>
+				Other
+			</legend>
+			<div class="control-group">
+				<label class="control-label" for="pageSize">Page size</label>
+				<div class="controls">
+					<input type="number" id="pageSize" value="5" name="pageSize"  />
+				</div>
+				<button id="btnLaunch" class="btn btn-primary">
+					Launch app
+				</button>
+				<button id="btnGenerateJSON" class="btn btn-primary">
+					Generate JSON
+				</button>
+			</div>
+		</form>
+
+		<div class="modal" id="jsonModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					X
+				</button>
+				<h3 id="myModalLabel">Configuration File</h3>
+			</div>
+			<div class="modal-body">
+				<p id="jsonContent">
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">
+					Close
+				</button>
+			</div>
+		</div>
+	</body>
+</html>

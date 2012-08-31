@@ -35,6 +35,8 @@
   <script src="libs/jquery.address-1.4.min.js" type="text/javascript"></script>
   <script src="libs/jquery.blockUI.js" type="text/javascript"></script>
   <script src="libs/jquery.toastmessage.js" type="text/javascript"></script>
+  <script src="libs/jcookie-min.js" type="text/javascript"></script>
+  <script src="libs/jstorage.min.js" type="text/javascript"></script>
   <script src="libs/drapi.js" type="text/javascript"></script>
   <script src="libs/jquery.flexslider-min.js" type="text/javascript"></script>
   <script src="libs/jquery_template.js" type="text/javascript"></script>
@@ -996,11 +998,19 @@
 	<script type="text/javascript">
 		// Get the configuration file and pass it to the app when it's being created.
 		// If the JSON is already loaded, there's no need for the AJAX call.
-		$.getJSON('appConfig.js', function(config) {
+		var config = $.storage.getItem("sampleAppConfig", "localStorage");
+		if(config) {
+			startApp(JSON.parse(config));
+		} else {
+			$.getJSON('appConfig.js', startApp);
+		}
+		
+		function startApp(config) {
 			// Create the app using the loaded config
 			var app = new dr.acme.runtime.App(config);
 			app.start();
-		});
+		}
+		
 	</script>
 </body>
 </html>
