@@ -57,17 +57,19 @@ ns.HomeCategoryWidget =  ns.Widget.extend({
      * Renders the products inside the widget
      */
     renderProducts: function(append) {
-        if(this.modelIsDefined()) {
+        if(this.modelIsDefined() && this.getProducts()) {
             this.productsView.setParent(this.find(".category_panel"));
             this.productsView.render(true);
+        }else{
+        	this.renderErrorOrEmpty();
         }
     },
     
     /**
-	 * Renders an error inside the widget
+	 * Renders an error or an empty message inside the widget
 	 */
-    renderError: function(error) {
+    renderErrorOrEmpty: function(error) {
 		this.productsView.setParent(this.find(".category_panel"));
-		this.productsView.renderError(error);
+		this.productsView.renderErrorOrEmpty(error);
     }
 });

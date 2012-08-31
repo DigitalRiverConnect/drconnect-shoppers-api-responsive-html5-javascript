@@ -121,6 +121,6 @@ ns.HomeController = ns.BaseController.extend({
 	    category.displayName = 'Error';
 	    hcw.setCategory(category);
         hcw.render(true);
-      	hcw.renderError(error);
+      	hcw.renderErrorOrEmpty(error);
 	}
 });

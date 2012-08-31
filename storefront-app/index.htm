@@ -293,15 +293,22 @@
 		</div>
 	</script>
 	
-	<!-- ########## PROMOTIONAL TEMPLATE ERROR###############  -->
-	<script type="text/x-jquery-tmpl" id="promotionalTemplateError" >
+	<!-- ########## PROMOTIONAL TEMPLATE EMPTY OR ERROR###############  -->
+	<script type="text/x-jquery-tmpl" id="promotionalTemplateEmptyOrError" >
 		<div id="myCarousel" class="flexslider span8">
 			<div class="carouselDiv">
 			  <ul class="slides">
 	          		<li class="item">
-	          			<a>
-			      			<img src="img/sliderError.png" alt="">
-						</a>
+						<!--If status field exists, it means an error image should be shown, otherwise an empty image is shown-->
+	          			{{if status}}
+	          				<a>
+			      				<img src="img/sliderError.png" alt="">
+							</a>
+						{{else}}
+							<a>
+			      				<img src="img/noProductsForOffer.png" alt="">
+							</a>
+						{{/if}}
 		      		</li>
 			  </ul>
 			</div>
@@ -337,14 +344,21 @@
 		</ul>		
 	</script>
 	
-	<!-- ###########  Featured Category Products Template Error ###########-->
-	<script type="text/x-jquery-tmpl" id="featured-category-products-error">
+	<!-- ###########  Featured Category Products Template Error or Empty ###########-->
+	<script type="text/x-jquery-tmpl" id="featured-category-products-error-empty">
          <ul class="product_list ">
-         	<img src="images/toastmessage/error.png" style="float: left; margin-right: 20px;">
-         	<div style="padding-top: 10px;">
-             	<strong>${details.error.code}</strong><br>
-             	${details.error.description}
-            </div>
+         	{{if details}}
+	         	<img src="images/toastmessage/error.png" style="float: left; margin-right: 20px;">
+	         	<div style="padding-top: 10px;">
+	             	<strong>${details.error.code}</strong><br>
+	             	${details.error.description}
+	            </div>
+	        {{else}}
+	         	<img src="images/toastmessage/warning.png" style="float: left; margin-right: 20px;">
+	         	<div  style="padding-top: 20px; padding-bottom: 20px;">
+	             	No Products for this Category<br>
+	            </div>
+	        {{/if}}
          </ul>
 	</script>
 	

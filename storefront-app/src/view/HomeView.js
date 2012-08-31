@@ -69,7 +69,13 @@ ns.HomeView = ns.BaseView.extend({
 	 * Promotional offers rendering as a slider
 	 */
 	renderOffers: function(model) {
-		this.applyTemplate("#feature-product", "#promotionalTemplate",model);	    
+		// If the offer has products shows them
+		if(model.featuresProducts){
+			this.applyTemplate("#feature-product", "#promotionalTemplate",model);
+		}else{
+			// Otherwise show an empty message
+			this.applyTemplate("#feature-product", "#promotionalTemplateEmptyOrError");
+		}	    
         this.renderSlider();
 	},
 	
@@ -77,7 +83,7 @@ ns.HomeView = ns.BaseView.extend({
 	 * Renders an error on the featured products if the service call fails
 	 */
 	renderOfferError: function(error) {
-		this.applyTemplate("#feature-product", "#promotionalTemplateError",error);	    
+		this.applyTemplate("#feature-product", "#promotionalTemplateEmptyOrError",error);	    
         this.renderSlider();
 	},
 	
