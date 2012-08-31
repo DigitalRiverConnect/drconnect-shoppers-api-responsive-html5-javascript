@@ -5,3 +5,13 @@
     width: 55px;
     height: 55px;	
 }
+
+li.jqtree-folder {
+}
+
+li.jqtree-loading span {
+	padding-right: 20px;
+	background-image: url(../img/ajax-loader.gif);
+	background-position: right;
+	background-repeat: no-repeat;
+}
