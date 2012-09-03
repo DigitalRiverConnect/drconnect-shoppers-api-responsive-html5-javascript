@@ -144,6 +144,7 @@ ns.CategoryView = ns.BaseView.extend({
 	 * compile template for product list
 	 */
 	renderProductListError: function(error) {
+		// If an error occurs it hides the sort combo
 		this.getParentElement().find(".sort").hide();  
 		this.applyTemplate("#products_list", "#resourceNotFoundTemplate",error);
 	},
