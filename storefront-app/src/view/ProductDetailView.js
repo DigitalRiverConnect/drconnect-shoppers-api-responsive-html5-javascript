@@ -60,6 +60,13 @@ ns.ProductDetailView =  ns.BaseView.extend({
 	},
 	
 	/**
+	 * Render loader or the actual product
+	 */
+	renderError: function(error) {
+		this.applyTemplate(".productDetail", "#resourceNotFoundTemplate", error);    
+	},
+	
+	/**
 	 * Product detail rendering
 	 */
 	setProduct: function(model) {

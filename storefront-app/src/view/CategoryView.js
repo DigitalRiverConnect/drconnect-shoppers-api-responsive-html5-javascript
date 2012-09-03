@@ -141,6 +141,14 @@ ns.CategoryView = ns.BaseView.extend({
 	},
 	
 	/**
+	 * compile template for product list
+	 */
+	renderProductListError: function(error) {
+		this.getParentElement().find(".sort").hide();  
+		this.applyTemplate("#products_list", "#resourceNotFoundTemplate",error);
+	},
+	
+	/**
 	 * compile template for the categories
 	 */
 	renderCategories: function(model) {

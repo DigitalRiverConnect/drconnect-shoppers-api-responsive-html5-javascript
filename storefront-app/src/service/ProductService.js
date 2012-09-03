@@ -50,10 +50,12 @@ ns.ProductService = Class.extend({
             return p;
         }
         
-        this.client.products.get(id, {}, function(data) {
+        this.client.products.get(id, {}, {success: function(data) {
             that.cacheProduct(data, true);
             defer.resolve(data);
-        });     
+        }, error: function(data){
+        	defer.reject(data);
+        }, callDefaultErrorHandler: true});     
         return defer.promise();     
     }, 
     
@@ -87,13 +89,15 @@ ns.ProductService = Class.extend({
     	
     	var that = this;
     	var defer = new $.Deferred();
-    	this.client.products.listProductsByCategory(id, params, function(data) {
+    	this.client.products.listProductsByCategory(id, params, {success: function(data) {
     	    if(data.product) {
         	    that.cacheProductsByCategory(id, pageNumber, pageSize, data);
         	    that.cacheProducts(data.product);
     	    }
             defer.resolve(data);
-        });     
+        }, error: function(data){
+        	defer.reject(data);
+        }, callDefaultErrorHandler: true});     
         return defer.promise(); 
     },
     

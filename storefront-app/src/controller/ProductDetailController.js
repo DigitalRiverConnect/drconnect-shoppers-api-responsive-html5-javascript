@@ -37,11 +37,14 @@ ns.ProductDetailController = ns.BaseController.extend({
 		this.view.renderLayout();
 	    this.view.render();
 
-		$.when(p)
-		  .done(function(product) {
+		$.when(p).done(function(product) {
 		    that.model.product = product;
             that.view.setProduct(that.model.product);
             that.view.render();  
+		});
+		
+		$.when(p).fail(function(error) {
+            that.view.renderError(error);  
 		});
 	} 
 });

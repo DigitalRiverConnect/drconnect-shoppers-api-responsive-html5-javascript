@@ -62,6 +62,19 @@ ns.CategoryController = ns.BaseController.extend({
             that.subcategoriesResponseReceived = true;
         });
         
+        /**
+         *  async response of the subcaregories by category
+         */
+		$.when(categoriesPromise).fail(function(error) {
+			that.model.categories = {};
+			that.model.categories.displayName = "Error"
+			that.view.renderCategories(that.model);
+			that.view.renderProductListPanel(that.model);
+			that.view.renderProductListError(error);
+			that.productListResponseReceived = true;
+			that.subcategoriesResponseReceived = true;
+        });
+        
 		/**
 		 * async response of the products by category  
 		 */
@@ -72,6 +85,7 @@ ns.CategoryController = ns.BaseController.extend({
 			if(products.totalResultPages>1)
             	that.view.applyPagination(products.totalResultPages,that.currentPageNumber);
 		});
+		
 	},
     
     /**
