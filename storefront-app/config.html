@@ -1,333 +1,462 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" type="text/css" href="config/css/bootstrap.css">
-		<link rel="stylesheet" type="text/css" href="config/css/bootstrap-responsive.css">
-		<link rel="stylesheet" type="text/css" href="config/css/jqtree.css">
-		<link rel="stylesheet" type="text/css" href="config/css/config.css">
+  <head>
+    <meta charset="utf-8">
+    <title>Configure Sample App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="config/css/bootstrap.css" rel="stylesheet">
+	<link href="config/css/config.css" rel="stylesheet">
+	<link href="config/css/prettify.css" type="text/css" rel="stylesheet" />
+
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="config/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Digital River's Sample App configuration</a>
+          
+        </div>
+      </div>
+    </div>
+	
+    <div class="container-fluid">
+		<div class="row-fluid step1" >
+			<h3>1. Connect to Digital River's API</h3>
+			<div class="span5 well">
+				<legend>Client ID</legend>
+				<p><input type="text" id="txtClientId" class="input-xlarge" placeholder="Client ID" value="604df5ac990fbc67dab8fc098af271e6"></p>
+				<p><button id="btnConnect" data-loading-text="Connecting..." class="btn btn-large btn-primary offset8 span4">Connect</button></p>
+			</div><!--/span-->
+			
+		</div>
+		<h3 class="step2">2. Enter your config</h3>
+		<div class="row-fluid step2">
+			<div class="span12 well" id="clientIdPanel">
+				<h4>Connected using id: "<strong><span id="spanClientId"></span></strong>"</h4>
+				<button id="btnChange" class="btn btn-large btn-primary">Change</button>
+			</div><!--/span-->
+			<div class="span6 alert alert-block alert-error" id="errorPanel">
+				<h4>Errors</h4>
+				<ul></ul>
+			</div><!--/span-->			
+		</div>
 		
-		<script src="config/js/jquery-1.8.0.min.js" type="text/javascript"></script>
-		<script src="config/js/jcookie-min.js" type="text/javascript"></script>
-		<script src="config/js/jstorage.min.js" type="text/javascript"></script>
-		<script src="config/js/bootstrap-collapse.js" type="text/javascript"></script>
-		<script src="config/js/bootstrap-modal.js" type="text/javascript"></script>
-		<script src="config/js/tree.jquery.js" type="text/javascript"></script>
-		<script src="libs/drapi.min.js" type="text/javascript"></script>
-		<script type="text/javascript">
-            var client;
-
-            function connect() {
-                var cid = $("#txtClientId").val();
-                var options = {
-                    error : onError,
-                };
-                $("#loader").show();
-                $("#form").hide();
-                client = new dr.api.Client(cid, options);
-                client.connect().then(function() {
-                    Q.all([this.loadOffers(), this.loadCategories()]).then(function(results) {
-                        $("#form").show();
-                    }).fail(function(error) {
-                        showErrors(["Error connecting to the server, please try again later"]);
-                    }).fin(function() {
-                        $("#loader").hide();
-                    });
-                });
-            }
-
-            function getSubcategory(node, handler) {
-                client.categories.get(node.id).then(function(data) {
-                    handler(convertCategoriesToTree(data.categories));
-                });
-            }
-
-            function convertCategoriesToTree(data) {
-                var result = [];
-                if(!data)
-                    return result;
-                for(var i = 0; i < data.category.length; i++) {
-                    var cat = data.category[i];
-                    var id = cat.id;
-                    if(!id) {
-                        id = parseInt(cat.uri.substring(cat.uri.lastIndexOf("/") + 1));
-                    }
-                    result.push({
-                        label : cat.displayName,
-                        id : id,
-                        load_on_demand : true
-                    });
-                }
-                return result;
-            }
-
-            function nodeSelected(node, li, checked) {
-                $("#selectedCategories").html("");
-
-                var nodes = $("#treeCategories").tree('getCheckedNodes');
-                for(var i = 0; i < nodes.length; i++) {
-                    $("#selectedCategories").append("<li>" + nodes[i].name + "</li>")
-                }
-
-            }
-
-            function loadCategories() {
-                return client.categories.list({
-                    'expand' : 'category'
-                }).then(function(data) {
-                    $("#treeCategories").tree({
-                        selectable : false,
-                        onNodeRequired : getSubcategory,
-                        onNodeCheck : nodeSelected,
-                        data : convertCategoriesToTree(data)
-                    })
-                });
-            }
-
-            function loadOffers() {
-                return client.offers.list('Banner_ShoppingCartLocal', {
-                    'expand' : 'offer'
-                }).then(function(data) {
-                    var combo = $("#selectOffers");
-                    for(var i = 0; i < data.offer.length; i++) {
-                        var offer = data.offer[i];
-                        combo.append("<option value='" + offer.id + "'>" + offer.name + "</option>");
-                    }
-                });
-            }
-
-            function onError(e) {
-                if(e.status == 401) {
-                    alert("Invalid client id");
-                }
-            }
-
-            function showErrors(errors) {
-                var $list = $("#errorPanel ul");
-
-                for(var i = 0; i < errors.length; i++) {
-                    $list.append("<ul>" + errors[i] + "</ul>");
-                }
-                $(window).scrollTop(0);
-            }
-
-            function enableSection($checkbox, sectionSelector, inputSelector) {
-                if($checkbox.attr("checked")) {
-                    $(sectionSelector).collapse('show');
-                } else {
-                    $(inputSelector).val("");
-                    $(sectionSelector).collapse("hide");
-                }
-            }
-
-            function getFields() {
-                var nodes = $("#treeCategories").tree('getCheckedNodes');
-                var catIds = [];
-                for(var i = 0; i < nodes.length; i++) {
-                    catIds.push(nodes[i].id);
-                }
-                //catIds = catIds.substring(0, catIds.length - 1);
-
-                return {
-                    clientId : $("#txtClientId").val(),
-                    fpVisible : ($("#featureProductVisible").attr("checked") == "checked"),
-                    fpOfferId : $("#selectOffers").val(),
-                    fcIds : catIds,
-                    fcNumProducts : $("#numProducts").val(),
-                    crVisible : ($("#candyRackVisible").attr("checked") == "checked"),
-                    crPopName : $("#inputCandyRackPopName").val(),
-                    pageSize : $("#pageSize").val()
-                };
-            }
-
-            function validateFields(fields) {
-                var errors = [];
-
-                if(!fields.clientId || fields.clientId == "") {
-                    errors.push("Client ID is required");
-                }
-                if(fields.fpVisible && !fields.fpOfferId) {
-                    errors.push("Select an Offer ID for the Featured Products");
-                }
-                if(!$.isNumeric(fields.fcNumProducts) || fields.fcNumProducts.indexOf(".") > 0) {
-                    errors.push("The number of products must be an integer");
-                }
-                if(fields.crVisible && !fields.crPopName) {
-                    errors.push("Enter a POP name for the Candy Rack");
-                }
-                if(!$.isNumeric(fields.pageSize) || fields.pageSize.indexOf(".") > 0) {
-                    errors.push("The page size must be an integer");
-                }
-                return errors;
-            }
-
-            function createJSON(fields) {
-            	return {
-                    key : fields.clientId,
-                    pageSize : fields.pageSize,
-                    featuredCategories : {
-                        ids : fields.fcIds,
-                        numberOfProducts : fields.fcNumProducts
-                    },
-                    featuredProducts : {
-                        visible : fields.fpVisible,
-                        pop : "Banner_ShoppingCartLocal",
-                        offer : fields.fpOfferId
-                    },
-                    candyRack : {
-                        visible : fields.crVisible,
-                        pop : fields.crPopName
-                    }
-                };
-            }
-
-            function onFormSubmit(e) {
-            	e.preventDefault();
-                var json = getConfigJSON();
-                if(json) {
-                    $.storage.setItem('sampleAppConfig', json, 'localStorage');
-                    window.location = "index.htm";
-                }
-                return false;
-            }
-            
-            function onGenerateJSON(e) {
-            	e.preventDefault();
-            	var json = getConfigJSON();
-                if(json) {
-                	$("#jsonContent").html(json);
-                	$('#jsonModal').modal({show: true});
-                }
-                return false;
-            }
-            
-            function getConfigJSON() {
-            	var $list = $("#errorPanel ul");
-                $list.html("");
-
-                var fields = getFields();
-                var errors = validateFields(fields);
-                if(errors.length > 0) {
-                    showErrors(errors);
-                    return "";
-                } else {
-                    return JSON.stringify(createJSON(fields));
-                }
-            }
-
-
-            $(document).ready(function() {
-                $("#btnConnect").click(function(e) {
-                    e.preventDefault();
-                    connect();
-                });
-
-                $("#candyRackVisible").change(function(e) {
-                    enableSection($(e.target), "#sectionCandyRack", "#inputCandyRackPopName")
-                });
-                $("#featureProductVisible").change(function(e) {
-                    enableSection($(e.target), "#sectionFeaturedProducts", "#selectOffers")
-                });
-
-                $("#btnLaunch").click(onFormSubmit);
-                $("#btnGenerateJSON").click(onGenerateJSON);
-            });
-
-		</script>
-	</head>
-	<body>
-		<div id="errorPanel">
-			<ul></ul>
+		<div class="rowLoader" class="row-fluid">
+			<div  class="loader span1 offset6" ></div>
 		</div>
-		<form class="form-inline" >
-			<legend>
-				Client ID
-			</legend>
-			<div class="control-group">
-				<input type="text" id="txtClientId" class="input-small" placeholder="Client ID" value="604df5ac990fbc67dab8fc098af271e6">
-				<button id="btnConnect" class="btn btn-primary">
-					Connect
-				</button>
-			</div>
-		</form>
-		<div id="loader" class="loader" >
-		</div>
-		<form class="form-horizontal" id="form" style="display: none;" action="generate" method="GET" onsubmit="return false;">
-			<legend>
-				<label class="checkbox inline">
-					<input type="checkbox" name="featureProductsVisible" id="featureProductVisible" value="1" checked="checked">
-				</label>
-				Featured Products
-			</legend>
-			<div class="control-group collapse in" id="sectionFeaturedProducts">
-				<label class="control-label" for="featuredProductsOfferId">Offer</label>
-				<div class="controls">
-					<select id="selectOffers" name="featuredProductsOfferId"></select>
-				</div>
-			</div>
-				<div class="well">
-				<legend>
-					Featured categories
-				</legend>
-				<div class="control-group">
-					<label class="control-label" for="selectCategories">Category</label>
-					<div class="controls">
-						<div id="treeCategories"></div>
-						<ul id="selectedCategories"></ul>
+		<div class="row-fluid step2" id="form">
+			<div class="span12 ">
+				
+				<div class="span4 well">
+					<div class="row-fluid">
+						<legend>
+							<label class="dr-checkbox inline">
+								<button id="btnFeaturedProductsVisible" type="button" class="btn btn-small active" data-toggle="button"><i class="icon-ok"></i></button>
+							</label>
+							Featured Products
+						</legend>
+						<div class="control-group collapse in" id="sectionFeaturedProducts">
+							<label class="control-label" for="selectOffers">Offer</label>
+							<div class="controls">
+								<select id="selectOffers" name="featuredProductsOfferId"></select>
+							</div>
+						</div>
+					</div>
+					<div class="row-fluid ">
+					
+						<legend>
+							<label class="inline dr-checkbox">
+								<button id="btnCandyRackVisible" type="button" class="btn btn-small" data-toggle="button"><i class="icon-ok"></i></button>
+							</label>
+							Candy rack
+						</legend>
+
+						<div class="control-group collapse" id="sectionCandyRack">
+							<label class="control-label" for="inputCandyRackPopName">POP Name</label>
+							<div class="controls">
+								<input type="text" id="inputCandyRackPopName" name="candyRackPopName" />
+							</div>
+						</div>
+					</div>
+					<div class="row-fluid ">
+						<legend>Other</legend>
+						<div class="control-group">
+							<label class="control-label" for="pageSize">Page size</label>
+							<div class="controls">
+								<input type="number" id="pageSize" value="5" name="pageSize"  />
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="control-group">
-					<label class="control-label" for="numProducts">Num of products</label>
-					<div class="controls">
-						<input type="number" id="numProducts" name="numProductsPerCat" value="3"  />
+				<div class="span6 well">
+					<legend>Featured Categories</legend>
+					<div class="control-group">
+						<label class="control-label" for="numProducts">Num of products</label>
+						<div class="controls">
+							<input type="number" id="numProducts" name="numProductsPerCat" value="3"  />
+						</div>
 					</div>
+					<div class="control-group">
+						
+						<div class="controls">
+							<div class="span7">
+								<label class="control-label" for="treeCategories">Available:</label>
+								<div class="categoriesList">
+									<div id="treeCategories"></div>
+								</div>
+							</div>
+							<div class="span5">
+								<label class="control-label" for="selectCategories">Selected:</label>
+								<div class="categoriesList">
+									<ul id="selectedCategories"><li>None</li></ul>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>	
+				<div class="span2 well">
+					<div class="row-fluid"><button id="btnLaunch" class="btn btn-success btn-large span12 formButton">Launch app!</button></div>
+					<div class="row-fluid"><button id="btnGenerateJSON" class="btn btn-warning btn-large span12 formButton">Generate JSON</button></div>
 				</div>
-			</div>
-			<legend>
-				<label class="checkbox inline">
-					<input type="checkbox" id="candyRackVisible" name="candyRackVisible" value="1">
-				</label>
-				Candy rack
-			</legend>
-			<div class="control-group collapse" id="sectionCandyRack">
-				<label class="control-label" for="inputCandyRackPopName">POP Name</label>
-				<div class="controls">
-					<input type="text" id="inputCandyRackPopName" name="candyRackPopName" />
-				</div>
-			</div>
-			<legend>
-				Other
-			</legend>
-			<div class="control-group">
-				<label class="control-label" for="pageSize">Page size</label>
-				<div class="controls">
-					<input type="number" id="pageSize" value="5" name="pageSize"  />
-				</div>
-				<button id="btnLaunch" class="btn btn-primary">
-					Launch app
-				</button>
-				<button id="btnGenerateJSON" class="btn btn-primary">
-					Generate JSON
-				</button>
-			</div>
-		</form>
-
-		<div class="modal" id="jsonModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					X
-				</button>
-				<h3 id="myModalLabel">Configuration File</h3>
-			</div>
-			<div class="modal-body">
-				<p id="jsonContent">
-				</p>
-			</div>
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">
-					Close
-				</button>
-			</div>
+			</div><!--/span-->
 		</div>
-	</body>
+    </div> <!-- /container -->
+
+	<div class="modal" id="jsonModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+				X
+			</button>
+			<h3 id="myModalLabel">Configuration File</h3>
+		</div>
+		<div class="modal-body">
+			<pre class="prettyprint"><code id="jsonContent"></code></pre>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">
+				Close
+			</button>
+		</div>
+	</div>
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+ 	<script src="config/js/jquery-1.8.0.min.js" type="text/javascript"></script>
+	<script src="config/js/jcookie-min.js" type="text/javascript"></script>
+	<script src="config/js/jstorage.min.js" type="text/javascript"></script>
+	<script src="config/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="config/js/tree.jquery.js" type="text/javascript"></script>
+	<script src="config/js/drapi.js"  type="text/javascript"></script>
+	<script type="text/javascript" src="config/js/prettify.js"></script>
+	
+	<script type="text/javascript">
+		var client;
+
+		function connect() {
+			var cid = $("#txtClientId").val();
+			var options = {
+				error : onError,
+				env: "dev"
+			};
+			$("#btnConnect").button("loading");
+			$(".rowLoader").show();
+			$("#form").hide();
+			
+			client = new dr.api.Client(cid, options);
+			client.connect().then(function() {
+				//Q.all([this.loadOffers(), this.loadCategories()]).then(function(results) {
+				Q.all([this.loadCategories()]).then(function(results) {
+					$("#spanClientId").html(cid);
+					resetForm();
+					$(".step2").show();
+					$(".step1").hide();
+				}).fail(function(error) {
+					showErrors([{message:"Error connecting to the server, please try again later"}]);
+				}).fin(function() {
+					$("#btnConnect").button("reset");
+					$(".rowLoader").hide();
+				});
+			});
+			
+		}
+
+		function getSubcategory(node, handler) {
+			client.categories.get(node.id).then(function(data) {
+				handler(convertCategoriesToTree(data.categories));
+			});
+		}
+
+		function convertCategoriesToTree(data) {
+			var result = [];
+			if(!data)
+				return result;
+			for(var i = 0; i < data.category.length; i++) {
+				var cat = data.category[i];
+				var id = cat.id;
+				if(!id) {
+					id = parseInt(cat.uri.substring(cat.uri.lastIndexOf("/") + 1));
+				}
+				result.push({
+					label : cat.displayName,
+					id : id,
+					load_on_demand : true
+				});
+			}
+			return result;
+		}
+
+		function nodeSelected(node, li, checked) {
+			var nodes = $("#treeCategories").tree('getCheckedNodes');
+			
+			var $list = $("#selectedCategories");
+			
+			if(nodes.length == 0) {
+				$list.html("<li>None</li>");
+			} else {
+				$list.html("");
+			}
+			
+			for(var i = 0; i < nodes.length; i++) {
+				$("#selectedCategories").append("<li>" + nodes[i].name + "</li>")
+			}
+
+		}
+
+		function loadCategories() {
+			return client.categories.list({
+				'expand' : 'category'
+			}).then(function(data) {
+				$("#treeCategories").tree({
+					selectable : false,
+					onNodeRequired : getSubcategory,
+					onNodeCheck : nodeSelected,
+					data : convertCategoriesToTree(data)
+				})
+			});
+		}
+
+		function loadOffers() {
+			return client.offers.list('Banner_ShoppingCartLocal', {
+				'expand' : 'offer'
+			}).then(function(data) {
+				var combo = $("#selectOffers");
+				for(var i = 0; i < data.offer.length; i++) {
+					var offer = data.offer[i];
+					combo.append("<option value='" + offer.id + "'>" + offer.name + "</option>");
+				}
+			});
+		}
+
+		function onError(e) {
+			if(e.status == 401) {
+				alert("Invalid client id");
+			}
+		}
+		
+		function resetForm() {
+			setCheckboxState("#btnFeaturedProductsVisible", true);
+			$("#selectOffers").val("");
+			$("#numProducts").val("3");
+			setCheckboxState("#btnCandyRackVisible", false);
+			$("#inputCandyRackPopName").val("");
+			$("#pageSize").val("5");
+			hideErrors();
+			$("#selectedCategories").html("<li>None</li>");
+		}
+		
+		function hideErrors() {
+			$("#errorPanel").hide();
+			$("#clientIdPanel").removeClass("span6");
+			$("#clientIdPanel").addClass("span12");
+			$(".control-group").removeClass("error");
+		}
+		
+		function showErrors(errors) {
+			$("#clientIdPanel").addClass("span6");
+			$("#clientIdPanel").removeClass("span12");
+			$("#errorPanel").show();
+			
+			var $list = $("#errorPanel ul");
+
+			for(var i = 0; i < errors.length; i++) {
+				$(errors[i].field).closest(".control-group").addClass("error");
+				$list.append("<li>" + errors[i].message + "</li>");
+			}
+			$(window).scrollTop(0);
+		}
+
+		function enableSection($checkbox, sectionSelector, inputSelector) {
+			$checkbox.attr("disabled", "disabled");
+			if(isChecked($checkbox)) {
+				$(sectionSelector).collapse('show');
+			} else {
+				$(inputSelector).val("");
+				$(sectionSelector).collapse("hide");
+			}
+			$checkbox.removeAttr("disabled");
+		}
+
+		function getFields() {
+			var nodes = $("#treeCategories").tree('getCheckedNodes');
+			var catIds = [];
+			for(var i = 0; i < nodes.length; i++) {
+				catIds.push(nodes[i].id);
+			}
+
+			return {
+				clientId : $("#txtClientId").val(),
+				fpVisible : isChecked("#btnFeaturedProductsVisible"),
+				fpOfferId : $("#selectOffers").val(),
+				fcIds : catIds,
+				fcNumProducts : $("#numProducts").val(),
+				crVisible : isChecked("#btnCandyRackVisible"),
+				crPopName : $("#inputCandyRackPopName").val(),
+				pageSize : $("#pageSize").val()
+			};
+		}
+		
+		function addError(field, message) {
+			return {field: field, message: message};
+		}
+		
+		function validateFields(fields) {
+			var errors = [];
+
+			if(!fields.clientId || fields.clientId == "") {
+				errors.push(addError("#txtClientId","Client ID is required"));
+			}
+			if(fields.fpVisible && !fields.fpOfferId) {
+				errors.push(addError("#selectOffers","Select an Offer ID for the Featured Products"));;
+			}
+			if(!$.isNumeric(fields.fcNumProducts) || fields.fcNumProducts.indexOf(".") > 0) {
+				errors.push(addError("#numProducts","The number of products must be an integer"));
+			}
+			if(fields.crVisible && !fields.crPopName) {
+				errors.push(addError("#inputCandyRackPopName","Enter a POP name for the Candy Rack"));
+			}
+			if(!$.isNumeric(fields.pageSize) || fields.pageSize.indexOf(".") > 0) {
+				errors.push(addError("#pageSize","The page size must be an integer"));
+			}
+			return errors;
+		}
+
+		function createJSON(fields) {
+			return {
+				key : fields.clientId,
+				pageSize : fields.pageSize,
+				featuredCategories : {
+					ids : fields.fcIds,
+					numberOfProducts : fields.fcNumProducts
+				},
+				featuredProducts : {
+					visible : fields.fpVisible,
+					pop : "Banner_ShoppingCartLocal",
+					offer : fields.fpOfferId
+				},
+				candyRack : {
+					visible : fields.crVisible,
+					pop : fields.crPopName
+				}
+			};
+		}
+
+		function onFormSubmit(e) {
+			e.preventDefault();
+			hideErrors();
+			var json = getConfigJSON();
+			if(json != "") {
+				$.storage.setItem('sampleAppConfig', json, 'localStorage');
+				window.location = "index.htm";
+			}
+			return false;
+		}
+		
+		function onGenerateJSON(e) {
+			e.preventDefault();
+			hideErrors();
+			var json = getConfigJSON();
+			if(json) {
+				$("#jsonContent").html(json);
+				prettyPrint();
+				$('#jsonModal').modal({show: true});
+			}
+			return false;
+		}
+		
+		function getConfigJSON() {
+			var $list = $("#errorPanel ul");
+			$list.html("");
+
+			var fields = getFields();
+			var errors = validateFields(fields);
+			if(errors.length > 0) {
+				showErrors(errors);
+				return "";
+			} else {
+				return JSON.stringify(createJSON(fields), null, '\t');
+			}
+		}
+
+		function isChecked(selector) {
+			return ($(selector).find("i").css("visibility") != "hidden");
+		}
+		function setCheckboxState(selector, checked) {
+			var visibility = (checked)?"visible":"hidden";
+			$(selector).find("i").css("visibility", visibility);
+		}
+		function toggleCheckbox(selector) {
+			setCheckboxState(selector, !isChecked(selector));
+		}
+		
+		$(document).ready(function() {
+			$("#btnConnect").click(function(e) {
+				e.preventDefault();
+				connect();
+			});
+			
+			$("#btnChange").click(function(e) {
+				$(".step1").show();
+				$(".step2").hide();
+				$("#treeCategories").tree('destroy');
+			});
+
+			$("#btnCandyRackVisible").click(function(e) {
+				toggleCheckbox($(this));
+				enableSection($(e.target), "#sectionCandyRack", "#inputCandyRackPopName")
+			});
+			$("#btnFeaturedProductsVisible").click(function(e) {
+				toggleCheckbox($(this));
+				enableSection($(e.target), "#sectionFeaturedProducts", "#selectOffers")
+			});
+
+			$("#btnLaunch").click(onFormSubmit);
+			$("#btnGenerateJSON").click(onGenerateJSON);
+		});
+
+	</script>	
+
+  </body>
 </html>

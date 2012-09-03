@@ -801,6 +801,15 @@ limitations under the License.
         return this.dnd_handler.refreshHitAreas();
       }
     };
+	
+	JqTreeWidget.prototype.clear = function() {
+		for(var i=0; i < this.tree.children.length; i++) {
+			var node = this.tree.children[i];
+			node.remove();
+		}
+		this.tree.children = [];
+		
+	}
     
     JqTreeWidget.prototype.getCheckedNodes = function() {
         var checked = [];

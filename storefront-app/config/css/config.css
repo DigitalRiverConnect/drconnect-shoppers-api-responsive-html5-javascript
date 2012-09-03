@@ -1,9 +1,50 @@
 .loader {
-	background-image: url(../../img/loading.gif);
+	background-image: url(../img/loading.gif);
     background-repeat: no-repeat;
-    display: none;
     width: 55px;
     height: 55px;	
+}
+
+.rowLoader {
+	display: none;
+}
+
+legend {
+	font-size: 18px;
+	line-height: 30px;
+}
+
+.categoriesList li {
+	list-style-type: none;
+}
+
+.categoriesList ul {
+	padding-top: 8px;
+}
+
+.categoriesList {
+	border: 1px solid #D3D1D1;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	background-color: #FAFAFA;;
+}
+
+.step2 {
+	display: none;
+}
+.formButton {
+	margin: 10px;
+}
+
+.dr-checkbox {
+	display: inline-block
+}
+.dr-checkbox i {
+	visibility: hidden;
+}
+#btnFeaturedProductsVisible i {
+	visibility: visible;
 }
 
 li.jqtree-folder {
