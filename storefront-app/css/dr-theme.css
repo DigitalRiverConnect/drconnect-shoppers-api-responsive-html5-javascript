@@ -635,3 +635,6 @@ a.btn-save{
 	margin-left: 15px;
 }
 
+.api-admin-buttons div {
+	padding: 10px;
+}

@@ -989,17 +989,26 @@
 	    	<div class="span12 box">
  				<h2>API ADMINISTRATION</h2>
 				<div class="row content">	
-					<div class="span12 btn-container">					           
-						<p>Access Token: ${token}</p>
-						<p>Type: ${tokenType}</p>
+					<div class="span8 ">
+						<p><strong>Client ID:</strong> ${clientId}</p>					           
+						<p><strong>Access Token:</strong> ${token}</p>
+						<p><strong>Type:</strong> ${tokenType}</p>
 						<p>
 							{{if refreshToken}}
-				 				Refresh Token: ${refreshToken}<br>
+				 				<strong>Refresh Token:</strong> ${refreshToken}<br>
 							{{/if}}	
 						</p>
-						<p>Expires: ${tokenExpirationTime}</p>
-						<input type="button" class="btn btn-primary" id="btnRefreshToken">Refresh Token</a>
+						<p><strong>Expires:</strong> ${tokenExpirationTime}</p><br/>
 					</div>
+					
+						<div class="span4 btn-container api-admin-buttons">
+							{{if refreshToken}}
+								<!--Sets the style on 135 to make the size of the button equal to the Restart Button -->
+								<div class="row"><input type="button" class="btn btn-large btn-primary btn-addToCart" id="btnRefreshToken" value="Refresh Token" style="width:135px"/></div>
+							{{/if}}
+							<div class="row"><input type="button" class="btn btn-large btn-primary btn-addToCart" id="btnRestartToken" value="Restart Session"/></div>	
+						</div>
+					
 				</div>
 			</div>
 		</div>

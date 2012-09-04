@@ -216,6 +216,20 @@ ns.Session.prototype.getRefreshToken = function() {
         });
 };
 
+/**
+ * Forces to refresh token even if the access_token isn't expired 
+ */
+ns.Session.prototype.forceRefreshToken = function(){
+	return this.getRefreshToken();
+};
+
+/**
+ * Forces to get restart the connection getting a new access token
+ */
+ns.Session.prototype.forceResetSession = function(){
+	this.reset();
+	return this.anonymousLogin();
+};
 
 /**
  * Resets the token session variables

@@ -2217,6 +2217,20 @@ ns.Session.prototype.getRefreshToken = function() {
         });
 };
 
+/**
+ * Forces to refresh token even if the access_token isn't expired 
+ */
+ns.Session.prototype.forceRefreshToken = function(){
+	return this.getRefreshToken();
+};
+
+/**
+ * Forces to get restart the connection getting a new access token
+ */
+ns.Session.prototype.forceResetSession = function(){
+	this.reset();
+	return this.anonymousLogin();
+};
 
 /**
  * Resets the token session variables
@@ -2710,6 +2724,20 @@ ns.Client = ns.AsyncRequester.extend({
     connect: function(callback) {
         return this.makeRequest(this.session.anonymousLogin(), callback);
     },
+
+    /**
+     * Refreshes the current access_token
+     */
+    forceRefreshToken: function(callback) {
+        return this.makeRequest(this.session.forceRefreshToken(), callback);
+    },
+    
+    /**
+     * Resets the session getting a new access_token
+     */
+    forceResetSession: function(callback) {
+        return this.makeRequest(this.session.forceResetSession(), callback);
+    },
     /**
      * Triggers an OAuth flow to authenticate the user
      */    
@@ -2741,7 +2769,8 @@ ns.Client = ns.AsyncRequester.extend({
      * Retrieves the current session information
      */
     getSessionInfo: function() {
-        return { 
+        return {
+        	clientId: this.session.apikey, 
             connected: this.session.connected,
             authenticated: this.session.authenticated,
             token: this.session.token,

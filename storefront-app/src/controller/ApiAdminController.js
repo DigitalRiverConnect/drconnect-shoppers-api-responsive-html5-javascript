@@ -23,13 +23,28 @@ ns.ApiAdminController = ns.BaseController.extend({
      * initEventHandlers method override from the BaseController
      */		
 	initEventHandlers: function() {
-        this.view.addEventHandler(this.view.REFRESH_TOKEN, this, this.onRefreshToken);
+        this.view.addEventHandler(this.view.events.REFRESH_TOKEN, this, this.onRefreshToken);
+        this.view.addEventHandler(this.view.events.RESET_SESSION, this, this.onRestartSession);
     },
     /**
      * Handles the Refresh token button click
      */
     onRefreshToken: function(e) {
-        
+    	this.client.forceRefreshToken(function(){
+			dr.acme.application.getDispatcher().refreshPage();
+    	});
+    },
+    /**
+     * Handles the Restart Session button click
+     */
+    onRestartSession: function(e) {
+    	var self = this;
+    	this.client.forceResetSession(function(){
+			self.notify(dr.acme.runtime.NOTIFICATION.USER_LOGGED_OUT);
+			// Resets the userData to simulate the the user has logged out
+			dr.acme.service.manager.getShopperService().resetUserData();
+			dr.acme.application.getDispatcher().refreshPage();
+    	});
     },
 	/**
      * doIt method override from the BaseController

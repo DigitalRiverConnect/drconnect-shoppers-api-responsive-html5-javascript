@@ -18,19 +18,27 @@ ns.ApiAdminView =  ns.BaseView.extend({
      * Events this view dispatches
      */
     events: {
-        REFRESH_TOKEN: "refreshToken"
+        REFRESH_TOKEN: "refreshToken",
+        RESET_SESSION: "resetSession",
     },
     /**
      * Handlers for the DOM events must be registered in this method
      */
     initDOMEventHandlers: function() {
         this.addDomHandler("#btnRefreshToken", "click", this.onRefreshTokenButtonClick);
+        this.addDomHandler("#btnRestartToken", "click", this.onRestartSessionButtonClick);
     },
     /**
-     * "Add to Cart" button click handler
+     * "Refresh Token" button click handler
      */
-    onAddToCartButtonClick: function(e) {
+    onRefreshTokenButtonClick: function(e) {
         this.dispatchEvent(this.events.REFRESH_TOKEN);
+    },
+     /**
+     * "Restart Session" button click handler
+     */
+    onRestartSessionButtonClick: function(e) {
+        this.dispatchEvent(this.events.RESET_SESSION);
     },
     /**
 	 * Render loader or the actual product
@@ -40,7 +48,6 @@ ns.ApiAdminView =  ns.BaseView.extend({
 	   api.tokenType = (api.authenticated)?"Full Access Token":"Limited Access Token";
 	   api.tokenExpirationTime = new Date(api.tokenExpirationTime*1000).toString();
        this.applyTemplateToRoot(this.layoutTemplate, api);
-       //this.applyTemplate(".productDetail", "#productDetailTemplateLoaded", {product: this.getProduct()});    
 	},
 	
 	/**
