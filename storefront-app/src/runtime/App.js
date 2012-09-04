@@ -63,7 +63,7 @@ ns.App.prototype.validateConfig = function(defaultConfig, config){
 		config.pageSize = defaultConfig.pageSize;		
 	}
 	if(config.featuredCategories && config.featuredCategories.numberOfProducts 
-		&& !typeof config.featuredCategories.numberOfProducts !== 'number'){
+		&& typeof config.featuredCategories.numberOfProducts !== 'number'){
 		config.featuredCategories.numberOfProducts = defaultConfig.featuredCategories.numberOfProducts;		
 	}
 } 
