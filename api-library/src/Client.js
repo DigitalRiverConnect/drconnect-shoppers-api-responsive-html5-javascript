@@ -97,6 +97,7 @@ ns.Client = ns.AsyncRequester.extend({
             connected: this.session.connected,
             authenticated: this.session.authenticated,
             token: this.session.token,
+            refreshToken: this.session.refreshToken,
             tokenExpirationTime : this.session.tokenExpirationTime
         };
     }    

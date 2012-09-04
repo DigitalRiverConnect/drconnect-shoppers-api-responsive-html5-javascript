@@ -92,6 +92,7 @@
   <script src="src/view/ThanksView.js" type="text/javascript"></script>
   <script src="src/view/ServerErrorView.js" type="text/javascript"></script>
   <script src="src/view/LoginView.js" type="text/javascript"></script>
+  <script src="src/view/ApiAdminView.js" type="text/javascript"></script>
   <script src="src/view/BreadCrumbView.js" type="text/javascript"></script>
   
   <script src="src/controller/MainApplicationController.js" type="text/javascript"></script>
@@ -105,6 +106,7 @@
   <script src="src/controller/CategoryController.js" type="text/javascript"></script>
   <script src="src/controller/UserController.js" type="text/javascript"></script>
   <script src="src/controller/CheckoutController.js" type="text/javascript"></script>
+  <script src="src/controller/ApiAdminController.js" type="text/javascript"></script>
   <script src="src/runtime/UrlNavigationManager.js" type="text/javascript"></script>
   <script src="src/runtime/BaseDispatcher.js" type="text/javascript"></script>
   <script src="src/runtime/AcmeDispatcher.js" type="text/javascript"></script>
@@ -980,6 +982,30 @@
     	 </ul>
  		</div>
 	</script>
+	
+	<!-- ########## API ADMIN PAGE TEMPLATE ###############  -->
+	<script type="text/x-jquery-tmpl" id="apiAdminTemplate">
+		<div class="row ">
+	    	<div class="span12 box">
+ 				<h2>API ADMINISTRATION</h2>
+				<div class="row content">	
+					<div class="span12 btn-container">					           
+						<p>Access Token: ${token}</p>
+						<p>Type: ${tokenType}</p>
+						<p>
+							{{if refreshToken}}
+				 				Refresh Token: ${refreshToken}<br>
+							{{/if}}	
+						</p>
+						<p>Expires: ${tokenExpirationTime}</p>
+						<input type="button" class="btn btn-primary" id="btnRefreshToken">Refresh Token</a>
+					</div>
+				</div>
+			</div>
+		</div>
+    	{{tmpl "#footerTpl"}}
+	</script>
+	
 	<!-- ########## END TEMPLATES ###############  -->
 	
 	<!-- ########## LOGIN ###############  -->

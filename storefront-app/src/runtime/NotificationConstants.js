@@ -37,7 +37,8 @@ ns.URI = {
     LOGIN:'/login',
     LOGOUT:'/logout', 
     SEARCH_PRODUCT:'/searchProduct',
-    SERVER_ERROR:'/error'
+    SERVER_ERROR:'/error',
+    API_ADMIN:'/admin'
 };
 
 ns.MessageType = {
