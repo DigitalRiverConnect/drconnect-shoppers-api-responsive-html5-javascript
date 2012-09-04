@@ -1574,6 +1574,7 @@ nsService.URI = {
     CATEGORIES: 'shoppers/me/categories',
     PRODUCTS: 'shoppers/me/products',
     PRODUCTS_BY_CATEGORY: 'shoppers/me/categories/{categoryId}/products',
+    OFFERS: 'shoppers/me/point-of-promotions/{popName}/offers',
     PRODUCT_OFFERS: 'shoppers/me/point-of-promotions/{popName}/offers/{offerId}/product-offers',
     PRODUCTS_SEARCH: '/shoppers/me/product-search',
     CART: 'shoppers/me/carts/active',
@@ -1654,14 +1655,8 @@ ns.AsyncRequester = Class.extend({
             // If both success and error function are set
             if(callbacks.error && typeof callbacks.error === 'function'){
                 callbacks.error({status: response.status, details: response});
-              	// If callDefaultError is set, call de default error handler
-                if(callbacks.callDefaultErrorHandler){
-                	if(that.options.error && typeof that.options.error === 'function') {
-                		that.options.error({status: response.status, details: response});
-                	}
-                }
             
-            // If no specific error handler was set, call the default error handler
+            //
             } else if(that.options.error && typeof that.options.error === 'function') {
                 that.options.error({status: response.status, details: response});
             }       
@@ -2495,6 +2490,33 @@ var ns = namespace('dr.api.service');
 /**
  * Service Manager for Offer Resource
  */
+ns.OfferService = ns.BaseService.extend({
+    
+    uri: ns.URI.OFFERS,
+    
+    /**
+     * Gets the offers for a POP 
+     */
+    list: function(popName, parameters, callbacks) {
+        var uri = replaceTemplate(this.uri, {'popName':popName});
+
+        return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
+    },
+    
+    /**
+     * Gets an offer
+     */
+    get: function(popName, offerId, parameters, callbacks) {
+        var uri = replaceTemplate(this.uri, {'popName':popName}) + '/' + offerId;
+
+        return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
+    }
+});
+var ns = namespace('dr.api.service');
+
+/**
+ * Service Manager for Offer Resource
+ */
 ns.ProductOfferService = ns.BaseService.extend({
     
     uri: ns.URI.PRODUCT_OFFERS,
@@ -2654,6 +2676,7 @@ ns.Client = ns.AsyncRequester.extend({
         this.cart  = new dr.api.service.CartService(this);
         this.categories = new dr.api.service.CategoryService(this);
         this.products = new dr.api.service.ProductService(this);
+        this.offers = new dr.api.service.OfferService(this);
         this.productOffers = new dr.api.service.ProductOfferService(this);
         this.shopper = new dr.api.service.ShopperService(this);
         this.orders = new dr.api.service.OrderService(this);

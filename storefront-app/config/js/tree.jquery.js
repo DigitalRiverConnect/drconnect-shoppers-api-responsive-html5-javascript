@@ -1105,7 +1105,7 @@ limitations under the License.
       createNodeLi = function(node) {
         var escaped_name;
         escaped_name = escapeIfNecessary(node.name);
-        return $("<li><div><input type='checkbox'></input><span class=\"jqtree-title\">" + escaped_name + "</span></div></li>");
+        return $("<li><div><input class='tree-checkbox' type='checkbox'></input><span class=\"jqtree-title\">" + escaped_name + "</span></div></li>");
       };
       createFolderLi = function(node) {
         var button_class, escaped_name, folder_class, getButtonClass, getFolderClass;
@@ -1128,7 +1128,7 @@ limitations under the License.
         button_class = getButtonClass();
         folder_class = getFolderClass();
         escaped_name = escapeIfNecessary(node.name);
-        return $("<li class=\"" + folder_class + "\"><div data-node-id='" + node.id + "' data-node-label='" + escaped_name + "'><a class=\"" + button_class + "\">&raquo;</a><input type='checkbox'></input><span class=\"jqtree-title\">" + escaped_name + "</span></div></li>");
+        return $("<li class=\"" + folder_class + "\"><div data-node-id='" + node.id + "' data-node-label='" + escaped_name + "'><a class=\"" + button_class + "\">&raquo;</a><input class='tree-checkbox' type='checkbox'></input><span class=\"jqtree-title\">" + escaped_name + "</span></div></li>");
       };
       doCreateDomElements = function($element, children, is_root_node, is_open) {
         var $li, $ul, child, _i, _len;

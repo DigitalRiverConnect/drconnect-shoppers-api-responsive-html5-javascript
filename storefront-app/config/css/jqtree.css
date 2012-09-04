@@ -35,6 +35,7 @@ ul.jqtree-tree .jqtree-toggler {
     top: 30%;
     text-indent: -9999px;
     border-bottom: none;
+	margin-top: 2px;
 }
 
 ul.jqtree-tree div {
@@ -135,4 +136,8 @@ ul.jqtree-tree li.jqtree-selected > div:hover {
 
 ul.jqtree-tree .jqtree-moving > div .jqtree-title {
     outline: dashed 1px #0000ff;
+}
+
+.tree-checkbox {
+	margin: 0 5px 0 0 !important;
 }

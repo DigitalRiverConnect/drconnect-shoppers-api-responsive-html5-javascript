@@ -1,8 +1,10 @@
 .loader {
-	background-image: url(../img/loading.gif);
+	background-image: url(../img/ajax-loader-blue.gif);
     background-repeat: no-repeat;
-    width: 55px;
-    height: 55px;	
+    width: 16px;
+    height: 16px;
+	display: none;	
+	margin-right: 5px;
 }
 
 .rowLoader {
@@ -28,6 +30,7 @@ legend {
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 	background-color: #FAFAFA;;
+	padding: 10px;
 }
 
 .step2 {
@@ -55,4 +58,16 @@ li.jqtree-loading span {
 	background-image: url(../img/ajax-loader.gif);
 	background-position: right;
 	background-repeat: no-repeat;
+}
+
+.connect-box {
+	text-align: center;
+}
+
+.popover-title {
+    background-color: #B94A48 !important;
+}
+
+.error-message {
+	color: #B94A48;
 }
