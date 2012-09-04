@@ -63,8 +63,7 @@ ns.AcmeDispatcher = ns.BaseDispatcher.extend({
         this.addUrlMapping(nsu.RENDER_BREADCRUMB, this.controllers.breadCrumbController);
         this.addUrlMapping(nsu.SEARCH_PRODUCT, this.controllers.searchProductController);
         this.addUrlMapping(nsu.SERVER_ERROR, this.controllers.appController, false, "showServerError");
-        
-        
+        this.addUrlMapping(nsu.API_ADMIN, this.controllers.apiAdminController);
     },
     
     /**
@@ -90,7 +89,8 @@ ns.AcmeDispatcher = ns.BaseDispatcher.extend({
             orderHistoryDetailController: new nsc.OrderHistoryDetailController(),
             userController: new nsc.UserController(), 
             breadCrumbController: new nsc.BreadCrumbController(), 
-            searchProductController: new nsc.SearchProductController()
+            searchProductController: new nsc.SearchProductController(),
+            apiAdminController: new nsc.ApiAdminController()
         }
      }
 });

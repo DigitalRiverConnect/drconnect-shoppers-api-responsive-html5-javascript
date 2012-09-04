@@ -1574,6 +1574,7 @@ nsService.URI = {
     CATEGORIES: 'shoppers/me/categories',
     PRODUCTS: 'shoppers/me/products',
     PRODUCTS_BY_CATEGORY: 'shoppers/me/categories/{categoryId}/products',
+    OFFERS: 'shoppers/me/point-of-promotions/{popName}/offers',
     PRODUCT_OFFERS: 'shoppers/me/point-of-promotions/{popName}/offers/{offerId}/product-offers',
     PRODUCTS_SEARCH: '/shoppers/me/product-search',
     CART: 'shoppers/me/carts/active',
@@ -2222,6 +2223,20 @@ ns.Session.prototype.getRefreshToken = function() {
         });
 };
 
+/**
+ * Forces to refresh token even if the access_token isn't expired 
+ */
+ns.Session.prototype.forceRefreshToken = function(){
+	return this.getRefreshToken();
+};
+
+/**
+ * Forces to get restart the connection getting a new access token
+ */
+ns.Session.prototype.forceResetSession = function(){
+	this.reset();
+	return this.anonymousLogin();
+};
 
 /**
  * Resets the token session variables
@@ -2495,6 +2510,33 @@ var ns = namespace('dr.api.service');
 /**
  * Service Manager for Offer Resource
  */
+ns.OfferService = ns.BaseService.extend({
+    
+    uri: ns.URI.OFFERS,
+    
+    /**
+     * Gets the offers for a POP 
+     */
+    list: function(popName, parameters, callbacks) {
+        var uri = replaceTemplate(this.uri, {'popName':popName});
+
+        return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
+    },
+    
+    /**
+     * Gets an offer
+     */
+    get: function(popName, offerId, parameters, callbacks) {
+        var uri = replaceTemplate(this.uri, {'popName':popName}) + '/' + offerId;
+
+        return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
+    }
+});
+var ns = namespace('dr.api.service');
+
+/**
+ * Service Manager for Offer Resource
+ */
 ns.ProductOfferService = ns.BaseService.extend({
     
     uri: ns.URI.PRODUCT_OFFERS,
@@ -2654,6 +2696,7 @@ ns.Client = ns.AsyncRequester.extend({
         this.cart  = new dr.api.service.CartService(this);
         this.categories = new dr.api.service.CategoryService(this);
         this.products = new dr.api.service.ProductService(this);
+        this.offers = new dr.api.service.OfferService(this);
         this.productOffers = new dr.api.service.ProductOfferService(this);
         this.shopper = new dr.api.service.ShopperService(this);
         this.orders = new dr.api.service.OrderService(this);
@@ -2687,6 +2730,20 @@ ns.Client = ns.AsyncRequester.extend({
     connect: function(callback) {
         return this.makeRequest(this.session.anonymousLogin(), callback);
     },
+
+    /**
+     * Refreshes the current access_token
+     */
+    forceRefreshToken: function(callback) {
+        return this.makeRequest(this.session.forceRefreshToken(), callback);
+    },
+    
+    /**
+     * Resets the session getting a new access_token
+     */
+    forceResetSession: function(callback) {
+        return this.makeRequest(this.session.forceResetSession(), callback);
+    },
     /**
      * Triggers an OAuth flow to authenticate the user
      */    
@@ -2718,10 +2775,12 @@ ns.Client = ns.AsyncRequester.extend({
      * Retrieves the current session information
      */
     getSessionInfo: function() {
-        return { 
+        return {
+        	clientId: this.session.apikey, 
             connected: this.session.connected,
             authenticated: this.session.authenticated,
             token: this.session.token,
+            refreshToken: this.session.refreshToken,
             tokenExpirationTime : this.session.tokenExpirationTime
         };
     }    

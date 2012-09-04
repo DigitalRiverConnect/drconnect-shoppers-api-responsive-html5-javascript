@@ -20,6 +20,7 @@ ns.HeaderView =  ns.BaseView.extend({
         this.authMyAccountButtonId = "auth-my-account-button";
         this.authLogoutButtonId = "auth-logout-button";
         this.shoppingCartButtonId = "shopping-cart-button";
+        this.adminButtonId = "admin-button";
         
         this.authenticated = false;
     },
@@ -71,6 +72,8 @@ ns.HeaderView =  ns.BaseView.extend({
         this.renderButton(this.authLoginButtonId, "login", "user", "Login", !this.authenticated, true);
         this.renderButton(this.authMyAccountButtonId, "myAccount", "user", "My Account", this.authenticated, true);
         this.renderButton(this.authLogoutButtonId, "logout", "off", "Logout", this.authenticated, true);
+        this.renderButton(this.adminButtonId, "admin", "info-sign", "Admin", true, true);
+        // this.renderAdminButton();
         
     },
     /**
@@ -87,6 +90,20 @@ ns.HeaderView =  ns.BaseView.extend({
             this.appendTemplate(this.elementSelector + " ul.nav", "#headerDividerTemplate", model);    
         }
     },
+     /**
+     * Renders a header button (and optionally a divider after the button)
+     */
+    renderAdminButton: function() {
+        var model = {"id": this.adminButtonId , "url": "admin", "icon": "user", "label": "Admin"};
+        
+        model.visible = "block";
+        
+        this.appendTemplate("#adminNav", "#headerButtonTemplate", model);
+        
+        // this.appendTemplate(this.elementSelector + " ul.adminNav", "#headerDividerTemplate", model);    
+        
+    },
+    
     /**
      * Returns the button id corresponding to a Url
      */
@@ -101,6 +118,7 @@ ns.HeaderView =  ns.BaseView.extend({
             case nsu.ORDER_HISTORY_DETAIL: return this.authMyAccountButtonId;
             case nsu.LOGIN: return this.authLoginButtonId;
             case nsu.CHECKOUT: return this.shoppingCartButtonId;
+            case nsu.API_ADMIN: return this.adminButtonId;
             default: return  "";
         }
     },
