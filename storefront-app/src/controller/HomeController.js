@@ -52,9 +52,10 @@ ns.HomeController = ns.BaseController.extend({
 			
 			// Render the featured categories widgets            
             for(var i = 0; i < ids.length; i++) {
-            	var categoryByIdPromise = that.categoryService.getCategoryById(ids[i]);
+            	var catId = ids[i];
+            	var categoryByIdPromise = that.categoryService.getCategoryById(catId);
             	$.when(categoryByIdPromise).done(function(categories) {
-                	that.renderFeaturedCategoryWidget(that.categoryService.getCategoryById(ids[i]));
+                	that.renderFeaturedCategoryWidget(that.categoryService.getCategoryById(catId));
 		        });
                 $.when(categoryByIdPromise).fail(function(error) {
                 	that.renderFeaturedCategoryError(error);
