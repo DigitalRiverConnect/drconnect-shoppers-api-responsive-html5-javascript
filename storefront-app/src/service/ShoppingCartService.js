@@ -170,7 +170,7 @@ ns.ShoppingCartService = Class.extend({
              defer.resolve(data);
         }, error: function(data) {
         	defer.reject(data);
-        }});
+        }, callDefaultErrorHandler: true});
         return defer.promise();	    
 	},
 	

@@ -123,10 +123,17 @@ ns.CheckoutController = ns.BaseController.extend({
 				
 	    var that = this;
     	this.blockApp();
-	    $.when(that.shoppingCartService.applyShopper(parameters.shippingAddressId, parameters.billingAddressId,
-	    		parameters.paymentOptionId)).done(function(cart) {
+    	var applyShopperPromise = that.shoppingCartService.applyShopper(parameters.shippingAddressId, parameters.billingAddressId,
+	    		parameters.paymentOptionId);
+	    $.when(applyShopperPromise).done(function(cart) {
 	    	that.unblockApp();
 	    	that.notify(dr.acme.runtime.NOTIFICATION.CHECKOUT_OPTIONS_APPLIED, cart);
+	    });
+	    
+	    $.when(applyShopperPromise).fail(function(error) {
+	    	// If there is an error applying the shopper only unblocks the app, the default handler will do the
+	    	// rest of the work
+	    	that.unblockApp();
 	    });
     
 	},
