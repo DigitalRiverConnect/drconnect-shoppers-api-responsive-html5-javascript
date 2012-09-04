@@ -44,7 +44,7 @@
 						-package,
 						-finish"/>
 
-  <target name="-copy" depends="-mkdirs, update.library, update.app">
+  <target name="-copy" depends="-mkdirs, update.app, update.library">
 	<!-- This is a private target -->
 	<echo message="Copying over new files..."/>
       <copy todir="./${dir.publish.config}">
@@ -293,6 +293,7 @@
 	</target>
 	
 	<target name="-build.app">
+		<ant antfile="${dir.sampleapp}/${dir.build}/build.xml" target="update.library" inheritAll="false" /> 
 		<ant antfile="${dir.sampleapp}/${dir.build}/build.xml" target="build" inheritAll="false" /> 
 	</target>
 	<target name="update.app" depends="-build.app">
@@ -305,7 +306,7 @@
 	<target name="-build.library">
 		<ant antfile="${dir.library}/${dir.build}/build.xml" target="build" inheritAll="false" />
 	</target>
-	<target name="update.library" depends="-build.library">
+	<target name="update.library">
 		 <copy todir="${dir.project}/${dir.js}">
 				<fileset dir="${dir.library}/${dir.output}" >
 					<include name="${file.library.min}" />

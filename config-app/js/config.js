@@ -200,10 +200,10 @@
 	function createJSON(fields) {
 		return {
 			key : fields.clientId,
-			pageSize : fields.pageSize,
+			pageSize : parseInt(fields.pageSize),
 			featuredCategories : {
 				ids : fields.fcIds,
-				numberOfProducts : fields.fcNumProducts
+				numberOfProducts : parseInt(fields.fcNumProducts)
 			},
 			featuredProducts : {
 				visible : fields.fpVisible,
