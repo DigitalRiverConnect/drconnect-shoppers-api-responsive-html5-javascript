@@ -8,7 +8,7 @@
     "featuredProducts": {
         "visible": true,
         "pop": "Banner_ShoppingCartLocal",
-        "offer": "2384691608"
+        "offer": "26583105809"
     },
     "candyRack": {
         "visible": true,
