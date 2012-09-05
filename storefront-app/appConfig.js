@@ -7,8 +7,8 @@
     },
     "featuredProducts": {
         "visible": true,
-        "pop": "Banner_ShoppingCartLocal",
-        "offer": "2384691608"
+        "pop": "SiteMerchandising_HomePageStoreSpecials",
+        "offer": "26583105809"
     },
     "candyRack": {
         "visible": true,
