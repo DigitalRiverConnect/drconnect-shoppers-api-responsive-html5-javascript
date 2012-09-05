@@ -1704,9 +1704,7 @@ var buildUriFromOptions = function(uri, redirectUri, options) {
  * Returns an URI with the corresponding anonymous token addded to it
  */
 var getUriWithToken = function(uri, reqToken) {
-	 // TODO: Switch this lines once the change has been implemented on apigee
-	// var finalUri = uri + "&limited_token=" + reqToken;
-	var finalUri = uri + "&limited_token=" + reqToken;
+	var finalUri = uri + "&dr_limited_token=" + reqToken;
 	return finalUri;
 }
 var ns = namespace('dr.api.view');
