@@ -8,12 +8,15 @@ ns.AsyncRequester = Class.extend({
       this.session = session;  
     },
     makeRequest: function(promise, callbacks) {
+        var self = this;
+        var p = promise
+                .fail(function(response) { return self.invalidTokenHandler(response); })
+                .fail(function(response) { return self.adaptError(response); } ); 
         if(callbacks) {
             var cb = this.getCallbacks(callbacks);
-            var self = this;
-            promise.fail(function(response) { return self.invalidTokenHandler(response); }).then(cb.success, cb.error).end();
+            p.then(cb.success, cb.error).end();
         } else {
-            return promise;
+            return p;
         }
     },
     /**
@@ -48,6 +51,12 @@ ns.AsyncRequester = Class.extend({
             return this.failRequest("The resource does not provide a URI", callbacks);
         }
     },
+    adaptError: function(response) {
+        if(response.error && response.error.errors && response.error.errors.error) {
+            response.error = response.error.errors.error;
+        }
+        throw {status: response.status, details: response};        
+    },
     getCallbacks: function(callbacks){
         var that = this;
         var cb = {};
@@ -55,22 +64,19 @@ ns.AsyncRequester = Class.extend({
         
         cb.error = function(response) {
             
-            if(response.error && response.error.errors && response.error.errors.error) {
-                response.error = response.error.errors.error;
-            }
             // If both success and error function are set
             if(callbacks.error && typeof callbacks.error === 'function'){
-                callbacks.error({status: response.status, details: response});
+                callbacks.error(response);
               	// If callDefaultError is set, call de default error handler
                 if(callbacks.callDefaultErrorHandler){
                 	if(that.options.error && typeof that.options.error === 'function') {
-                		that.options.error({status: response.status, details: response});
+                		that.options.error(response);
                 	}
                 }
             
             // If no specific error handler was set, call the default error handler
             } else if(that.options.error && typeof that.options.error === 'function') {
-                that.options.error({status: response.status, details: response});
+                that.options.error(response);
             }       
         };
         
