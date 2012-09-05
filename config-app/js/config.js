@@ -230,14 +230,14 @@
                 errors.push(addError("#selectOffers","Select an Offer ID for the Featured Products"));
             }
 		} 
-		if(!$.isNumeric(fields.fcNumProducts) || fields.fcNumProducts.indexOf(".") > 0) {
-			errors.push(addError("#numProducts","The number of products must be an integer"));
+		if(!$.isNumeric(fields.fcNumProducts) || fields.fcNumProducts.indexOf(".") > 0 || fields.fcNumProducts < 1) {
+			errors.push(addError("#numProducts","The number of products must be a positive integer"));
 		}
 		if(fields.crVisible && !fields.crPopName) {
 			errors.push(addError("#inputCandyRackPopName","Enter a POP name for the Candy Rack"));
 		}
-		if(!$.isNumeric(fields.pageSize) || fields.pageSize.indexOf(".") > 0) {
-			errors.push(addError("#pageSize","The page size must be an integer"));
+		if(!$.isNumeric(fields.pageSize) || fields.pageSize.indexOf(".") > 0 || fields.pageSize < 1) {
+			errors.push(addError("#pageSize","The page size must be a positive integer"));
 		}
 		return errors;
 	}
