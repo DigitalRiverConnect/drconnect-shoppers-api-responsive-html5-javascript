@@ -4,3 +4,4 @@ target
 .externalToolBuilders
 storefront-app/libs/drapi.js
 storefront-app/libs/drapi.min.js
+config-app/js/drapi.min.js

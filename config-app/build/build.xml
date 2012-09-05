@@ -41,6 +41,7 @@
 	<target name="build"
 			  depends="	-intro,
 						-copy,
+						-js.main.minify,
 						-package,
 						-finish"/>
 
@@ -48,8 +49,11 @@
 	<!-- This is a private target -->
 	<echo message="Copying over new files..."/>
       <copy todir="./${dir.publish.config}">
-          <fileset dir="${dir.project}/" >
+          <fileset dir="${dir.project}/">
           	<include name="**/*"/>
+          	<exclude name="${file.default.exclude}" />
+          	<exclude name="**/config.js"/>        
+			<exclude name="**/tree.jquery.js"/>
           	<exclude name="**/${dir.publish}/"/>
 			<exclude name="**/${dir.intermediate}/"/>
 			<exclude name="**/${dir.build}/"/>
@@ -111,6 +115,7 @@
 				
 				<mkdir dir="${dir.publish}"/>
 				<mkdir dir="${dir.publish.config}"/>
+				<mkdir dir="${dir.publish.config}/${dir.js}"/>
 			</else>
 		</if>
 	</target>
@@ -200,8 +205,9 @@
 	
 	<target name="-js.main.minify" description="(PRIVATE) Minifies the concatenated file">
 		<apply executable="java" parallel="false" verbose="true" failonerror="true">
-			<fileset dir="${dir.intermediate}/${dir.js}" casesensitive="yes">
-				<include name="scripts-concat.js"/>        
+			<fileset dir="${dir.project}/${dir.js}" casesensitive="yes">
+				<include name="**/config.js"/>        
+				<include name="**/tree.jquery.js"/>
 			</fileset>
 
 			<arg line="-jar"/>
@@ -214,7 +220,7 @@
 			<arg value="${scripts.compilation.warninglevel}" />
 			<arg line="--js_output_file" />
 			<targetfile/>
-			<mapper type="glob" from="*.js" to="${basedir}/${dir.intermediate}/${dir.js}/*.min.js"/>
+			<mapper type="glob" from="*.js" to="${basedir}/${dir.publish.config}/${dir.js}/*.js"/>
 			
 		</apply>
 	</target>  
@@ -228,7 +234,7 @@
   </target>	
   
   <target name="-js.publish" depends="-js.main.concat" description="(PRIVATE) Concatenates the JS files in dir.js">
-		<copy todir="${dir.publish}/${output.dir.js}">
+		<copy todir="${dir.publish.config}/${output.dir.js}">
 			<fileset dir="${dir.intermediate}/${dir.js}" casesensitive="yes">
 				<include name="scripts-concat.min.js"/>   
 			</fileset>

@@ -3,11 +3,15 @@
 	var popovers = {};
 	var enableFeaturedProducts = true;
 	
+	/** @const */ var DEFAULT_FP_POP_NAME = 'SiteMerchandising_HomePageStoreSpecials';
+	/** @const */ var DEFAULT_PAGE_SIZE = 5;
+	/** @const */ var DEFAULT_FC_PRODUCTS_PER_CATEGORY = 3;
+	
 	function connect() {
 		var cid = $("#txtClientId").val();
 		if(!cid) {
 			$("#clientIdGroup").addClass("error");
-			showErrors([{field: "#txtClientId", message:"Enter a Client ID"}]);
+			showError("#txtClientId", "Enter a Client ID");
 			return;
 		}
 		$("#clientIdGroup").removeClass("error");
@@ -17,15 +21,15 @@
 		
 		client = new dr.api.Client(cid, {});
 		client.connect().then(function() {
-			var p = Q.all([loadOffers(), loadCategories()]).then(function(results) {
+			var p = Q.all([loadOffers(DEFAULT_FP_POP_NAME), loadCategories()]).then(function(results) {
 				$("#spanClientId").html(cid);
 				goToStep2();
 			}).fail(function(error) {
-				showErrors([{field: "#txtClientId", message:"Error connecting to the server, please try again later"}]);
+				showError("#txtClientId", "Error connecting to the server, please try again later");
 			});
 			return p;
 		}).fail(function(error) {
-			showErrors([{field: "#txtClientId", message:"Error connecting to the server, please verify the Client ID"}]);
+			showErrors("#txtClientId", "Error connecting to the server, please verify the Client ID");
 		}).fin(function() {
 			setConnectingState(false);
 		});
@@ -41,6 +45,19 @@
 			$("#loadingIcon").css("display", "none");
 			$("#btnConnect").removeAttr("disabled").removeClass("disabled");
 		}
+	}
+	
+	function setFpLoadingState(loading) {
+	    $button = $("#btnSearchOffers");
+	    if(loading) {
+	        $button.attr("disabled", "disabled").addClass("disabled");
+	        $button.find(".loading-icon").css("display", "inline-block");
+	        $button.find("i").css("display", "none");
+	    } else {
+	        $button.removeAttr("disabled").removeClass("disabled");
+	        $button.find(".loading-icon").css("display", "none");
+	        $button.find("i").css("display", "inline-block");
+	    }
 	}
 
 	function getSubcategory(node, handler) {
@@ -93,11 +110,11 @@
 			});
 	}
 
-	function loadOffers() {
-		return client.offers.list('Banner_ShoppingCartLocal', {'expand' : 'offer'})
+	function loadOffers(pop) {
+	    var combo = $("#selectOffers");
+        combo.html("");
+		return client.offers.list(pop, {'expand' : 'offer'})
 			.then(function(data) {
-				var combo = $("#selectOffers");
-				combo.html("");
 				if(!data.offer) {
 					enableFeaturedProducts = false;
 					return;
@@ -112,15 +129,18 @@
 
 	function resetForm() {
 		setCheckboxState("#btnFeaturedProductsVisible", true);
+		/*
 		if(!enableFeaturedProducts) {
 			$("#btnFeaturedProductsVisible").click();
 			$("#btnFeaturedProductsVisible").attr("disabled", "disabled");
 		}
+		*/
 		setCheckboxState("#btnCandyRackVisible", false);
+		$("#txtFpPopName").val(DEFAULT_FP_POP_NAME);
 		$("#selectOffers").val("");
-		$("#numProducts").val("3");
+		$("#numProducts").val(DEFAULT_FC_PRODUCTS_PER_CATEGORY);
 		$("#inputCandyRackPopName").val("");
-		$("#pageSize").val("5");
+		$("#pageSize").val(DEFAULT_PAGE_SIZE);
 		hideErrors();
 		$("#selectedCategories").html("<li>None</li>");
 	}
@@ -130,6 +150,15 @@
 		$.each(popovers, function(i, item) {
 			$(i).popover('destroy');
 		});
+	}
+	
+	function hideError(inputSelector) {
+	    $(inputSelector).closest(".control-group").removeClass("error");
+	    $(inputSelector).popover('destroy');
+	}
+	
+	function showError(field, message) {
+	    showErrors([{field: field, message: message}]);
 	}
 	
 	function showErrors(errors) {
@@ -142,13 +171,13 @@
 		}
 	}
 
-	function enableSection($checkbox, sectionSelector, inputSelector) {
+	function enableSection($checkbox, sectionSelector) {
 		$checkbox.attr("disabled", "disabled");
+		var $section = $(sectionSelector);
 		if(isChecked($checkbox)) {
-			$(sectionSelector).collapse('show');
+			$section.collapse('show');
 		} else {
-			$(inputSelector).val("");
-			$(sectionSelector).collapse("hide");
+			$section.collapse("hide");
 		}
 		$checkbox.removeAttr("disabled");
 	}
@@ -159,10 +188,11 @@
 		for(var i = 0; i < nodes.length; i++) {
 			catIds.push(nodes[i].id);
 		}
-
-		return {
+        
+		var result = {
 			clientId : $("#txtClientId").val(),
 			fpVisible : isChecked("#btnFeaturedProductsVisible"),
+			fpPopName : $("#txtFpPopName").val(),
 			fpOfferId : ($("#selectOffers").val())?$("#selectOffers").val():"",
 			fcIds : catIds,
 			fcNumProducts : $("#numProducts").val(),
@@ -170,6 +200,16 @@
 			crPopName : $("#inputCandyRackPopName").val(),
 			pageSize : $("#pageSize").val()
 		};
+		
+		if(!result.fpVisible) {
+		    result.fpPopName = "";
+		    result.fpOfferId = "";
+		}
+		if(!result.crVisible) {
+		    result.crPopName = "";
+		}
+		
+		return result;
 	}
 	
 	function addError(field, message) {
@@ -182,9 +222,14 @@
 		if(!fields.clientId || fields.clientId == "") {
 			errors.push(addError("#txtClientId","Client ID is required"));
 		}
-		if(fields.fpVisible && !fields.fpOfferId) {
-			errors.push(addError("#selectOffers","Select an Offer ID for the Featured Products"));;
-		}
+		if(fields.fpVisible) {
+            if(!fields.fpPopName) {
+                errors.push(addError("#txtFpPopName","Enter a POP Name for the Featured Products"));
+            }
+            if(!fields.fpOfferId) {
+                errors.push(addError("#selectOffers","Select an Offer ID for the Featured Products"));
+            }
+		} 
 		if(!$.isNumeric(fields.fcNumProducts) || fields.fcNumProducts.indexOf(".") > 0) {
 			errors.push(addError("#numProducts","The number of products must be an integer"));
 		}
@@ -207,7 +252,7 @@
 			},
 			featuredProducts : {
 				visible : fields.fpVisible,
-				pop : "Banner_ShoppingCartLocal",
+				pop : fields.fpPopName,
 				offer : fields.fpOfferId
 			},
 			candyRack : {
@@ -288,12 +333,44 @@
 		});
 
 		$("#btnCandyRackVisible").click(function(e) {
-			toggleCheckbox($(this));
-			enableSection($(this), "#sectionCandyRack", "#inputCandyRackPopName")
+			var $this = $(this);
+			hideError($this.closest(".row-fluid").find(".dr-input"));
+			
+			toggleCheckbox($this);
+			enableSection($this, "#sectionCandyRack")
 		});
 		$("#btnFeaturedProductsVisible").click(function(e) {
-			toggleCheckbox($(this));
-			enableSection($(this), "#sectionFeaturedProducts", "#selectOffers")
+		    var $this = $(this);
+            hideError($this.closest(".row-fluid").find(".dr-input"));
+            
+			toggleCheckbox($this);
+			enableSection($this, "#sectionFeaturedProducts")
+		});
+		
+		$("#btnSearchOffers").click(function(e) {
+		    var pop = $("#txtFpPopName").val();
+		    if(!pop) {
+		        showError("#txtFpPopName", "Enter a POP Name");
+		    } else {
+		        setFpLoadingState(true);
+		        loadOffers(pop)
+		          .fail(function(response) {
+                    var msg = (response.status == 404)?"POP not found":response.details.error.description;
+                    showError("#txtFpPopName", msg);
+		        })
+		        .fin(function() {
+		            setFpLoadingState(false);
+		        });
+		    }
+		});
+		
+		$("#txtFpPopName").change(function() {
+		    $("#selectOffers").html("");
+		});
+		
+		$(".dr-input").focus(function(e) {
+            e.preventDefault();
+            hideError(this); 
 		});
 
 		$("#btnLaunch").click(onFormSubmit);

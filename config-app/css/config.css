@@ -1,10 +1,18 @@
-.loader {
+.loader-blue {
 	background-image: url(../img/ajax-loader-blue.gif);
     background-repeat: no-repeat;
     width: 16px;
     height: 16px;
 	display: none;	
 	margin-right: 5px;
+}
+
+.loader-white {
+	background-image: url(../img/ajax-loader-white.gif);
+    background-repeat: no-repeat;
+    width: 14px;
+    height: 14px;
+	display: none;	
 }
 
 .rowLoader {

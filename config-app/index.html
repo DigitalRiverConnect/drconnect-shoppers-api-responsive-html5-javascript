@@ -49,7 +49,7 @@
 				<div id="clientIdGroup" class="control-group">
 					<p><input type="text" id="txtClientId" class="input-xlarge" value="604df5ac990fbc67dab8fc098af271e6" placeholder="Enter the Client ID"></p>
 				</div>
-				<a id="btnConnect" class="btn btn-large btn-primary"><span id="loadingIcon" class="loader"></span><span id="loadingText">Connect</span></a>
+				<a id="btnConnect" class="btn btn-large btn-primary"><span id="loadingIcon" class="loader-blue"></span><span id="loadingText">Connect</span></a>
 				<div class="rowLoader" class="row-fluid">
 					<div  class="loader span1 offset6" ></div>
 				</div>
@@ -75,15 +75,25 @@
 							</label>
 							Featured Products
 						</legend>
-						<div class="control-group collapse in" id="sectionFeaturedProducts">
-							<label class="control-label" for="selectOffers">Offer</label>
-							<div class="controls">
-								<select id="selectOffers" name="featuredProductsOfferId"></select>
+						<div id="sectionFeaturedProducts" class="collapse in">
+							<div class="control-group" >
+								<label class="control-label" for="txtFpPopName">POP Name</label>
+								<div class="controls">
+									<div class="input-append">
+										<input type="text" id="txtFpPopName" class="dr-input span10" name="featuredProductsPopName"></input>
+									 	<button id="btnSearchOffers" class="btn"><span class="loading-icon loader-white"></span><i class="icon-search"></i></button>
+									</div>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="selectOffers">Offer</label>
+								<div class="controls">
+									<select id="selectOffers" class="dr-input" name="featuredProductsOfferId"></select>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="row-fluid ">
-					
+					<div class="row-fluid">
 						<legend>
 							<label class="inline dr-checkbox">
 								<button id="btnCandyRackVisible" type="button" class="btn btn-small" data-toggle="button"><i class="icon-ok"></i></button>
@@ -94,7 +104,7 @@
 						<div class="control-group collapse" id="sectionCandyRack">
 							<label class="control-label" for="inputCandyRackPopName">POP Name</label>
 							<div class="controls">
-								<input type="text" id="inputCandyRackPopName" name="candyRackPopName" />
+								<input type="text" id="inputCandyRackPopName" class="dr-input span10" name="candyRackPopName" />
 							</div>
 						</div>
 					</div>
@@ -103,7 +113,7 @@
 						<div class="control-group">
 							<label class="control-label" for="pageSize">Page size</label>
 							<div class="controls">
-								<input type="number" id="pageSize" value="5" name="pageSize"  />
+								<input type="number" id="pageSize" class="dr-input" name="pageSize"  />
 							</div>
 						</div>
 					</div>
@@ -113,7 +123,7 @@
 					<div class="control-group">
 						<label class="control-label" for="numProducts">Num of products</label>
 						<div class="controls">
-							<input type="number" id="numProducts" name="numProductsPerCat" value="3"  />
+							<input type="number" id="numProducts" class="dr-input" name="numProductsPerCat" />
 						</div>
 					</div>
 					<div class="control-group">
