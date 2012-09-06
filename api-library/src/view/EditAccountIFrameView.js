@@ -21,7 +21,7 @@ ns.EditAccountIFrameView.prototype.open = function(reqToken, onViewLoadedCallbac
         iframe = this.create();
     } 
     
-    var finalUri = this.uri + "&token=" + reqToken; 
+    var finalUri = this.uri + "&dr_limited_token=" + reqToken; 
     iframe.onload = function() {
         if(this.src == finalUri) {
             onViewLoadedCallback();
