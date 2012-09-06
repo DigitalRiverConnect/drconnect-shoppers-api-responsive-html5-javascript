@@ -55,7 +55,8 @@ ns.HomeController = ns.BaseController.extend({
             	var catId = ids[i];
             	var categoryByIdPromise = that.categoryService.getCategoryById(catId);
             	$.when(categoryByIdPromise).done(function(categories) {
-                	that.renderFeaturedCategoryWidget(that.categoryService.getCategoryById(catId));
+                	// that.renderFeaturedCategoryWidget(that.categoryService.getCategoryById(catId));
+                	that.renderFeaturedCategoryWidget(categories);
 		        });
                 $.when(categoryByIdPromise).fail(function(error) {
                 	that.renderFeaturedCategoryError(error);
