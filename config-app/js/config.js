@@ -1,4 +1,4 @@
-(function(window, $) {
+(function(window, $, Client) {
 	var client;
 	var popovers = {};
 	var enableFeaturedProducts = true;
@@ -19,7 +19,7 @@
 		$("#form").hide();
 		setConnectingState(true);
 		
-		client = new dr.api.Client(cid, {});
+		client = new Client(cid, {});
 		client.connect().then(function() {
 			var p = Q.all([loadOffers(DEFAULT_FP_POP_NAME), loadCategories()]).then(function(results) {
 				$("#spanClientId").html(cid);
@@ -376,4 +376,4 @@
 		$("#btnLaunch").click(onFormSubmit);
 		$("#btnGenerateJSON").click(onGenerateJSON);
 	});
-})(window, jQuery);
+})(window, jQuery, dr.api.Client);
