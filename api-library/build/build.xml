@@ -141,12 +141,15 @@
 			// Set each property in the project environment.
 
 				var result = struct.join(',');
+				struct.splice(0,1);
+				var resultNoQ = struct.join(',');
 				/*
 				echo = project.createTask("echo");
 				echo.setMessage(i + "=" + struct[i]);
 				echo.perform();
 				*/
 				project.setProperty("scripts.files",result);
+				project.setProperty("scripts.files.no.q",resultNoQ);
 
 
 		</script>
@@ -213,6 +216,7 @@
 		<apply executable="java" parallel="false" verbose="true" failonerror="true">
 			<fileset dir="${dir.intermediate}/${dir.js}" casesensitive="yes">
 				<include name="scripts-concat.js"/>        
+				<include name="scripts-noq-concat.js"/>
 			</fileset>
 
 			<arg line="-jar"/>
@@ -236,6 +240,9 @@
       <concat destfile="./${dir.intermediate}/${dir.js}/scripts-concat.js" overwrite="no" fixlastline="yes">
           <filelist dir="${dir.project}/${dir.js}" files="${scripts.files}" />
       </concat>
+      <concat destfile="./${dir.intermediate}/${dir.js}/scripts-noq-concat.js" overwrite="no" fixlastline="yes">
+          <filelist dir="${dir.project}/${dir.js}" files="${scripts.files.no.q}" />
+      </concat>      
   </target>	
   
   <target name="-js.publish" depends="-js.main.concat" description="(PRIVATE) Concatenates the JS files in dir.js">
@@ -250,6 +257,19 @@
 				<include name="scripts-concat.js"/>   
 			</fileset>
 			<mapper type="glob" from="scripts-concat.js" to="${output.file.js}"/>				
+		</copy>			
+
+		<copy todir="${dir.publish}/${output.dir.js}">
+			<fileset dir="${dir.intermediate}/${dir.js}" casesensitive="yes">
+				<include name="scripts-noq-concat.min.js"/>   
+			</fileset>
+			<mapper type="glob" from="scripts-noq-concat.min.js" to="${output.file.noq.min.js}"/>				
+		</copy>	
+		<copy todir="${dir.publish}/${output.dir.js}">
+			<fileset dir="${dir.intermediate}/${dir.js}" casesensitive="yes">
+				<include name="scripts-noq-concat.js"/>   
+			</fileset>
+			<mapper type="glob" from="scripts-noq-concat.js" to="${output.file.noq.js}"/>				
 		</copy>			
 
 		<copy todir="${dir.publish}/${output.dir.js.libs}">
