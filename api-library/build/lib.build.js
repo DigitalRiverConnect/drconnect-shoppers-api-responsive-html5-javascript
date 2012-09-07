@@ -1,7 +1,6 @@
 ({
     baseUrl: "../src",
     optimize: 'none',
-    namespace: "dr.require",
     paths: {
         "Util": "util/util",
         "Ajax": "util/ajax",
@@ -9,8 +8,8 @@
         'q': "../libs/q"
     },
     name: "../build/almond",
-    include: ["Api"],
-    insertRequire: ['Api'],
-    out: "../target/drapi.js",
+    include: ["Wrapper"],
+    insertRequire: ['Wrapper'],
+    out: "../target/drapi.min.js",
     wrap: true          
 })
