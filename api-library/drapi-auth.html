@@ -1,0 +1,23 @@
+<script type="text/javascript">
+	var parentWindow = (window.opener != null)?window.opener:window.parent;
+	var token = getFragmentParameter("access_token");
+	var expirationTime = getFragmentParameter("expires_in");
+	var error = getFragmentParameter("error");
+	var error_description = getFragmentParameter("error_description");
+    parentWindow.dr.api.callbacks.auth(token, expirationTime, error, error_description);
+
+function getFragmentParameter(name)  {
+ var params = window.location.hash;
+ if(params == "") return "";
+ params = params.substring(1);
+ params = params.split("&");
+ for(i=0;i<params.length;i++)
+ {
+  var entry = params[i].split("=");
+  if(entry[0] == name) return decodeURI(unescape(entry[1]));
+ }
+ return "";
+}
+
+</script>
+

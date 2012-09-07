@@ -1,7 +1,8 @@
-var ns = namespace('dr.api.service');
-/**
- * Service Manager for Shopper Resource
- */
-ns.OrderService = ns.BaseService.extend({
-    uri: ns.URI.ORDERS
-});    
+define(['service/BaseService', 'Config'], function(BaseService, Config) {
+    /**
+     * Service Manager for Order Resource
+     */
+    return BaseService.extend({
+        uri: Config.service.URI.ORDERS
+    });
+});

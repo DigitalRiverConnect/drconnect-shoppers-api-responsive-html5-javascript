@@ -1,27 +1,27 @@
-var ns = namespace('dr.api.service');
-
-/**
- * Service Manager for Offer Resource
- */
-ns.OfferService = ns.BaseService.extend({
-    
-    uri: ns.URI.OFFERS,
-    
+define(['service/BaseService', 'Config'], function(BaseService, Config) {
     /**
-     * Gets the offers for a POP 
+     * Service Manager for Offer Resource
      */
-    list: function(popName, parameters, callbacks) {
-        var uri = replaceTemplate(this.uri, {'popName':popName});
-
-        return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
-    },
+    return BaseService.extend({
+        
+        uri: Config.service.URI.OFFERS,
+        
+        /**
+         * Gets the offers for a POP 
+         */
+        list: function(popName, parameters, callbacks) {
+            var uri = this.replaceTemplate(this.uri, {'popName':popName});
     
-    /**
-     * Gets an offer
-     */
-    get: function(popName, offerId, parameters, callbacks) {
-        var uri = replaceTemplate(this.uri, {'popName':popName}) + '/' + offerId;
-
-        return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
-    }
+            return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
+        },
+        
+        /**
+         * Gets an offer
+         */
+        get: function(popName, offerId, parameters, callbacks) {
+            var uri = this.replaceTemplate(this.uri, {'popName':popName}) + '/' + offerId;
+    
+            return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
+        }
+    });
 });

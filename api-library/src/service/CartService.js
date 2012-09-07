@@ -1,98 +1,98 @@
-var ns = namespace('dr.api.service');
-
-/**
- * Service Manager for Cart Resource
- */
-ns.CartService = ns.BaseService.extend({
-    uri: ns.URI.CART,
-    
+define(['service/BaseService', 'Config'], function(BaseService, Config) {
     /**
-     * Adds a Line Item
-     * @param product: Product to add to the cart
-     * @addToCartUri: (Optional) Uri to add the product to the cart. If it is informed the service uses this uri to add
-     * the product to the cart, otherwise it uses product.addProductToCart.uri. Usefull for adding a product which is part of
-     * and offer
-     * @param parameters
-     * @param callback service response
+     * Service Manager for Cart Resource
      */
-    addLineItem: function(product, addToCartUri, parameters, callbacks) {
-    	var uri;
-    	if(addToCartUri){
-    		uri = addToCartUri;
-    	}else{
-    		uri = product.addProductToCart.uri;
-    	}
-        return this.makeRequest(this.session.create(uri, parameters), callbacks);
-    },
-    
-    /**
-     * Retrurns the cart
-     * @param parameters
-     * @param callback service response (cart)
-     */
-    get: function(parameters, callbacks) {
-        return this.makeRequest(this.session.retrieve(this.uri, parameters), callbacks);
-    },
-    
-    /**
-     * Removes a Line Item
-     * @param lineItem to remove
-     * @param parameters
-     * @param callback service response
-     */
-    removeLineItem: function(lineItem, parameters, callbacks){
-    	return this.makeRequest(this.session.remove(lineItem.uri, parameters), callbacks);	
-    },
-    
-    /**
-     * Gets the shipping options for a cart
-     * @param parameters
-     * @param callback service response
-     */
-    getShippingOptions: function(parameters, callbacks){
-    	var uri = dr.api.service.URI.CART_SHIPPING_OPTIONS;
-    	
-    	return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
-    },
-    
-    /**
-     * Gets the offers for a cart, depending on the product added to it
-     * @popName The name of the Point Of Promotion containing the offers
-     * @param parameters
-     * @param callback service response
-     */
-    getOffers: function(popName, parameters, callbacks){
-    	var uri = replaceTemplate(dr.api.service.URI.CART_OFFERS, {'popName':popName});
-    	
-    	return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
-    },
-    
-    /**
-     * Applies shipping option to cart
-     * @param parameters
-     * @param callback service response
-     */
-    applyShippingOption: function(parameters, callbacks){
-    	var uri = dr.api.service.URI.CART_APPLY_SHIPPING_OPTION;
-    	
-    	return this.makeRequest(this.session.create(uri, parameters), callbacks);
-    },
-    
-    /**
-     * Applies shopper options to the cart
-     */
-    applyShopper: function(parameters, callbacks) {
-    	var uri = dr.api.service.URI.CART_APPLY_SHOPPER;
-    	
-    	return this.makeRequest(this.session.create(uri, parameters), callbacks);
-    },
-    
-    /**
-     * Submits a cart
-     */
-    submit: function(parameters, callbacks) {
-    	var uri = dr.api.service.URI.ORDERS;
-    	
-    	return this.makeRequest(this.session.create(uri, parameters), callbacks);
-    }
+    return BaseService.extend({
+        uri: Config.service.URI.CART,
+        
+        /**
+         * Adds a Line Item
+         * @param product: Product to add to the cart
+         * @addToCartUri: (Optional) Uri to add the product to the cart. If it is informed the service uses this uri to add
+         * the product to the cart, otherwise it uses product.addProductToCart.uri. Usefull for adding a product which is part of
+         * and offer
+         * @param parameters
+         * @param callback service response
+         */
+        addLineItem: function(product, addToCartUri, parameters, callbacks) {
+            var uri;
+            if(addToCartUri){
+                uri = addToCartUri;
+            }else{
+                uri = product.addProductToCart.uri;
+            }
+            return this.makeRequest(this.session.create(uri, parameters), callbacks);
+        },
+        
+        /**
+         * Retrurns the cart
+         * @param parameters
+         * @param callback service response (cart)
+         */
+        get: function(parameters, callbacks) {
+            return this.makeRequest(this.session.retrieve(this.uri, parameters), callbacks);
+        },
+        
+        /**
+         * Removes a Line Item
+         * @param lineItem to remove
+         * @param parameters
+         * @param callback service response
+         */
+        removeLineItem: function(lineItem, parameters, callbacks){
+            return this.makeRequest(this.session.remove(lineItem.uri, parameters), callbacks);  
+        },
+        
+        /**
+         * Gets the shipping options for a cart
+         * @param parameters
+         * @param callback service response
+         */
+        getShippingOptions: function(parameters, callbacks){
+            var uri = Config.service.URI.CART_SHIPPING_OPTIONS;
+            
+            return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
+        },
+        
+        /**
+         * Gets the offers for a cart, depending on the product added to it
+         * @popName The name of the Point Of Promotion containing the offers
+         * @param parameters
+         * @param callback service response
+         */
+        getOffers: function(popName, parameters, callbacks){
+            var uri = this.replaceTemplate(Config.service.URI.CART_OFFERS, {'popName':popName});
+            
+            return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
+        },
+        
+        /**
+         * Applies shipping option to cart
+         * @param parameters
+         * @param callback service response
+         */
+        applyShippingOption: function(parameters, callbacks){
+            var uri = Config.service.URI.CART_APPLY_SHIPPING_OPTION;
+            
+            return this.makeRequest(this.session.create(uri, parameters), callbacks);
+        },
+        
+        /**
+         * Applies shopper options to the cart
+         */
+        applyShopper: function(parameters, callbacks) {
+            var uri = Config.service.URI.CART_APPLY_SHOPPER;
+            
+            return this.makeRequest(this.session.create(uri, parameters), callbacks);
+        },
+        
+        /**
+         * Submits a cart
+         */
+        submit: function(parameters, callbacks) {
+            var uri = Config.service.URI.ORDERS;
+            
+            return this.makeRequest(this.session.create(uri, parameters), callbacks);
+        }
+    });
 });
