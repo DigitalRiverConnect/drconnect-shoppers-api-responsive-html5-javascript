@@ -46,7 +46,7 @@ require(["jquery", "drapi", 'q', 'bootstrap', 'jstorage', 'tree', 'prettify'], f
             });
             return p;
         }).fail(function(error) {
-            showErrors("#txtClientId", "Error connecting to the server, please verify the Client ID");
+            showError("#txtClientId", "Error connecting to the server, please verify the Client ID");
         }).fin(function() {
             setConnectingState(false);
         });
