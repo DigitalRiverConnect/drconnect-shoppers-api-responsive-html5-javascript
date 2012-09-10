@@ -4,7 +4,7 @@
 	var expirationTime = getFragmentParameter("expires_in");
 	var error = getFragmentParameter("error");
 	var error_description = getFragmentParameter("error_description");
-    parentWindow.dr.api.auth.authCallback(token, expirationTime, error, error_description);
+    parentWindow.dr.api.callbacks.auth(token, expirationTime, error, error_description);
 
 function getFragmentParameter(name)  {
  var params = window.location.hash;

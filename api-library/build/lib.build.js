@@ -1,5 +1,6 @@
 ({
     baseUrl: "../src",
+    optimize:"none",
     paths: {
         "Util": "util/util",
         "Ajax": "util/ajax",
@@ -8,7 +9,9 @@
     },
     name: "../build/almond",
     include: ["Wrapper"],
-    insertRequire: ['Wrapper'],
-    out: "../target/drapi.min.js",
-    wrap: true          
+    out: "../target/drapi.js",
+    wrap: {
+        start: "(function() {",
+        end: "require(['Wrapper'], null, null, true); }());"
+    }        
 })

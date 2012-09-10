@@ -1,4 +1,4 @@
-define(['service/ShopperService', 'auth/AuthManager', 'Config', 'Client'], function(ShopperService, AuthManager, Config, Client) {
+define(['service/ShopperService', 'auth/AuthManager', 'Config', 'Client', 'Util'], function(ShopperService, AuthManager, Config, Client, Util) {
     var dr = {};
     dr.api = {};
     
@@ -15,6 +15,7 @@ define(['service/ShopperService', 'auth/AuthManager', 'Config', 'Client'], funct
             auth: AuthManager.authCallback    
         },
         Client: Client,
-        authModes: Config.authMode 
+        authModes: Config.authMode,
+        util: Util
    }
 });

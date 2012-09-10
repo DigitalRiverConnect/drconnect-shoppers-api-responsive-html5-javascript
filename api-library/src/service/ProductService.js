@@ -9,7 +9,7 @@ define(['service/BaseService', 'Config'], function(BaseService, Config) {
          * list Products by Category 
          */
         listProductsByCategory: function(id, parameters, callbacks){
-            var uri = this.replaceTemplate(Config.URI.PRODUCTS_BY_CATEGORY, {'categoryId':id});
+            var uri = this.replaceTemplate(Config.service.URI.PRODUCTS_BY_CATEGORY, {'categoryId':id});
         
             return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
         },
@@ -18,7 +18,7 @@ define(['service/BaseService', 'Config'], function(BaseService, Config) {
          * search Products by keyword 
          */
         search: function(parameters, callbacks){
-            var uri = Config.URI.PRODUCTS_SEARCH;
+            var uri = Config.service.URI.PRODUCTS_SEARCH;
         
             return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
         },

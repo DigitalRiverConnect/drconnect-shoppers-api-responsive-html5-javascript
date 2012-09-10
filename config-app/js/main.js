@@ -5,7 +5,7 @@ require.config({
         "jcookie": "jcookie-min",
         'jstorage': "jstorage.min",
         'tree': 'tree.jquery',
-        "drapi": 'drapi.amd.min' 
+        "drapi": 'drapi.amd.noq.min' 
     },
     shim: {
         'jcookie': ['jquery'],

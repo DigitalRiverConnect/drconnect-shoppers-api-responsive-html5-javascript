@@ -41,7 +41,6 @@
 	<target name="build"
 			  depends="	-intro,
 						-copy,
-						-package,
 						-finish"/>
 
   <target name="-copy" depends="-mkdirs">
