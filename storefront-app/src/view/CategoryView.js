@@ -121,12 +121,9 @@ ns.CategoryView = ns.BaseView.extend({
 	 */
 	renderProductListPanel: function(model, selectedSort){
 		this.applyTemplate(this.containers.product, "#categoryProducts_panel",{headerTitle: model.categories.displayName, sortOptions: this.sortOptions, selectedSort: selectedSort});
-		if(model.productsList){
-			// If productsList response is loaded render the productsList
-			this.renderProductList(model);
-		}else{
-			// Shows loading message
-			this.applyTemplate("#products_list", "#loader",{message: "Loading Products..."});  
+		// If the model has no products shows a loading message
+		if(!model.productsList){
+			this.applyTemplate("#products_list", "#loader",{message: "Loading Products..."});
 		}
 	},
 	

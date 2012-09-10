@@ -57,9 +57,10 @@ ns.CategoryController = ns.BaseController.extend({
          */
 		$.when(categoriesPromise).done(function(categories) {
             that.model.categories = categories;
-            that.view.renderCategories(that.model);
-            that.view.renderProductListPanel(that.model, that.currentSort);
             that.subcategoriesResponseReceived = true;
+            that.view.renderCategories(that.model);
+            that.renderProductListPanel(that.model, that.currentSort);
+            
         });
         
         /**
@@ -68,11 +69,11 @@ ns.CategoryController = ns.BaseController.extend({
 		$.when(categoriesPromise).fail(function(error) {
 			that.model.categories = {};
 			that.model.categories.displayName = "Error"
-			that.view.renderCategories(that.model);
-			that.view.renderProductListPanel(that.model);
-			that.view.renderProductListError(error);
-			that.productListResponseReceived = true;
 			that.subcategoriesResponseReceived = true;
+			that.productListResponseReceived = true;
+			that.view.renderCategories(that.model);
+			that.renderProductListPanel(that.model);
+			that.view.renderProductListError(error);
         });
         
 		/**
@@ -82,8 +83,6 @@ ns.CategoryController = ns.BaseController.extend({
 		    that.model.productsList = products;
 		    that.productListResponseReceived = true;
 			that.renderProductList();
-			if(products.totalResultPages>1)
-            	that.view.applyPagination(products.totalResultPages,that.currentPageNumber);
 		});
 		
 	},
@@ -103,6 +102,16 @@ ns.CategoryController = ns.BaseController.extend({
     onProductSortChanged: function(e, params){
     	this.renderPage(params);
     },
+    
+    /**
+     * Renders the productListPanel and the products list if necessary
+     */
+    renderProductListPanel: function(model, sort){
+    	//render skeleton for this view
+        this.view.renderProductListPanel(model, sort);
+        this.renderProductList();
+        
+    },
 	
 	/**
 	 * This funtion renders productList when both responses (getSubCategories and listProductCategories) arrives
@@ -111,6 +120,9 @@ ns.CategoryController = ns.BaseController.extend({
 	renderProductList: function(){
 		if(this.subcategoriesResponseReceived  && this.productListResponseReceived){
 			this.view.renderProductList(this.model);
+			// Applies the pagination if necessary
+			if(this.model.productsList.totalResultPages>1)    
+            	this.view.applyPagination(this.model.productsList.totalResultPages,this.currentPageNumber);
 		}
 	},
 	
@@ -138,15 +150,15 @@ ns.CategoryController = ns.BaseController.extend({
 		
 		var productsPromise = this.getProducts({id:categoryId,numberPage:this.currentPageNumber, sort:this.currentSort});
 		
-		//render skeleton for this view
-        this.view.renderProductListPanel(this.model, this.currentSort);
+		//render skeleton for this view (puts the flag on false to avoid call renderProductList before the response has been received)
+		that.productListResponseReceived = false;
+        this.renderProductListPanel(this.model, this.currentSort);
         
         //loader for categories
         $.when(productsPromise).done(function(productList){
             that.model.productsList = productList;
-            that.view.renderProductList(that.model);    
-            if(productList.totalResultPages>1)    
-            	that.view.applyPagination(productList.totalResultPages,that.currentPageNumber);
+            that.productListResponseReceived = true;
+            that.renderProductList();
         });			
 	},
 	

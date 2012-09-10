@@ -138,7 +138,8 @@ ns.ProductService = Class.extend({
      */
     getCachedProductsByCategory: function(categoryId, page, pageSize) {
     	var products;
-    	if(pageSize == 3 ){
+    	// If the pagesize is the same as the featuredCategories pageSize returs the cached products
+    	if(pageSize == dr.acme.application.config.featuredCategories.numberOfProducts){
     		products = this.first3CategoryProducts[categoryId + "-p" + page];	
     	}else{
     		products = this.categoryProducts[categoryId + "-p" + page];
@@ -152,7 +153,8 @@ ns.ProductService = Class.extend({
      * Set the pageSize to data to determine in next requests if service can return cached products
      */
     cacheProductsByCategory: function(categoryId, page, pageSize, data) {
-    	if(pageSize == 3){
+    	// If the pagesize is the same as the featuredCategories pageSize returs the cached products
+    	if(pageSize == dr.acme.application.config.featuredCategories.numberOfProducts){
 			return this.first3CategoryProducts[categoryId + "-p" + page] = data;
     	}else{
         	return this.categoryProducts[categoryId + "-p" + page] = data;
