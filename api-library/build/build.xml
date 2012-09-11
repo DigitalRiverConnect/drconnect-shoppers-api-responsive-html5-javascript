@@ -3,30 +3,36 @@
 <project name="Digital River API library" default="build" basedir="../">
 	<!-- one back since we're in build/ -->
 
+	<!-- load property files -->
+	<property file="../build/default.properties"/>
+	<property file="build/default.properties"/>
+
 	<!-- Load in Ant-Contrib to give us access to some very useful tasks! -->
 	<!-- the .jar file is located in the tools directory -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml">
 		<classpath>
-			<pathelement location="../build/tools/ant-contrib-1.0b3.jar"/>
+			<pathelement location="${dir.build.tools}/ant-contrib-1.0b3.jar"/>
 		</classpath>
 	</taskdef>
-
-	<!-- load property files -->
-	<property file="../build/default.properties"/>
-	<property file="build/default.properties"/>
 
 	<target name="clean" depends="-clean"/>
 
 	<target name="build"
 			  depends="	-intro,
 			  			-clean,
-			  			-optimize"/>
+			  			-optimize,
+			  			-finish"/>
 
 	<target name="-clean" description="(PRIVATE) Wipe the previous build (Deletes the dir.output directory)">
 		<!-- This is a private target -->
 		<echo message="Cleaning up previous output directory..."/>
 		<delete dir="./${dir.output}/"/>
 	</target>				
+	
+	<target name="-finish" description="(PRIVATE) Finish message">
+		<!-- This is a private target -->
+		<echo message="Finished building API library!"/>
+	</target>
 
 
 

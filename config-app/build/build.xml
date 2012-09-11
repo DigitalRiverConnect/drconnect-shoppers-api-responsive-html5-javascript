@@ -19,8 +19,15 @@
 
 	<target name="build"
 			  depends="	-intro,
+			  			-clean,
 						-copy,
-						-optimize"/>
+						-optimize,
+						-finish"/>
+						
+	<target name="-finish" description="(PRIVATE) Finish message">
+		<!-- This is a private target -->
+		<echo message="Finished building Config App!"/>
+	</target>
 
   <target name="-copy" depends="-mkdirs">
 	<!-- This is a private target -->
