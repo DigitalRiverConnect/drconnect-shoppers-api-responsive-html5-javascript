@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<!DOCTYPE project>
+<project name="Digital River API Sample App" default="build" basedir="../">
+	<!-- one back since we're in build/ -->
+
+	<!-- Load in Ant-Contrib to give us access to some very useful tasks! -->
+	<!-- the .jar file is located in the tools directory -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${basedir}/build/tools/ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
+
+	<!-- load shell environment -->
+	<property environment="ENV" />
+
+	<!-- load property files -->
+	<property file="./build/default.properties"/>
+
+	
+	<target name="build"
+			  depends="	-intro,
+			  			-clean,
+						build.library,
+						build.config,
+						build.storefront,
+						build.war,
+						-finish "/>
+
+	<target name="clean.all">
+		<echo message="Cleaning API library output"/>
+		<ant antfile="${dir.library}/${dir.build}/build.xml" target="clean" inheritAll="false" />
+		
+		<echo message="Cleaning Config app output"/>
+		<ant antfile="${dir.config.app}/${dir.build}/build.xml" target="clean" inheritAll="false" />
+		
+		<echo message="Cleaning Storefront app output"/>
+		<ant antfile="${dir.storefront.app}/${dir.build}/build.xml" target="clean" inheritAll="false" />
+		
+		<echo message="Deleting WAR"/>
+		<antcall target="clean" />
+	</target>
+						
+	<target name="-intro" description="(PRIVATE) Kindly inform the developer about the impending magic">
+		<!-- This is a private target -->
+
+		<echo message="====================================================================="/>
+		<echo message=" "/>      
+		<echo message="Building Digital River API Sample App (mode: ${env})"/>
+		<echo message=" "/>
+		<echo message="====================================================================="/>
+		<echo message=" "/>
+		<echo message=" "/>
+	</target>
+	
+	<target name="-finish" description="(PRIVATE) Wipe the previous build (Deletes the dir.publish directory">
+		<echo message="DONE! The WAR file is located at ${dir.war}/${file.war}" />
+	</target>	
+	
+	
+	<target name="clean" depends="-clean"/>
+	
+	<target name="-clean" description="(PRIVATE) Wipe the previous build (Deletes the dir.output directory)">
+		<!-- This is a private target -->
+		<echo message="Cleaning up previous build directory..."/>
+		<delete dir="${dir.war}/"/>
+	</target>	
+	
+	<target name="build.library">
+		<ant antfile="${dir.library}/${dir.build}/build.xml" target="build" inheritAll="false" >
+			<property name="env" value="${env}"/>
+		</ant>	
+	</target>
+	
+	<target name="build.config" depends="-copy.library.to.config">
+		<ant antfile="${dir.config.app}/${dir.build}/build.xml" target="build" inheritAll="false" >
+			<property name="env" value="${env}"/>
+		</ant>	
+	</target>
+	
+	<target name="-copy.library.to.config">
+		<echo message="Copying over library to config app..."/>
+		
+		<!-- Check if the built library file exists --> 
+    	<if>
+    		<not>
+	        	<available file="${dir.library}/${dir.output}/drapi.amd.noq.min.js"/>
+    		</not>
+        	<then>
+        		<!-- If it doesn't, build the library before continuing -->
+        		<echo message="Library built file is not available, building library before continuing..."/>
+        		<antcall target="build.library" />
+        	</then>
+    	</if>
+
+		<!-- Copy library to config app -->
+		<copy todir="${dir.config.app}/js">
+	    	<fileset dir="${dir.library}/${dir.output}">
+				<include name="drapi.amd.noq.min.js"/>
+			</fileset>
+	    </copy>
+	</target>  
+
+	<target name="build.storefront" depends="-copy.library.to.storefront">
+		<ant antfile="${dir.storefront.app}/${dir.build}/build.xml" target="build" inheritAll="false" >
+			<property name="env" value="${env}"/>
+		</ant>	
+	</target>
+	
+	<target name="-copy.library.to.storefront">
+		<echo message="Copying over library to storefront app..."/>
+		
+		<!-- Check if the built library file exists --> 
+    	<if>
+    		<not>
+	        	<available file="${dir.library}/${dir.output}/drapi.js"/>
+    		</not>
+        	<then>
+        		<!-- If it doesn't, build the library before continuing -->
+        		<echo message="Library built file is not available, building library before continuing..."/>
+        		<antcall target="build.library" />
+        	</then>
+    	</if>
+    	
+    	<!-- Copy built library to the storefront app -->
+	    <copy todir="${dir.storefront.app}/libs">
+			<fileset dir="${dir.library}/${dir.output}">
+          		<include name="drapi.js"/>
+          	</fileset>
+		</copy>
+	</target>  
+	
+	<target name="build.war" depends="-mkdir-webapp">
+		<echo message="Creating WAR"/>
+		<antcall target="-copy-webapp-storefront" />
+		<antcall target="-copy-webapp-config" />
+		<antcall target="-process.webapp.files" />
+		
+		<war destfile="${dir.war}/${file.war}" webxml="${dir.publish}/WEB-INF/web.xml">
+			<fileset dir="${dir.publish}"/>
+		</war>
+		
+		<echo message="Deleting webapp dir"/>
+		<delete dir="${dir.publish}/"/>
+	</target>
+	
+	
+	<target name="-mkdir-webapp" depends="-clean">
+		<echo message="Creating final webapp dirs"/>
+		<mkdir dir="${dir.publish}"/>
+		<mkdir dir="${dir.publish.config}"/>
+	</target>
+	
+	<target name="-copy-webapp-storefront">
+		<!-- Storefront copy -->
+		<echo message="Copying Storefront app to publish dir"/>
+
+		<!-- Check if the built storefront exists --> 
+    	<if>
+    		<not>
+	        	<available file="${dir.storefront.app}/${dir.output}" type="dir"/>
+    		</not>
+        	<then>
+        		<!-- If it doesn't, build the storefront app before continuing -->
+        		<echo message="Built Storefront app is not available, building it before continuing..."/>
+        		<antcall target="build.storefront" />
+        	</then>
+    	</if>
+    	        
+		<copy todir="${dir.publish}">
+			<fileset dir="${dir.storefront.app}/${dir.output}">
+	        	<include name="*/**"/>
+	        </fileset>
+		</copy>
+	</target>
+	
+	<target name="-copy-webapp-config">
+		<!-- Config app copy -->
+		<echo message="Copying Config app to publish dir"/>
+		
+		<!-- Check if the built config app exists --> 
+    	<if>
+    		<not>
+	        	<available file="${dir.config.app}/${dir.output}" type="dir"/>
+    		</not>
+        	<then>
+        		<!-- If it doesn't, build the config app before continuing -->
+        		<echo message="Built Config app is not available, building it before continuing..."/>
+        		<antcall target="build.config" />
+        	</then>
+    	</if>		
+		<copy todir="${dir.publish.config}">
+			<fileset dir="${dir.config.app}/${dir.output}">
+	        	<include name="*/**"/>
+	        </fileset>
+		</copy>		
+	</target>
+	
+	<target name="-copy.war.dirs">
+	  	<copy todir="${dir.publish}">
+		  	<fileset dir="build/${dir.war.support}/">
+		      	<include name="*/**"/>
+			</fileset>
+		</copy>	
+	</target>
+  
+	<target name="-process.webapp.files" depends="-copy.war.dirs">
+		<var name="matchRegex" value="WEBAPP_NAME"/>
+        <var name="replaceRegex" value="${project.name}"/>
+
+		<replaceregexp>
+			<regexp pattern="${matchRegex}"/>
+			<substitution expression="${replaceRegex}"/>
+			<fileset dir="${dir.publish}/WEB-INF" includes="web.xml"/>
+		</replaceregexp>	
+	</target>
+</project>

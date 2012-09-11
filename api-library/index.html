@@ -3,182 +3,27 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<title>Untitled Document</title>
-		<script src="libs/jquery.min.js"></script>
-		<script src="libs/q.js"></script>
-		<script src="src/drapi.js" type="text/javascript"></script>
-		<script type="text/javascript">
-
-			//TODO: test
-			var client;
-			dr.api.devLoader.load(start);
-
-
-			function start() {
-				var isDummy = this.getQueryStringParameter("dummy");
-				
-				var options = {
-					error: onError, 
-					authElementId: "login", 
-					authMode: dr.api.authMode.IFRAME
-				};
-				client = new dr.api.Client("604df5ac990fbc67dab8fc098af271e6", options);
-				updateStatus();
-			}
-
-			/**
-			 * Updates the session status on the UI
-			 */
-			function updateStatus() {
-				var si = client.getSessionInfo();
-				$("#connected").html(si.connected.toString());
-				$("#auth").html(si.authenticated.toString());
-				$("#token").html(si.token);
-			}
-
-			function connect(){
-				client.connect(function() {
-					updateStatus();	
-				});
-				
-			}
-			
-			function login(){
-				client.login(function(token) {
-					updateStatus();
-				});
-			}
-			
-			function disconnect(){
-				client.disconnect(function() {
-					updateStatus();	
-				});
-				
-			}
-			
-			function logout(){
-				client.logout(function(token) {
-					updateStatus();
-				});
-			}						
-
-			function getProducts(){
-				client.products.list({},function(data) {
-					alert(JSON.stringify(data));
-					updateStatus();
-				});	
-			}
-			
-			function getProduct(){
-				client.products.get("248254100", {}, function(data) {
-					alert(JSON.stringify(data));
-					updateStatus();
-				});	
-			}
-			
-			function productSearch(){
-				var keyword = 'Soft';
-				client.products.search({keyword: keyword, expand: "product"} , function(data) {
-					alert(JSON.stringify(data));
-					updateStatus();
-				});	
-			}
-			
-			function getProductOffers(){
-				client.productOffers.list("Banner_ShoppingCartLocal", "2384691608", {"expand": "productOffer"}, function(data) {
-					alert(JSON.stringify(data));
-					updateStatus();
-				});	
-			}
-			
-			function getProductOffer(){
-				client.productOffers.get("Banner_ShoppingCartLocal", "2384691608", 248254100, {}, function(data) {
-					alert(JSON.stringify(data));
-					updateStatus();
-				});	
-			}
-			
-			function getCategories(){
-				client.categories.list({"expand": "category"}, function(data) {
-					alert(JSON.stringify(data));
-					updateStatus();
-				});	
-			}
-			
-			function getCategory(){
-				client.categories.get("57618400", {"expand": "Products"}, function(data) {
-					alert(JSON.stringify(data));
-					updateStatus();
-				});	
-			}
-			
-			function addLineItem(){
-				client.cart.addLineItem({"AddProductToCart":{"uri":"http://23.21.197.49/v1/shoppers/me/carts/active/line-items?productid=248216500"}}, {quantity:'2'}, function(data) {
-					alert(JSON.stringify(data));
-					updateStatus();
-				});	
-			}
-			
-			function viewCart(){
-				client.cart.get({"expand":"LineItems"}, function(data) {
-					alert(JSON.stringify(data));
-					updateStatus();
-				});	
-			}
-			
-			function removeLineItem(){
-				client.cart.removeLineItem({"relation": "http://dev.digitalriver.com/api-overview/LineItemsAPI",
-											"uri": 'http://23.21.197.49/v1/shoppers/me/carts/active/line-items/12472639519'},{}, function(data) {
-					alert(JSON.stringify(data));
-					updateStatus();
-				});	
-			}
-			
-			function listByCategory(){
-				client.categories.listByCategory("58783700" ,{} , function(data) {
-					alert(JSON.stringify(data));
-					updateStatus();
-				});	
-			}
-					
-			function onError(e){
-				alert(e);
-				updateStatus();
-			}
-			
-			function getQueryStringParameter(name) {
-			    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
-			    if (!results) { 
-			        return "0"; 
-			    }
-			    return results[1] || 0;
-			}
-			
-			function getShopperInfo(name){
-				client.shopper.get(null, function(data) {
-					alert(JSON.stringify(data));
-				});	
-			}
-			
-		</script>
+		<!--<script src="libs/jquery.min.js"></script>-->
+		<script data-main="src/main" src="libs/require-jquery.js"></script>
 	</head>
 	
 	<body>
-		<input type="button" id="test" value="connect" onclick="connect();"/>
-		<input type="button" id="test" value="login" onclick="login();"/>
-		<input type="button" id="test" value="logout" onclick="logout();"/>
-		<input type="button" id="test" value="disconnect" onclick="disconnect();"/>
-		<input type="button" id="test" value="products.list" onclick="getProducts();"/>
-		<input type="button" id="test" value="products.get" onclick="getProduct();"/>
-		<input type="button" id="test" value="products.search" onclick="productSearch();"/>
-		<input type="button" id="test" value="productOffers.list" onclick="getProductOffers();"/>
-		<input type="button" id="test" value="productOffers.get" onclick="getProductOffer();"/>
-		<input type="button" id="test" value="categories.list" onclick="getCategories();"/>
-		<input type="button" id="test" value="categories.get" onclick="getCategory();"/>
-		<input type="button" id="test" value="categories.listByCategory" onclick="listByCategory();"/>
-		<input type="button" id="test" value="cart.addLineItem" onclick="addLineItem();"/>
-		<input type="button" id="test" value="cart.get" onclick="viewCart();"/>
-		<input type="button" id="test" value="cart.removeLineItem" onclick="removeLineItem();"/>
-		<input type="button" id="test" value="shopper.get" onclick="getShopperInfo();"/>
+		<input type="button" id="btnConnect" value="connect" />
+		<input type="button" id="btnLogin" value="login" />
+		<input type="button" id="btnLogout" value="logout"/>
+		<input type="button" id="btnDisconnect" value="disconnect" />
+		<input type="button" id="btnGetProducts" value="products.list" />
+		<input type="button" id="btnGetProduct" value="products.get" />
+		<input type="button" id="btnProductSearch" value="products.search" />
+		<input type="button" id="btnProductOffers" value="productOffers.list" />
+		<input type="button" id="btnGetProductOffer" value="productOffers.get" />
+		<input type="button" id="btnGetCategories" value="categories.list" />
+		<input type="button" id="btnGetCategory" value="categories.get" />
+		<input type="button" id="btnListByCategory" value="categories.listByCategory" />
+		<input type="button" id="btnAddLineItem" value="cart.addLineItem" />
+		<input type="button" id="btnViewCart" value="cart.get" />
+		<input type="button" id="btnRemoveLineItem" value="cart.removeLineItem" />
+		<input type="button" id="btnGetShopperInfo" value="shopper.get" />
 		<div>
 			<h3>Status</h3>
 			<p>Connected: <span id="connected"></span></p>

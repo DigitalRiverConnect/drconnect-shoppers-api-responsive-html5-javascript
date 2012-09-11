@@ -1,0 +1,404 @@
+<?xml version="1.0"?>
+<!DOCTYPE project>
+<project name="Digital River API library" default="build" basedir="../">
+	<!-- one back since we're in build/ -->
+
+	<!-- Load in Ant-Contrib to give us access to some very useful tasks! -->
+	<!-- the .jar file is located in the tools directory -->
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${basedir}/build/tools/ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
+
+	<!-- load shell environment -->
+	<property environment="ENV" />
+
+	<!-- load property files -->
+	<property file="build/config/default.properties"/>
+
+	<target name="clean" depends="-clean"/>
+
+	<!-- JSHint target, run separately -->
+	<target name="jshint">
+		<apply dir="${dir.project}/${dir.js}" executable="java" parallel="false" failonerror="true">
+			<fileset dir="./${dir.project}/">
+				<include name="**/${dir.js}/*.js"/>
+				<exclude name="**/*.min.js"/>
+				<exclude name="${dir.intermediate}/**/*.js"/>
+				<exclude name="**/${dir.js.libs}/"/>
+				<exclude name="**/${dir.publish}/"/>
+			</fileset>
+			<arg value="-jar" />
+			<arg path="./${dir.build.tools}/${tool.rhino}" />
+			<arg path="./${dir.build.tools}/${tool.jshint}" />
+			<srcfile/>
+			<arg value="${tool.jshint.opts}" />
+		</apply>
+		<echo>JSHint Successful</echo>
+	</target>
+
+	<target name="-build.old"
+			  depends="	-intro,
+						-html.process,
+						-js.libs.process,
+						-js.main.process,
+						-js.publish,
+						-html.publish,
+						-package,
+						-finish"/>
+
+<target name="build"
+			  depends="	-intro,
+						-optimize.library"/>
+
+
+	<target name="-clean" description="(PRIVATE) Wipe the previous build (Deletes the dir.publish directory">
+		<!-- This is a private target -->
+		<echo message="Cleaning up previous build directory..."/>
+		<delete dir="./${dir.intermediate}/"/>
+		<delete dir="./${dir.publish}/"/>
+	</target>				
+
+	<target name="-finish" description="(PRIVATE) Wipe the previous build (Deletes the dir.publish directory">
+		<!-- This is a private target -->
+		<echo message="Cleaning up previous build directory..."/>
+		<delete dir="./${dir.intermediate}/"/>
+		<echo message="DONE! The WAR file is located at ${dir.output}/${file.war}" />
+	</target>
+
+	<target name="-intro" description="(PRIVATE) Kindly inform the developer about the impending magic">
+		<!-- This is a private target -->
+
+		<echo message="====================================================================="/>
+		<echo message=" "/>      
+		<echo message="Building Digital River API Javascript library (mode: ${env})"/>
+		<echo message=" "/>
+		<echo message="====================================================================="/>
+		<echo message=" "/>
+		<echo message=" "/>
+
+	</target>
+
+	<target name="-mkdirs" depends="-clean">
+		<if>
+			<or>
+				<equals arg1="${dir.publish}" arg2="."/>
+				<equals arg1="${dir.publish}" arg2=".."/>
+				<equals arg1="${dir.publish}" arg2="/"/>
+				<equals arg1="${dir.publish}" arg2="./"/>
+				<equals arg1="${dir.publish}" arg2="../"/>
+			</or>
+			<then>
+				<fail message="Your dir.publish folder is set to ${dir.publish} which could delete your entire site or worse. Change it in project.properties"/>
+			</then>
+			<else>
+				<echo message="Creating directory structure... ${dir.publish}"/>
+				
+				<mkdir dir="${dir.intermediate}"/>
+				
+				<copy todir="${dir.intermediate}" includeEmptyDirs="true">
+					<fileset dir="${dir.project}/" excludes="${file.default.exclude}, ${file.exclude}">
+						<type type="dir"/>
+					</fileset>
+				</copy>
+				
+				<mkdir dir="${dir.publish}"/>
+				<mkdir dir="${dir.publish}/${output.dir.js}"/>
+				<mkdir dir="${dir.publish}/${output.dir.js.libs}"/>
+			</else>
+		</if>
+	</target>
+
+	<target name="-js.find.scripts">
+		<script language="javascript">
+
+			importClass(java.io.File);
+			importClass(java.io.FileReader);
+			importClass(java.io.BufferedReader);
+			importClass(java.io.FileWriter);
+			importClass(java.io.BufferedWriter);
+
+			var src = project.getProperty("basedir") + "/" + project.getProperty("dir.js") + "/" + project.getProperty("file.scripts");
+			echo = project.createTask("echo");
+			echo.setMessage("Parsing properties in file " + src);
+			echo.perform();
+
+			var file = new File(src);
+			fr = new FileReader(file);
+			br = new BufferedReader(fr);
+
+		   // Read the file. 
+		   // This assumes the file has no line breaks and is one line.
+		   // var json = br.readLine();
+
+			var content = "";
+			var line = null;
+			while ((line = br.readLine()) != null) {
+				content = content + line;
+			}
+
+			// Evaluate the JSON.
+			var struct = eval("(" + content + ")");
+
+			// Set each property in the project environment.
+
+				var result = struct.join(',');
+				struct.splice(0,1);
+				var resultNoQ = struct.join(',');
+				/*
+				echo = project.createTask("echo");
+				echo.setMessage(i + "=" + struct[i]);
+				echo.perform();
+				*/
+				project.setProperty("scripts.files",result);
+				project.setProperty("scripts.files.no.q",resultNoQ);
+
+
+		</script>
+	</target>  
+
+	<target name="-js.libs.copy" description="(PRIVATE) Copies external libraries to the intermediate dir ">
+			<copy todir="${dir.intermediate}/${dir.js.libs}">
+			<fileset dir="${dir.project}/${dir.js.libs}" >
+				<include name="**/*.js" />
+			</fileset>
+		</copy>	
+	</target>
+	<target name="-js.libs.process" depends="-mkdirs" description="(PRIVATE) Processes external libraries ">
+		<antcall target="-js.libs.copy" />
+	</target>
+	
+	<target name="-html.copy" description="(PRIVATE) Copies html to the intermediate dir">
+			<copy todir="${dir.intermediate}/">
+			<fileset dir="${dir.project}" >
+				<include name="**/*.html" />
+			</fileset>
+		</copy>	
+	</target>	
+	
+	<target name="-html.update" >
+		<var name="matchRegex" value="dr.api.devLoader.load\(([^\)]*)\);"/>
+        <var name="replaceRegex" value="\1();"/>
+
+		<replaceregexp>
+			<regexp pattern="${matchRegex}"/>
+			<substitution expression="${replaceRegex}"/>
+			<fileset dir="${dir.intermediate}" includes="**/*.html"/>
+		</replaceregexp>	
+		
+		<var name="matchRegex" value="(${dir.js}/${output.file.js})"/>
+        <var name="replaceRegex" value="${output.dir.js}/${output.file.js}"/>
+
+		<replaceregexp>
+			<regexp pattern="${matchRegex}"/>
+			<substitution expression="${replaceRegex}"/>
+			<fileset dir="${dir.intermediate}" includes="**/*.html"/>
+		</replaceregexp>
+		
+		<var name="matchRegex" value="(${dir.js.libs}/)" />
+        <var name="replaceRegex" value="${output.dir.js.libs}/"/>
+
+		<replaceregexp>
+			<regexp pattern="${matchRegex}"/>
+			<substitution expression="${replaceRegex}"/>
+			<fileset dir="${dir.intermediate}" includes="**/*.html"/>
+		</replaceregexp>		
+	</target>	
+	<target name="-html.process" depends="-mkdirs" description="(PRIVATE) Processes external libraries ">
+		<antcall target="-html.copy" />
+		<antcall target="-html.update" />
+	</target>	
+	
+	<target name="-js.main.process" depends="-mkdirs, -js.find.scripts" description="(PRIVATE) Processes the application js files">
+		<antcall target="-js.main.concat" />
+		<antcall target="-js.main.minify" />
+	</target>
+	
+	<target name="-js.main.minify" description="(PRIVATE) Minifies the concatenated file">
+		<apply executable="java" parallel="false" verbose="true" failonerror="true">
+			<fileset dir="${dir.intermediate}/${dir.js}" casesensitive="yes">
+				<include name="scripts-concat.js"/>        
+				<include name="scripts-noq-concat.js"/>
+			</fileset>
+
+			<arg line="-jar"/>
+			<arg path="./${dir.build.tools}/closure-compiler-v1346.jar"/>
+			<arg line="--js"/>
+			<srcfile/>
+			<arg line="--compilation_level" />
+			<arg value="${scripts.compilation.level}" />
+			<arg line="--warning_level" />
+			<arg value="${scripts.compilation.warninglevel}" />
+			<arg line="--js_output_file" />
+			<targetfile/>
+			<mapper type="glob" from="*.js" to="${basedir}/${dir.intermediate}/${dir.js}/*.min.js"/>
+			
+		</apply>
+	</target>  
+	
+  <target name="-js.main.concat" description="(PRIVATE) Concatenates the JS files in dir.js">
+      <echo message="Concatenating Main JS scripts..."/>
+      <!-- overwrite=no here means not to overwrite if the target is newer than the sources -->
+      <concat destfile="./${dir.intermediate}/${dir.js}/scripts-concat.js" overwrite="no" fixlastline="yes">
+          <filelist dir="${dir.project}/${dir.js}" files="${scripts.files}" />
+      </concat>
+      <concat destfile="./${dir.intermediate}/${dir.js}/scripts-noq-concat.js" overwrite="no" fixlastline="yes">
+          <filelist dir="${dir.project}/${dir.js}" files="${scripts.files.no.q}" />
+      </concat>      
+  </target>	
+  
+  <target name="-js.publish" depends="-js.main.concat" description="(PRIVATE) Concatenates the JS files in dir.js">
+		<copy todir="${dir.publish}/${output.dir.js}">
+			<fileset dir="${dir.intermediate}/${dir.js}" casesensitive="yes">
+				<include name="scripts-concat.min.js"/>   
+			</fileset>
+			<mapper type="glob" from="scripts-concat.min.js" to="${output.file.min.js}"/>				
+		</copy>	
+		<copy todir="${dir.publish}/${output.dir.js}">
+			<fileset dir="${dir.intermediate}/${dir.js}" casesensitive="yes">
+				<include name="scripts-concat.js"/>   
+			</fileset>
+			<mapper type="glob" from="scripts-concat.js" to="${output.file.js}"/>				
+		</copy>			
+
+		<copy todir="${dir.publish}/${output.dir.js}">
+			<fileset dir="${dir.intermediate}/${dir.js}" casesensitive="yes">
+				<include name="scripts-noq-concat.min.js"/>   
+			</fileset>
+			<mapper type="glob" from="scripts-noq-concat.min.js" to="${output.file.noq.min.js}"/>				
+		</copy>	
+		<copy todir="${dir.publish}/${output.dir.js}">
+			<fileset dir="${dir.intermediate}/${dir.js}" casesensitive="yes">
+				<include name="scripts-noq-concat.js"/>   
+			</fileset>
+			<mapper type="glob" from="scripts-noq-concat.js" to="${output.file.noq.js}"/>				
+		</copy>			
+
+		<copy todir="${dir.publish}/${output.dir.js.libs}">
+			<fileset dir="${dir.intermediate}/${dir.js.libs}" casesensitive="yes">
+				<include name="**/*.js" />
+			</fileset>
+		</copy>			
+  </target>
+  
+  <target name="-html.publish" depends="-js.main.concat" description="(PRIVATE) Concatenates the JS files in dir.js">
+		<copy todir="${dir.publish}">
+			<fileset dir="${dir.intermediate}" casesensitive="yes">
+				<include name="**/*.html" />
+			</fileset>
+		</copy>			
+  </target>  
+  
+  <target name="-other.copy" depends="-mkdirs">
+  <!-- This is a private target -->
+
+      <echo message="Copying over new files..."/>
+      <copy todir="./${dir.publish}">
+          <fileset dir="${dir.project}/" excludes="${file.default.exclude}, ${file.exclude}">
+              <!-- exclude files that are superseded by optimized versions with different names -->
+              <!-- this is not strictly necessary, but it avoids putting unreferenced files into your server -->
+              <exclude name="**/${dir.js}/"/>
+			  <exclude name="**/${dir.js.libs}/"/>
+          </fileset>
+      </copy>
+
+      <echo message="A copy of all new non-dev files are now in: ./${dir.publish}."/>
+  </target>  
+  
+
+  <target name="-copy-war-dirs">
+  	<copy todir="./${dir.publish}">
+	  	<fileset dir="${dir.war.support}/">
+	      	<include name="*/**"/>
+		</fileset>
+	</copy>	
+  </target>
+  
+  <target name="-process-web-app-files" depends="-copy-war-dirs">
+		<var name="matchRegex" value="WEBAPP_NAME"/>
+        <var name="replaceRegex" value="${project.name}"/>
+
+		<replaceregexp>
+			<regexp pattern="${matchRegex}"/>
+			<substitution expression="${replaceRegex}"/>
+			<fileset dir="${dir.publish}/WEB-INF" includes="web.xml"/>
+		</replaceregexp>	
+  </target>  
+  
+	<target name="-package" depends="-process-web-app-files">
+		<copy todir="./${dir.output}">
+		  	<fileset dir="${dir.publish}/${output.dir.js}">
+		      	<include name="${output.file.js}"/>
+		      	<include name="${output.file.min.js}"/>
+			</fileset>
+		</copy>	
+		<war destfile="${dir.output}/${file.war}" webxml="${dir.publish}/WEB-INF/web.xml">
+			<fileset dir="${dir.publish}"/>
+		</war>
+	</target>  
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- properties -->
+    
+    <property name="r.js" value="./r.js" />
+    <property name="closure.jar" value="closure-compiler-v1346.jar" />
+    <property name="rhino.jar" value="js.jar" />
+    <property name="js.amd.build" value="lib.amd.build.js" />
+    <property name="js.amd.build.noq" value="lib.amd.noq.build.js" />
+    <property name="js.build" value="lib.build.js" />
+    
+    <!-- custom tasks -->
+    
+    
+    <!-- targets -->
+    
+    <target name="-optimize" description="(PRIVATE) Minifies the concatenated file">
+		<apply executable="java" parallel="false" verbose="true" failonerror="true" >
+			<fileset dir="${dir.build}" casesensitive="yes">
+				<include name="${requirejs.optimizer.settings}"/>        
+			</fileset>
+
+			<arg value="-Xss1m" />
+			<arg line="-classpath"/>
+			<arg value="./${dir.build.tools}/${rhino.jar};./${dir.build.tools}/${closure.jar}"/>
+			<arg value="org.mozilla.javascript.tools.shell.Main" />
+			<arg value="${dir.build}/${r.js}"/>
+            <arg value="-o"/>
+ 		</apply>
+	</target>  
+    
+    <target name="-optimize.library">
+    	<antcall target="optimizeAMD" />
+    	<antcall target="optimizeAMD.noQ" />
+    	<antcall target="optimizeNonAMD" />
+    </target>
+    
+    <target name="optimizeAMD">
+        <echo message="Combining and minifying JS files as AMD Module" />
+        <antcall target="-optimize">
+            <param name="requirejs.optimizer.settings" value="${js.amd.build}" />
+        </antcall>  
+    </target>
+    
+    <target name="optimizeAMD.noQ">
+        <echo message="Combining and minifying JS files as AMD Module without Q library" />
+        <antcall target="-optimize">
+            <param name="requirejs.optimizer.settings" value="${js.amd.build.noq}" />
+        </antcall>  
+    </target>
+    
+    <target name="optimizeNonAMD">
+        <echo message="Combining and minifying JS files as regular JS file" />
+        <antcall target="-optimize">
+            <param name="requirejs.optimizer.settings" value="${js.build}" />
+        </antcall>  
+    </target>
+    
+</project>

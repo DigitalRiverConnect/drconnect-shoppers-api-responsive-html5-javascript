@@ -2,7 +2,7 @@
     // Get the configuration file and pass it to the app when it's being created.
     // If the JSON is already loaded, there's no need for the AJAX call.
     var config = $.storage.getItem("sampleAppConfig", "localStorage");
-    var forceDefaultConfig = getQueryStringParam(window.location.href, "defaultConfig")
+    var forceDefaultConfig = dr.api.util.getQueryStringParam(window.location.href, "defaultConfig")
     if(config && forceDefaultConfig!=1) {
         startApp(JSON.parse(config));
     } else {
