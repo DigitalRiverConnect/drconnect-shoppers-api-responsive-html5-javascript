@@ -83,7 +83,7 @@
 		</if>
 	</target>
 	
-	<target name="-call.r.js" description="(PRIVATE) Minifies the concatenated file">
+	<target name="-call.r.js-java" description="(PRIVATE) Minifies the concatenated file using Java and Rhino">
 		<apply executable="java" parallel="false" verbose="true" failonerror="true" >
 			<fileset dir="${dir.build}" casesensitive="yes">
 				<include name="${requirejs.optimizer.settings}"/>        
@@ -93,6 +93,16 @@
 			<arg line="-classpath"/>
 			<arg value="./${dir.build.tools}/${rhino.jar};./${dir.build.tools}/${closure.jar}"/>
 			<arg value="org.mozilla.javascript.tools.shell.Main" />
+			<arg value="${dir.build.tools}/${r.js}"/>
+            <arg value="-o"/>
+ 		</apply>
+	</target>
+
+	<target name="-call.r.js" description="(PRIVATE) Minifies the concatenated file using NodeJS">
+		<apply executable="node" parallel="false" verbose="true" failonerror="true" >
+			<fileset dir="${dir.build}" casesensitive="yes">
+				<include name="${requirejs.optimizer.settings}"/>        
+			</fileset>
 			<arg value="${dir.build.tools}/${r.js}"/>
             <arg value="-o"/>
  		</apply>
