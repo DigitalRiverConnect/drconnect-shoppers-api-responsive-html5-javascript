@@ -37,10 +37,19 @@ require(["jquery", "drapi", 'q', 'bootstrap', 'jstorage', 'tree', 'prettify'], f
         setConnectingState(true);
         
         client = new Api.Client(cid, {});
+        //  
         client.connect().then(function() {
-            var p = Q.all([loadOffers(DEFAULT_FP_POP_NAME), loadCategories()]).then(function(results) {
+            var lop = loadOffers(DEFAULT_FP_POP_NAME);
+            var lcp = loadCategories();
+            var p = Q.allResolved([lop, lcp]).then(function(promises) {
                 $("#spanClientId").html(cid);
-                goToStep2();
+                $("#txtFpPopName").val((lop.isFulfilled()?DEFAULT_FP_POP_NAME:""));
+                
+                if(lcp.isFulfilled()) {
+                    goToStep2();    
+                } else {
+                    showError("#txtClientId", "Error connecting to the server, please try again later");
+                }
             }).fail(function(error) {
                 showError("#txtClientId", "Error connecting to the server, please try again later");
             });
@@ -153,7 +162,6 @@ require(["jquery", "drapi", 'q', 'bootstrap', 'jstorage', 'tree', 'prettify'], f
         }
         */
         setCheckboxState("#btnCandyRackVisible", false);
-        $("#txtFpPopName").val(DEFAULT_FP_POP_NAME);
         $("#selectOffers").val("");
         $("#numProducts").val(DEFAULT_FC_PRODUCTS_PER_CATEGORY);
         $("#inputCandyRackPopName").val("");
