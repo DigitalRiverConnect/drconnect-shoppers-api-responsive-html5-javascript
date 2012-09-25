@@ -1,6 +1,5 @@
 ({
     baseUrl: "../src",
-    optimize:"closure",
     paths: {
         "Util": "util/util",
         "Ajax": "util/ajax",
