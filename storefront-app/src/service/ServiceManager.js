@@ -15,6 +15,7 @@ ns.ServiceManager = Class.extend({
         this.shoppingCartService= new ns.ShoppingCartService(this.client);
         this.shopperService= new ns.ShopperService(this.client);
         this.orderService= new ns.OrderService(this.client);
+        this.reconnectingFlag = false;
     },
     getApiConfig: function(env) {
         return {
@@ -25,9 +26,11 @@ ns.ServiceManager = Class.extend({
     },
     initialize: function() {
         var defer = new $.Deferred();
-        this.client.connect(function() {
+        this.client.connect({success: function() {
            defer.resolve(); 
-        });
+        }, error: function() {
+        	defer.reject();	
+        }, callDefaultErrorHandler: true});
         return defer.promise();
     },
     getProductService: function() {
@@ -76,13 +79,20 @@ ns.ServiceManager = Class.extend({
      */
     sessionExpiredErrorHandler: function(response) {
         console.info("Session Expired, reconnecting...");
-        this.initialize().done(function() {
-            console.info("Reconnected to DR!");
-            var dispatcher = dr.acme.application.getDispatcher();
-            dispatcher.handle(dr.acme.runtime.NOTIFICATION.UNBLOCK_APP);
-            dispatcher.handle(dr.acme.runtime.NOTIFICATION.SESSION_RESET, {"error": response, "requestedUrl": dispatcher.getCurrentUrl()});
-            dispatcher.refreshPage();
-        });
+        var that = this;
+        if(!this.reconnectingFlag){
+        	this.reconnectingFlag = true;
+	        this.initialize().done(function() {
+	            console.info("Reconnected to DR!");
+	            that.reconnectingFlag = false;
+	            var dispatcher = dr.acme.application.getDispatcher();
+	            dispatcher.handle(dr.acme.runtime.NOTIFICATION.UNBLOCK_APP);
+	            dispatcher.handle(dr.acme.runtime.NOTIFICATION.SESSION_RESET, {"error": response, "requestedUrl": dispatcher.getCurrentUrl()});
+	            dispatcher.refreshPage();
+	        }).fail(function(){
+	        	that.reconnectingFlag = false;
+	        });
+        } 
     },
     /**
      * Handles any error but session expiration 
