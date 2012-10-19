@@ -86,7 +86,7 @@ function(Config, Q, Util, Session, CartService, CategoryService, ProductService,
         /**
          * Triggers an OAuth flow to authenticate the user
          */    
-        login: function(callback, onViewLoadedCallback){
+        login: function(onViewLoadedCallback, callback){
             return this.makeRequest(this.session.authenticate(onViewLoadedCallback), callback);
         },
         /**

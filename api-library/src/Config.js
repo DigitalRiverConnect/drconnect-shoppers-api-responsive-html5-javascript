@@ -9,7 +9,9 @@ define(['Util'], function(Util) {
         // Shows an IFRAME with the login form
         IFRAME: "IFRAME",
         // Shows the login form in a new window/tab
-        WINDOW: "WINDOW"
+        WINDOW: "WINDOW",
+        // Manual mode. The client app uses the data and methods provided to implement the process itself (see AuthManualView.js)
+        MANUAL: "MANUAL"
     }
     
     /**
@@ -28,8 +30,8 @@ define(['Util'], function(Util) {
     result.connection = {};
     result.connection.URI = {
         BASE_URL: null,
-        DEV_BASE_URL: 'http://23.21.197.49/',
-        PRD_BASE_URL: 'http://23.21.197.49/',
+        DEV_BASE_URL: 'https://api.digitalriver.com/',
+        PRD_BASE_URL: 'https://api.digitalriver.com/',
         // DEV_BASE_URL: 'https://api.digitalriver.com/',
         // PRD_BASE_URL: 'https://api.digitalriver.com/',
         VERSION: 'v1',

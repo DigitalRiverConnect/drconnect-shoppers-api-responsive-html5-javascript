@@ -44,17 +44,24 @@ ns.ShopperService = Class.extend({
 	    }
 	    console.info("Triggering login flow");
 	    var self = this;
-	    this.client.login({success:function() {
-	        console.info("User authenticated!");
-	        self.authenticated = true;
-	        defer.resolve();
-	    }, error:function(data){
-	    	console.info("User NOT authenticated!");
-	    	defer.reject(data);
-	    }}, function() {
-	        console.info("DR-Hosted Login form loaded");
-	        defer.notify();
-	    });
+	    this.client.login( 
+	        function() {
+                console.info("DR-Hosted Login form loaded");
+                defer.notify();
+            }, 
+            {
+                success:
+                    function() {
+    	               console.info("User authenticated!");
+    	               self.authenticated = true;
+    	               defer.resolve();
+    	            }, 
+	            error:
+    	            function(data){
+                        console.info("User NOT authenticated!");
+    	    	        defer.reject(data);
+    	            }
+            });
 	    return defer.promise();
 	},
 	

@@ -58,7 +58,7 @@ require(["Api", "jquery"], function(Api, $) {
     }
     
     function login(){
-        client.login(function(token) {
+        client.login(null, function(token) {
             updateStatus();
         });
     }

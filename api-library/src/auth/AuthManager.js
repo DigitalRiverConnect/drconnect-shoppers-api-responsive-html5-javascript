@@ -1,4 +1,4 @@
-define(['q', 'view/AuthWindowView', 'view/AuthIFrameView'], function(Q, AuthWindowView, AuthIFrameView) {
+define(['q', 'view/AuthWindowView', 'view/AuthIFrameView', 'view/AuthManualView'], function(Q, AuthWindowView, AuthIFrameView, AuthManualView) {
     /**
      * This class handles Authentication/Authorization by opening a auth view (new window/tab or iframe)
      * 
@@ -9,7 +9,8 @@ define(['q', 'view/AuthWindowView', 'view/AuthIFrameView'], function(Q, AuthWind
         
         this.views = {
             "IFRAME": AuthIFrameView,
-            "WINDOW": AuthWindowView
+            "WINDOW": AuthWindowView,
+            "MANUAL": AuthManualView
         };
         
         this.view = this.createView(options.strategy, options);
