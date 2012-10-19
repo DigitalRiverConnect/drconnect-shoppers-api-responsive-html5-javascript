@@ -20,7 +20,7 @@ define(['Config'], function(Config) {
             iframe = this.create();
         } 
         
-        var finalUri = this.uri + "&token=" + reqToken + "&Env=DESIGN"; 
+        var finalUri = this.uri + "&token=" + reqToken; 
         iframe.onload = function() {
             if(this.src == finalUri) {
                 if(onViewLoadedCallback) {

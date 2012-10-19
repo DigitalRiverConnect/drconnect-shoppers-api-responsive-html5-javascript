@@ -32,8 +32,6 @@ define(['Util'], function(Util) {
         BASE_URL: null,
         DEV_BASE_URL: 'https://api.digitalriver.com/',
         PRD_BASE_URL: 'https://api.digitalriver.com/',
-        // DEV_BASE_URL: 'https://api.digitalriver.com/',
-        // PRD_BASE_URL: 'https://api.digitalriver.com/',
         VERSION: 'v1',
         ANONYMOUS_LOGIN: 'oauth20/token',
         LOGIN: 'oauth20/authorize'
