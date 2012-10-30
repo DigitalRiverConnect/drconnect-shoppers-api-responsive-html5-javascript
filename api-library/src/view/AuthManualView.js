@@ -9,13 +9,15 @@ define(['view/AuthViewUtil', 'Config'], function(Util, Config) {
      * or setError(error, error_description) methods 
      */
     var AuthManualView = function(uri, redirectUri, options) {
-        this.uri = Util.buildUriFromOptions(uri, redirectUri, options);
+        this.uriWithoutToken = Util.buildUriFromOptions(uri, redirectUri, options);
     }
     
     /**
      * Calls the passed callback with this "view" as parameter
      */
     AuthManualView.prototype.open = function(reqToken, onDataReadyCallback) {
+    	var finalUri = Util.getUriWithToken(this.uriWithoutToken, reqToken); 
+    	this.uri = finalUri;
         if(onDataReadyCallback) {
             onDataReadyCallback(this);
         }
