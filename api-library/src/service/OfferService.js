@@ -23,5 +23,6 @@ define(['service/BaseService', 'Config'], function(BaseService, Config) {
     
             return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
         }
+
     });
 });

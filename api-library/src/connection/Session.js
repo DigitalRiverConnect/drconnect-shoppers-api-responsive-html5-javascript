@@ -215,6 +215,18 @@ define(['Config', 'connection/Connection', 'auth/AuthManager', 'q'], function(Co
             });
     };
     
+     /**
+      * Sets the session info (usefull when an application activates after suspention)
+      * Sets the token and other session variables 
+      */
+    Session.prototype.setSessionInfo = function(sessionInfo){
+        this.connected = sessionInfo.connected;
+		this.authenticated = sessionInfo.authenticated;
+		this.token = sessionInfo.token;
+		this.refreshToken = sessionInfo.refreshToken;
+		this.tokenExpirationTime = sessionInfo.tokenExpirationTime;
+    };
+    
     /**
      * Forces to refresh token even if the access_token isn't expired 
      */

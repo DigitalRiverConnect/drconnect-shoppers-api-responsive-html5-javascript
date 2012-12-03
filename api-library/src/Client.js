@@ -122,7 +122,15 @@ function(Config, Q, Util, Session, CartService, CategoryService, ProductService,
                 refreshToken: this.session.refreshToken,
                 tokenExpirationTime : this.session.tokenExpirationTime
             };
-        }    
+        },
+        
+        /**
+         * Sets the session info (usefull when an application activates after suspention)
+         * Sets the token and other session variables
+         */ 
+         setSessionInfo: function(sessionInfo){
+         	this.session.setSessionInfo(sessionInfo);
+         }   
         
     });
     return Client;

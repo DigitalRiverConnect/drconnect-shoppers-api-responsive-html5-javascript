@@ -16,6 +16,9 @@ define(['Class'], function(Class) {
                 var cb = this.getCallbacks(callbacks);
                 p.then(cb.success, cb.error).end();
             } else {
+            	if(this.options.error){
+            		p.then(null, this.options.error)
+            	}
                 return p;
             }
         },
@@ -23,12 +26,25 @@ define(['Class'], function(Class) {
          * Filter the errors to handle 401 properly (it is currently returned with status = 0)
          */
         invalidTokenHandler: function(response) {
-           if(response.status == 0) {
-              response.status = 401;
-              response.error = {};
-              response.error.errors = {};
-              response.error.errors.error = {code: "Unauthorized", description:"Invalid token"};
-              
+           // The browser does not recognize the 401 status and shows 0 status.
+           // We also ask for 401 status for other apps like W8
+           if(response.status == 0 || response.status == 401) {
+           	  if(response.status == 0){ 
+				response.status = 401;
+				response.error = {};
+				response.error.errors = {};
+				response.error.errors.error = {code: "Unauthorized", description:"Invalid token"};
+	          }else{ // error.status == 401
+	          	var error; 
+	          	if(response.error.errors.error[0]){
+	          		error = response.error.errors.error[0];
+	          	}else{
+	          		error = response.error.errors.error;	
+	          	}
+	          	response.error = {};
+				response.error.errors = {};
+				response.error.errors.error = {code: error.code, description: error.description};
+	          }
               // Remove all session data (token, auth flag)
               this.session.disconnect();
            }
