@@ -79,6 +79,7 @@ ns.ServiceManager = Class.extend({
      */
     sessionExpiredErrorHandler: function(response) {
         console.info("Session Expired, reconnecting...");
+        this.client.disconnect();
         var that = this;
         if(!this.reconnectingFlag){
         	this.reconnectingFlag = true;

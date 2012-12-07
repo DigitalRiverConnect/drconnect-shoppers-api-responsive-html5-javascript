@@ -46,7 +46,7 @@ define(['Class'], function(Class) {
 				response.error.errors.error = {code: error.code, description: error.description};
 	          }
               // Remove all session data (token, auth flag)
-              this.session.disconnect();
+              //this.session.disconnect();
            }
            // Re throw the exception
            throw response;
