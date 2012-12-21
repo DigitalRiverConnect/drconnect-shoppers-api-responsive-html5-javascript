@@ -49,7 +49,7 @@ define(['Config', 'connection/Connection', 'auth/AuthManager', 'q'], function(Co
     /**
      * Connection.create
      */
-    Session.prototype.create = function(uri, urlParams){
+    Session.prototype.create = function(uri, urlParams, body){
     
         // Check if session is logged in
         if(!this.connected){
@@ -60,7 +60,13 @@ define(['Config', 'connection/Connection', 'auth/AuthManager', 'q'], function(Co
         var headerParams = {};
         headerParams['Authorization'] = 'bearer ' + this.token;
         
-        var promise = this.connection.create(uri, urlParams, headerParams)
+        var formattedBody = body;
+        if(body){
+			headerParams["Content-Type"] = "application/json";
+			formattedBody = JSON.stringify(body);
+        }
+        
+        var promise = this.connection.create(uri, urlParams, headerParams, formattedBody)
                        .then(function(data) {
                            for(var name in data) {
                                if(name) {
