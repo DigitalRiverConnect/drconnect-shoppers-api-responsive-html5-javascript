@@ -93,10 +93,10 @@ define(['service/BaseService', 'Config'], function(BaseService, Config) {
          * @param parameters
          * @param callback service response
          */
-        getOffers: function(popName, parameters, callbacks){
+        getOffers: function(popName, parameters, callbacks, errorHandled){
             var uri = this.replaceTemplate(Config.service.URI.CART_OFFERS, {'popName':popName});
             
-            return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
+            return this.makeRequest(this.session.retrieve(uri, parameters), callbacks, errorHandled);
         },
         
         /**

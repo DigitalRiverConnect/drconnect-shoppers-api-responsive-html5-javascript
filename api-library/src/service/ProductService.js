@@ -34,10 +34,10 @@ define(['service/BaseService', 'Config'], function(BaseService, Config) {
         /**
          * Returns the offers for a product
          */
-         getOffersForProduct: function(productId, popName, parameters, callbacks){
+         getOffersForProduct: function(productId, popName, parameters, callbacks, errorHandled){
 			var uri = this.replaceTemplate(Config.service.URI.OFFERS_FOR_PRODUCT, {'productId':productId ,'popName':popName});
 			
-			return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
+			return this.makeRequest(this.session.retrieve(uri, parameters), callbacks, errorHandled);
          }
     });
 });

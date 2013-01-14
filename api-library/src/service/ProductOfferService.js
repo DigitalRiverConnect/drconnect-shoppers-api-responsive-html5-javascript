@@ -9,10 +9,10 @@ define(['service/BaseService', 'Config'], function(BaseService, Config) {
         /**
          * Gets a product offer list
          */
-        list: function(popName, offerId, parameters, callbacks) {
+        list: function(popName, offerId, parameters, callbacks, errorHandled) {
             var uri = this.replaceTemplate(this.uri, {'popName':popName, 'offerId':offerId});
     
-            return this.makeRequest(this.session.retrieve(uri, parameters), callbacks);
+            return this.makeRequest(this.session.retrieve(uri, parameters), callbacks, errorHandled);
         },
         
         /**
