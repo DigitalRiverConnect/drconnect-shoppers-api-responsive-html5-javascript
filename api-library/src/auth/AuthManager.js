@@ -38,7 +38,7 @@ define(['q', 'view/AuthWindowView', 'view/AuthIFrameView', 'view/AuthManualView'
     /**
      * Callback used by the view (iframe or window) to notify the library when it finished
      */
-    AuthManager.authCallback = function(token, expiresIn, error, error_description) {
+    AuthManager.authCallback = function(token, expiresIn, code, error, error_description) {
         var req = AuthManager.currentRequest;
         if(req) {
             req.view.close();
@@ -46,7 +46,12 @@ define(['q', 'view/AuthWindowView', 'view/AuthIFrameView', 'view/AuthManualView'
             AuthManager.currentRequest = null;
             window.focus();
             if(!error){
-                var response = {"token": token, "expires_in": expiresIn};
+            	var response
+            	if(token === "" && code != ""){ 
+                	response = {"code": code};
+                }else{
+                	response = {"token": token, "expires_in": expiresIn};
+                }
                 req.defer.resolve(response);
             }
             else{

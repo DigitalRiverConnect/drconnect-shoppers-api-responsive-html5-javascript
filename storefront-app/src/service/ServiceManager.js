@@ -6,9 +6,9 @@ var ns = namespace('dr.acme.service');
  * will provide the instance of each resource service required
  */
 ns.ServiceManager = Class.extend({
-    init: function(env, key) {
+    init: function(env, config) {
         var ns = namespace('dr.acme.service');
-        this.client = new dr.api.Client(key, this.getApiConfig(env));
+        this.client = new dr.api.Client(config.key, this.getApiConfig(env, config));
         this.productService = new ns.ProductService(this.client);
         this.offerService = new ns.ProductService(this.client);
         this.categoryService = new ns.CategoryService(this.client);
@@ -17,11 +17,18 @@ ns.ServiceManager = Class.extend({
         this.orderService= new ns.OrderService(this.client);
         this.reconnectingFlag = false;
     },
-    getApiConfig: function(env) {
+    getApiConfig: function(env, config) {
+    	var authMode;
+    	if(config.idpType == "THIRD_PARTY"){
+    		authMode = "WINDOW";
+    	}else{
+    		authMode = "IFRAME";
+    	}
         return {
             authElementId: "loginFormDiv",
             error: this.errorHandler, 
-            env : env
+            env : env,
+            "authMode": authMode
         };
     },
     initialize: function() {

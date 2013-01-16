@@ -216,6 +216,7 @@ require(["jquery", "drapi", 'q', 'bootstrap', 'jstorage', 'tree', 'prettify'], f
         
         var result = {
             clientId : $("#txtClientId").val(),
+            idpType: $("#selectIDPType").val(),
             fpVisible : isChecked("#btnFeaturedProductsVisible"),
             fpPopName : $("#txtFpPopName").val(),
             fpOfferId : ($("#selectOffers").val())?$("#selectOffers").val():"",
@@ -270,6 +271,7 @@ require(["jquery", "drapi", 'q', 'bootstrap', 'jstorage', 'tree', 'prettify'], f
     function createJSON(fields) {
         return {
             key : fields.clientId,
+            idpType: fields.idpType,
             pageSize : parseInt(fields.pageSize),
             featuredCategories : {
                 ids : fields.fcIds,

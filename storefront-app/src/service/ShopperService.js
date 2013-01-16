@@ -51,7 +51,7 @@ ns.ShopperService = Class.extend({
             }, 
             {
                 success:
-                    function() {
+                    function(data) {
     	               console.info("User authenticated!");
     	               self.authenticated = true;
     	               defer.resolve();

@@ -21,7 +21,7 @@ ns.App = function(config){
 	
 	// Instantiate the Service Manager. This Service Manager is for aqued Site. Any modification to make the 
 	// application point to another site should be done here.
-    dr.acme.service.manager = new dr.acme.service.ServiceManager(env, this.config.key);
+    dr.acme.service.manager = new dr.acme.service.ServiceManager(env, this.config);
 
 	
 	window.onbeforeunload = this.checkCart;

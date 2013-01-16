@@ -185,7 +185,7 @@ define(['Config', 'connection/Connection', 'auth/AuthManager', 'q'], function(Co
     
     /**
      * Refresh an anonymous token authentication to the DR Server.
-    */
+     */
     Session.prototype.getRefreshToken = function() {
         
         var uri = Config.connection.URI.BASE_URL + Config.connection.URI.ANONYMOUS_LOGIN;
@@ -274,21 +274,71 @@ define(['Config', 'connection/Connection', 'auth/AuthManager', 'q'], function(Co
             return this.createDisconnectedError();
         }
         
+        var defer = Q.defer();
+        
         var p = this.authManager.login(this.token, onViewLoadedCallback);
         p.then(function(data) {
-                if(data.token != "") {
+                if(data.token && data.token != "") {
                     self.token = data.token;
                     self.authenticated = true;
                     self.refreshToken = null;
                     self.tokenStartTime = new Date().getTime()/1000;
                     self.tokenExpirationTime = new Date().getTime()/1000 + parseInt(data.expires_in);
                     console.debug("[DR Api Library] Authenticated token obtained: " + self.token);
+                }else if(data.code){
+                	return self.getAutorizationCodeToken(data.code, defer);
+               
                 }
-                return data.token;
+                defer.resolve(data.token);
             });  
         
-        return p;
+        return defer.promise;
     };
+    
+    
+     /**
+     * Refresh an anonymous token authentication to the DR Server.
+     */
+    Session.prototype.getAutorizationCodeToken = function(authorization_code, defer) {
+        
+        var uri = Config.connection.URI.BASE_URL + Config.connection.URI.ANONYMOUS_LOGIN;
+        var redirectUri = Config.config.DEFAULT_REDIRECT_URI;
+        var that = this;
+        
+        var d = new Date();
+        
+        var fields = {"client_id": this.apikey, "ts": d.getTime(), "grant_type": "authorization_code", "code": authorization_code, 
+        	"redirect_uri" : redirectUri, "dr_limited_token": this.token};
+        
+        return this.connection.submitForm(uri, fields, {})
+            .then(function(data){
+                if(data.access_token != "") {
+                    that.token = data.access_token;
+                    that.authenticated = true;
+                    that.refreshToken = null;
+                    that.tokenStartTime = new Date().getTime()/1000;
+                    that.tokenExpirationTime = new Date().getTime()/1000 + parseInt(data.expires_in);
+                    console.debug("[DR Api Library] Authenticated token obtained using Autorization Code: " + that.token);
+                }
+                defer.resolve(data.access_token);
+            }).fail(function(data){
+                // If fails cleans the refresh_token to obtain a new one on the next anonymousLogin call
+                console.debug("[DR Api Library] Token failure. Application could not obtain a token using an authorization code.");
+                that.refreshToken = null;
+                var errorResponse = {};
+                var error = {};
+                error.code = "authotization_code_invalid";
+                error.description = "The Authorization Code is Invalid";
+                errorResponse.status = 401;
+                errorResponse.error = {};
+                errorResponse.error.errors = {};
+                errorResponse.error.errors.error = error;
+                
+                defer.reject(errorResponse);
+            });
+    };
+    
+    
     
     /**
      * Disconnects from the service by clearing the session data
