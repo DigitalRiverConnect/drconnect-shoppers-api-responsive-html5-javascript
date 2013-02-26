@@ -213,7 +213,7 @@ zoom:
 	visibility:hidden;
   }
 }
-@media (min-width: 320px ) and(max-width: 480px) {
+@media (min-width: 320px ) and (max-width: 480px) {
 	select{
 		width: 175px;
 	}
