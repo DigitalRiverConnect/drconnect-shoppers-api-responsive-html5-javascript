@@ -48,7 +48,10 @@ function(Config, Q, Util, Session, CartService, CategoryService, ProductService,
         setEnvironment: function(env){
             if(env == 'dev'){
                 Config.connection.URI.BASE_URL = Config.connection.URI.DEV_BASE_URL;
-            }else{
+            }else if(env == 'cte'){
+            	Config.connection.URI.BASE_URL = Config.connection.URI.CTE_BASE_URL;
+            }
+            else{
                 Config.connection.URI.BASE_URL = Config.connection.URI.PRD_BASE_URL;
             }
         },

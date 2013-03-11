@@ -30,9 +30,10 @@ define(['Util'], function(Util) {
     result.connection = {};
     result.connection.URI = {
         BASE_URL: null,
-        DEV_BASE_URL: 'https://api.digitalriver.com/',
+        DEV_BASE_URL: 'http://23.21.197.49/',
         PRD_BASE_URL: 'https://api.digitalriver.com/',
-        VERSION: 'v1',
+        CTE_BASE_URL: 'https://api-cte.digitalriver.com/',
+        VERSION: 'v1',	
         ANONYMOUS_LOGIN: 'oauth20/token',
         LOGIN: 'oauth20/authorize'
     };
