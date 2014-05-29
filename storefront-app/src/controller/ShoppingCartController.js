@@ -64,7 +64,8 @@ ns.ShoppingCartController = ns.BaseController.extend({
               that.updateViews(true);   
         });	 
         
-        if(this.app.config.candyRack.visible==true && this.app.config.candyRack.pop) {
+        var disabledCandyRack = true;
+        if(disabledCandyRack==false && this.app.config.candyRack.visible==true && this.app.config.candyRack.pop) {
             this.view.renderCandyRack();
             // Get the candyRack Offers for the cart
             var getCandyRackPromise = that.shoppingCartService.getCandyRackProducts({});

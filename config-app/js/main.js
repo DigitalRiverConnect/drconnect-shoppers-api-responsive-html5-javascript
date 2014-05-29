@@ -36,7 +36,8 @@ require(["jquery", "drapi", 'q', 'bootstrap', 'jstorage', 'tree', 'prettify'], f
         $("#form").hide();
         setConnectingState(true);
         
-        client = new Api.Client(cid, {});
+        var env = getQueryStringParameter("env");
+        client = new Api.Client(cid, {env : env});
         //  
         client.connect().then(function() {
             var lop = loadOffers(DEFAULT_FP_POP_NAME);
@@ -295,7 +296,13 @@ require(["jquery", "drapi", 'q', 'bootstrap', 'jstorage', 'tree', 'prettify'], f
         var json = getConfigJSON();
         if(json != "") {
             $.storage.setItem('sampleAppConfig', json, 'localStorage');
-            window.location = "../index.htm";
+            
+            var launchUrl = "../index.htm";
+            var env = getQueryStringParameter("env");
+            if (env != "") {
+           		launchUrl += "?env=" + env;
+            }
+            window.location = launchUrl;
         }
         return false;
     }
@@ -347,6 +354,14 @@ require(["jquery", "drapi", 'q', 'bootstrap', 'jstorage', 'tree', 'prettify'], f
         resetForm();
         $(".step2").show();
         $(".step1").hide();
+    }
+    
+    function getQueryStringParameter(name) {
+        var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (!results) { 
+            return "0"; 
+        }
+        return results[1] || 0;
     }
     
     $(document).ready(function() {

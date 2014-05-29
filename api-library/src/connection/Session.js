@@ -66,6 +66,11 @@ define(['Config', 'connection/Connection', 'auth/AuthManager', 'q'], function(Co
 			formattedBody = JSON.stringify(body);
         }
         
+        if(!urlParams) {
+			urlParams = {};
+		}
+		urlParams.client_id = this.apikey; 
+        
         var promise = this.connection.create(uri, urlParams, headerParams, formattedBody)
                        .then(function(data) {
                            for(var name in data) {
@@ -162,7 +167,7 @@ define(['Config', 'connection/Connection', 'auth/AuthManager', 'q'], function(Co
             return this.getRefreshToken();  
         }
         
-        var fields = {"client_id": this.apikey, "ts": d.getTime(), "grant_type": "password", "username": "anonymous", "password": "anonymous"};
+        var fields = {"client_id": this.apikey, "ts": d.getTime(), "grant_type": "password", "username": "anonymous", "password": "anonymous", "testuser":"steve"};
         
         return this.connection.submitForm(uri, fields,{})
             .then(function(data){
@@ -308,7 +313,7 @@ define(['Config', 'connection/Connection', 'auth/AuthManager', 'q'], function(Co
         var d = new Date();
         
         var fields = {"client_id": this.apikey, "ts": d.getTime(), "grant_type": "authorization_code", "code": authorization_code, 
-        	"redirect_uri" : redirectUri, "dr_limited_token": this.token};
+        	"redirect_uri" : redirectUri, "dr_limited_token": this.token, "ENV": "DESIGN"};
         
         return this.connection.submitForm(uri, fields, {})
             .then(function(data){
