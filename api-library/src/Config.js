@@ -34,7 +34,7 @@ define(['Util'], function(Util) {
         PRD_BASE_URL: 'https://api.digitalriver.com/',
         CTE_BASE_URL: 'https://api-cte.digitalriver.com/',
         DIS_BASE_URL: 'https://dispatch.digitalriver.com/',
-        TES_BASE_URL: 'https://dispatch-test.digitalriver.com/',
+        DTE_BASE_URL: 'https://dispatch-test.digitalriver.com/',
         VERSION: 'v1',	
         ANONYMOUS_LOGIN: 'oauth20/token',
         LOGIN: 'oauth20/authorize'
