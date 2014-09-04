@@ -52,8 +52,8 @@ function(Config, Q, Util, Session, CartService, CategoryService, ProductService,
             	Config.connection.URI.BASE_URL = Config.connection.URI.CTE_BASE_URL;
             }else if(env == 'dis'){
             	Config.connection.URI.BASE_URL = Config.connection.URI.DIS_BASE_URL;
-            }else if(env == 'dis-tes'){
-            	Config.connection.URI.BASE_URL = Config.connection.URI.DIS_TES_BASE_URL;
+            }else if(env == 'dte'){
+            	Config.connection.URI.BASE_URL = Config.connection.URI.DTE_BASE_URL;
             }
             else{
                 Config.connection.URI.BASE_URL = Config.connection.URI.PRD_BASE_URL;
