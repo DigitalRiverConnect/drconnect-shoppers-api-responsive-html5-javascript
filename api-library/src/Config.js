@@ -33,6 +33,8 @@ define(['Util'], function(Util) {
         DEV_BASE_URL: 'http://23.21.197.49/',
         PRD_BASE_URL: 'https://api.digitalriver.com/',
         CTE_BASE_URL: 'https://api-cte.digitalriver.com/',
+        DIS_BASE_URL: 'https://dispatch.digitalriver.com/',
+        TES_BASE_URL: 'https://dispatch-test.digitalriver.com/',
         VERSION: 'v1',	
         ANONYMOUS_LOGIN: 'oauth20/token',
         LOGIN: 'oauth20/authorize'
